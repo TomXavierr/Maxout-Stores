@@ -1,0 +1,86 @@
+{% extends 'adminbase.html' %}
+
+{% block title %}
+MaxOut Admin
+{% endblock title %}
+
+{% block content %}
+           
+
+
+            <!-- Sales Chart Start -->
+            {% comment %} <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-light text-center rounded p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h6 class="mb-0">Worldwide Sales</h6>
+                                <a href="">Show All</a>
+                            </div>
+                            <canvas id="worldwide-sales"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-light text-center rounded p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h6 class="mb-0">Salse & Revenue</h6>
+                                <a href="">Show All</a>
+                            </div>
+                            <canvas id="salse-revenue"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div> {% endcomment %}
+            <!-- Sales Chart End -->
+
+
+            <!-- Recent Sales Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="bg-light text-center rounded p-4">
+                   
+                    <div class="table-responsive">
+                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                            <thead>
+                                <tr class="text-dark">
+                                    {% comment %} <th scope="col"><input class="form-check-input" type="checkbox"></th> {% endcomment %}
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Date Joined</th>
+                                    <th scope="col">Last login</th>
+                                    <th scope="col">is blocked</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{user.id}}</td>
+                                    <td>{{user.username}} </td>
+                                    <td>{{user.email}}</td>
+                                    <td>{{user.date_joined}}</td>
+                                    <td>{{user.last_login}}</td>
+                                    <td>{{user.is_blocked}}</td>
+                                    <td>
+                                        {% if not user.is_blocked %}
+                                        <a href="block_user/{{user.id}}"><button type="button" class="btn btn-danger">Block</button></a>
+                                        {% else %}
+                                        <a href="unblock_user/{{user.id}}"><button type="button" class="btn btn-success">Unblock</button></a>
+                                        {% endif %}
+                                        
+                                    </td>
+                                    {% comment %} <td><a class="btn btn-sm btn-primary" href="">{{}}</a></td> {% endcomment %}
+                                </tr>
+                                {% endfor %}
+                               
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Recent Sales End -->
+
+
+{% endblock content %}
+
+

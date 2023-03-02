@@ -1,0 +1,62 @@
+{% extends 'adminbase.html' %}
+
+{% block title %}
+Category List
+{% endblock title %}
+
+{% block content %}
+ 
+
+<div>
+    <nav class="navbar navbar-expand bg-light navbar-light  px-4 py-0">
+        <div>
+            <form class="d-none d-md-flex ms-4">
+                <input class="form-control border-0" type="search" placeholder="Search">
+            </form>
+        </div>
+       
+        <div class="container">
+            <div class="col-sm-8">
+                <a href="add_category" class="btn btn-primary ">Add Category</a>
+            </div>
+        </div>
+    </nav>   
+</div>
+
+
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-light text-center rounded p-4">
+        
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-dark">
+                        <th scope="col">Category ID</th>
+                        <th scope="col">Category name</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td>{{category.id}}</td>
+                        <td>{{category.category_name}} </td>
+                        <td>
+                            <a href="delete_category/{{category.id}}" class="btn btn-danger ">Delete Category</a>
+                        </td>
+                       
+                    </tr>
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+</div>
+       
+
+
+{% endblock content %}
+

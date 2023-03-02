@@ -1,0 +1,114 @@
+{% extends 'storebase.html' %}
+{% load static %}
+
+{% block title %}
+  product details
+{% endblock title %}
+
+
+{% block content %}
+
+    <!-- ##### Single Product Details Area Start ##### -->
+    <section class="single_product_details_area d-flex align-items-center">
+
+        <!-- Single Product Thumb -->
+        <div class="single_product_thumb clearfix "  >
+            <div class="product_thumbnail_slides owl-carousel ">
+                {% for image in details.images.all %}
+                <img style="max-width:55% " src="{{image.image.url}}" alt="">
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Single Product Description -->
+        <div class="single_product_desc clearfix">
+            <span>{{details.variant_product.product_brand.brand_name}} </span>
+            <a href="cart.html">
+                <h2>{{details.variant_product.product_name}}</h2>
+            </a>
+            <p class="product-desc">{{details.variant_product.product_gender}}'s {{details.variant_type}}</p>
+            <p class="product-price"> ₹ {{details.variant_price}}</p>
+            <p class="product-desc">{{details.variant_product.product_description}}</p>
+
+            <!-- Form -->
+            
+                <!-- Select Box -->
+                {% comment %} <h1>{{ variant.name }}</h1>
+                <p>Price: {{ variant.price }}</p>
+                <h2>Stock:</h2>
+                <ul>
+                   
+                        <li>: {{ item.stock }}</li>
+                    {% empty %}
+                        <li>No stock information available.</li>
+                  
+                </ul> {% endcomment %}
+
+                <div class="select-box d-flex mt-50 mb-30">
+                    <select name="select" id="productSize" class="mr-5">
+                        {% for variant in variants %}
+                        <option value="{{ variant.variant_size.size }}">Size : {{ variant.variant_size.size }}</option>
+                        {% empty %}
+                        <option value="">SIZE: Information not available</option>
+                        {% endfor %}
+                        
+                    </select>
+                    {% comment %} <select name="color" id="productColor">
+                    
+                        {% for color in variants.variant_color %}
+                            <option value="{{ color.0 }}">{{ color.1 }}</option>
+                        {% endfor %}
+                    </select> {% endcomment %}
+                </div>
+                <!-- Cart & Favourite Box -->
+                <div class="cart-fav-box d-flex align-items-center">
+                    {% csrf_token %}
+                    <!-- Cart -->
+                    
+                    <button onclick="addToCart({{ details.id }}, {{ details.variant_size.size }})" class="btn essence-btn">Add to cart</button>
+                    <!-- Favourite -->
+                    <div class="product-favourite ml-4">
+                        <a href="#" class="favme fa fa-heart"></a>
+                    </div>
+                </div>
+            
+        </div>
+    </section>
+
+{% comment %} <script>
+    function addToCart(productVariantId, size) {
+        var selectElement = document.getElementById("productSize");
+        var selectedOptionValue = selectElement.options[selectElement.selectedIndex].value;
+        console.log("dasdsd");
+        console.log(selectedOptionValue);
+
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url 'add_to_cart' %}',
+            data: {
+                'product_variant_id': productVariantId,
+                'size': selectedOptionValue,
+                'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function (response) {
+                if (response.success) {
+                    
+                    $('#cart-item-count').text(response.cart_item_count);
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function (response) {
+                alert('An error occurred while adding the item to the cart.');
+            }
+            
+        });
+    }
+    
+</script>
+    {% endcomment %}
+    <!-- ##### Single Product Details Area End ##### -->
+
+
+    {% endblock content %}

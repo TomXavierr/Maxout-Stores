@@ -1,0 +1,72 @@
+{% extends 'adminbase.html' %}
+
+{% block title %}
+Products List
+{% endblock title %}
+
+{% block content %}
+ 
+
+<div>
+    <nav class="navbar navbar-expand bg-light navbar-light  px-4 py-0">
+        <div>
+            <form class="d-flex" action="search_product" method="get">
+                {% csrf_token %}
+                <input class="form-control me-2" type="search" name="searchterm" placeholder="Search user" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+       
+        <div class="container">
+            <div class="col-sm-8">
+                <a href="add_product" class="btn btn-primary ">Add Product</a>
+            </div>
+        </div>
+    </nav>   
+</div>
+
+
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-light text-center rounded p-4">
+        
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-dark">
+                        <th scope="col">Product ID</th>
+                        <th scope="col">Product name</th>
+                        <th scope="col">Brand</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">sport</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Action</th>  
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{product.id}}</td>
+                        <td>{{product.product_name}} </td>
+                        <td>{{product.product_brand.brand_name}}</td>
+                        <td>{{product.product_category.category_name}}</td>
+                        <td>{{product.product_sport.sport_name}}</td>
+
+                        <td><img style="max-width:2em " src="{{product.product_image.url}}"></td>
+                        <td>
+                            <a href="delete_product/{{product.id}}"class="btn btn-danger ">Delete</a>
+                            <a href="{% url 'edit_product' id=product.id %} "class="btn btn-success ">Edit</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+       
+
+
+{% endblock content %}
+

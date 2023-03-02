@@ -1,0 +1,37 @@
+{% extends 'adminbase.html' %}
+
+{% block title %}
+Add Brands
+{% endblock title %}
+
+{% block content %}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-light rounded p-4"> 
+        <h3>Add Brand</h3>
+        <div class="col-8 ">
+            <form method="post" action="add_brand">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <label for="colFormLabel" class="col-sm-3 col-form-label">Brand Name</label>
+                    <div class="col-sm-8">
+                        <input type="text" name="brand_name" class="form-control" id="colFormLabel" placeholder="Name" >
+                    </div>
+                </div>   
+                <div>
+                    {% for message in messages %}
+                    <p style="color: red">
+                        {{message}}
+                    </p>
+                    {% endfor %}
+                </div>
+                <input type="submit" value="Add" name="add_brand">
+            </form>
+            
+            
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

@@ -1,0 +1,85 @@
+{% extends 'storebase.html' %}
+{% load static %}
+
+{% block title %}
+Add address
+{% endblock title %}
+
+{% block links %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+    rel="stylesheet" 
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+    crossorigin="anonymous"
+>
+<link href="{% static 'profile/plugins/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+<!-- CUSTOM CSS -->
+<link href="{% static 'profile/css/style.css' %}" rel="stylesheet">{% endblock links %}
+
+{% block content %}
+<div class="container-fluid pt-5">
+    <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
+        <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+            <div class="bg-light rounded p-4 p-sm-5 my-4 mx-3">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    
+                    <h3>Add address</h3>
+                </div>
+                <form   method="post" action="add_address">
+                    {% csrf_token %}
+                    <div class="form-floating mb-3">
+                        <input type="text" name="first_name" class="form-control" id="colFormLabel" placeholder="First Name" >
+                        <label for="floatingText">First name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="last_name" class="form-control" id="floatingText" placeholder="Last Name">
+                        <label for="floatingText">Last name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="house_name" class="form-control" id="floatingText" placeholder="flatname">
+                        <label for="floatingText">House/flat</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="street_name" class="form-control" id="floatingText" placeholder="street">
+                        <label for="floatingText">Street </label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="city" class="form-control" id="floatingText" placeholder="city">
+                        <label for="floatingText">City</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="district" class="form-control" id="floatingText" placeholder="district">
+                        <label for="floatingText">District</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="state" class="form-control" id="floatingText" placeholder="state">
+                        <label for="floatingText">State</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="pincode" class="form-control" id="floatingText" placeholder="pincode">
+                        <label for="floatingText">Pincode</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="tel" name="mobile" class="form-control" id="floatingText" placeholder="phone">
+                        <label for="floatingText">Mobile number</label>
+                    </div>
+
+                    <div>
+                        {% if error_message %}
+                                <div class="alert-danger">{{ error_message }}</div>
+                        {% endif %}
+                        {% for message in messages %}
+                        <p style="color: red">
+                            {{message}}
+                        </p>
+                        {% endfor %}
+                    </div>
+                    <button type="submit"  style="background: #fd7e14 ; color: #000" class="btn py-3 w-100 mb-4">Update</button>
+                </form>    
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Sign Up End -->
+</div>
+{% endblock content %}

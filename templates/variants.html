@@ -1,0 +1,76 @@
+{% extends 'adminbase.html' %}
+
+{% block title %}
+Variant List
+{% endblock title %}
+
+{% block content %}
+ 
+
+<div>
+    <nav class="navbar navbar-expand bg-light navbar-light  px-4 py-0">
+        <div>
+            <form class="d-flex" action="search_variant" method="get">
+                {% csrf_token %}
+                <input class="form-control me-2" type="search" name="searchterm" placeholder="Search user" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+       
+        <div class="container">
+            <div class="col-sm-8">
+                <a href="{% url 'add_variant' %}" class="btn btn-outline-primary ">Add Variant</a>
+            </div>
+        </div>
+    </nav>   
+</div>
+
+
+
+<div class="container-fluid pt-4 px-1">
+    <div class="bg-light text-center rounded p-4">
+        
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-dark">
+                        <th scope="col">product</th>
+                        <th scope="col">Color</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Size</th>
+                        <th scope="col">Stock</th>
+                        
+                        <th scope="col">Price</th>  
+                        <th scope="col">Action</th>  
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for variant in variants %}
+                    <tr>
+                        <td>{{variant.variant_product.product_name}}</td>
+                        <td>{{variant.variant_color}}</td>
+                        <td>{{variant.variant_type}}</td>
+                        <td>{{variant.variant_size.size}}</td>
+                        <td>{{variant.variant_stock}}</td>
+                        
+                        
+                        
+                        <td>{{variant.variant_price}}</td>
+                        {% comment %} <td><img style="max-width:2em " src=""></td> {% endcomment %}
+                        <td>
+                            <a href="delete_variant/{{variant.id}}" class="btn btn-danger ">Delete</a>
+                            <a href="{% url 'edit_variant' id=variant.id %}" class="btn btn-success ">Edit</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+       
+
+
+{% endblock content %}
+

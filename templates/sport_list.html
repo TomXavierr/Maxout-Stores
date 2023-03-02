@@ -1,0 +1,62 @@
+{% extends 'adminbase.html' %}
+
+{% block title %}
+Sports List
+{% endblock title %}
+
+{% block content %}
+ 
+
+<div>
+    <nav class="navbar navbar-expand bg-light navbar-light  px-4 py-0">
+        <div>
+            <form class="d-none d-md-flex ms-4">
+                <input class="form-control border-0" type="search" placeholder="Search">
+            </form>
+        </div>
+       
+        <div class="container">
+            <div class="col-sm-8">
+                <a href="add_sport" class="btn btn-primary ">Add Sport</a>
+            </div>
+        </div>
+    </nav>   
+</div>
+
+
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-light text-center rounded p-4">
+        
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-dark">
+                        <th scope="col">sport ID</th>
+                        <th scope="col">sport name</th>
+                        <th scope="col">sport Description</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sport in sports %}
+                    <tr>
+                        <td>{{sport.id}}</td>
+                        <td>{{sport.sport_name}} </td>
+                        <td>{{sport.sport_description}} </td>
+                        <td>
+                            <a href="delete_sport/{{sport.id}}" class="btn btn-danger ">Delete Sport</a>
+                        </td>
+                        {% comment %} <td><a class="btn btn-sm btn-primary" href="">{{}}</a></td> {% endcomment %}
+                    </tr>
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+           
+            
+        </div>
+    </div>
+</div>
+       
+{% endblock content %}
