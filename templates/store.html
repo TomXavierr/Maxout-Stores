@@ -161,13 +161,13 @@ store
                         </div>
 
                         <div class="row">
-                            {% for variant in variants %}
+                            {% for product in products %}
                             <!-- Single Product -->
                             
                             <div class="col-12 col-sm-6 col-lg-4">
                                 <div class="single-product-wrapper">
                                     <!-- Product Image -->
-                                    {% for image in variant.images.all %}
+                                    {% for image in product.images.all %}
 							        {% if forloop.first %}
                                     <div class="product-img">
                                         <img src="{{image.image.url}}" alt="">
@@ -188,15 +188,19 @@ store
 							        {%endfor%}
                                     <!-- Product Description -->
                                     <div class="product-description">
-                                        <span>{{variant.variant_product.product_brand.brand_name}}</span>
-                                        <a href="{% url 'product_details' id=variant.id %}">
-                                            <h6>{{variant.variant_product.product_name}}</h6>
+                                        <span>{{product.product_brand.brand_name}}</span>
+                                         <a href="{% url 'product_details' id=product.id %}">
+                                            <h6>{{product.product_name}}</h6>
                                         </a>
+                                        {% for variant in product.variants.all %}
+							            {% if forloop.first %}
                                         <p class="product-price">
                                             {% comment %} <span class="old-price">$75.00</span> {% endcomment %}
-                                            ₹ {{variant.variant_price}}
+                                            ₹ {{product.product_price}}
+                                            
                                         </p>
-
+                                        {%endif%}
+							            {%endfor%}
                                        
                                     </div>
                                 </div>

@@ -16,15 +16,17 @@ class Products(models.Model):
     product_gender            = models.CharField(max_length=10,choices=GENDER_CHOICES,default='Men')
     product_image             = models.ImageField(upload_to='photos/',null=False,blank=False)
     product_sport             = models.ForeignKey("Sport", on_delete=models.CASCADE, default=False , null=False)
+    product_color             = models.CharField(max_length=30, null=False)
+    product_type              = models.CharField(max_length=30, null=False)
+    product_price             = models.DecimalField(max_digits=8, decimal_places=2, null=False)
     
+    def __str__(self):
+        return str(self.pk)
     
 class Variants(models.Model):
-    variant_product           = models.ForeignKey(Products, on_delete=models.CASCADE)
-    variant_color             = models.CharField(max_length=30, null=False)
-    variant_type              = models.CharField(max_length=30, null=False)
+    variant_product           = models.ForeignKey(Products,related_name='variants', on_delete=models.CASCADE)
     variant_size              = models.ForeignKey("Size", on_delete=models.CASCADE, default=False , null=False)
     variant_stock             = models.IntegerField()
-    variant_price             = models.DecimalField(max_digits=8, decimal_places=2, null=False)
     created_on                = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     
     
@@ -35,8 +37,8 @@ class Variants(models.Model):
     
 class Image(models.Model):
     id = models.BigAutoField(primary_key=True,blank=True)
-    product = models.ForeignKey(Products,on_delete=models.CASCADE,null=True,blank=True)
-    variant = models.ForeignKey(Variants,related_name='images',on_delete=models.CASCADE,null=True,blank=True)
+    product = models.ForeignKey(Products,related_name='images',on_delete=models.CASCADE,null=True,blank=True)
+    # variant = models.ForeignKey(Variants,related_name='images',on_delete=models.CASCADE,null=True,blank=True)
     image = models.ImageField(upload_to='productphotos/',blank=True,null=True)
 
 

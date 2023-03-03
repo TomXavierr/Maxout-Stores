@@ -39,6 +39,10 @@ Products List
                         <th scope="col">Brand</th>
                         <th scope="col">Category</th>
                         <th scope="col">sport</th>
+                        <th scope="col">price</th>
+                        <th scope="col">type</th>
+                        <th scope="col">color</th>
+
                         <th scope="col">Image</th>
                         <th scope="col">Action</th>  
                     </tr>
@@ -51,7 +55,9 @@ Products List
                         <td>{{product.product_brand.brand_name}}</td>
                         <td>{{product.product_category.category_name}}</td>
                         <td>{{product.product_sport.sport_name}}</td>
-
+                        <td>{{product.product_price}}</td>
+                        <td>{{product.product_type}}</td>
+                        <td>{{product.product_color}}</td>
                         <td><img style="max-width:2em " src="{{product.product_image.url}}"></td>
                         <td>
                             <a href="delete_product/{{product.id}}"class="btn btn-danger ">Delete</a>

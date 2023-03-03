@@ -12,7 +12,7 @@ Variant List
         <div>
             <form class="d-flex" action="search_variant" method="get">
                 {% csrf_token %}
-                <input class="form-control me-2" type="search" name="searchterm" placeholder="Search user" aria-label="Search">
+                <input class="form-control me-2" type="search" name="searchterm" placeholder="Search Variant" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
         </div>
@@ -35,12 +35,8 @@ Variant List
                 <thead>
                     <tr class="text-dark">
                         <th scope="col">product</th>
-                        <th scope="col">Color</th>
-                        <th scope="col">Type</th>
                         <th scope="col">Size</th>
                         <th scope="col">Stock</th>
-                        
-                        <th scope="col">Price</th>  
                         <th scope="col">Action</th>  
                     </tr>
                 </thead>
@@ -48,14 +44,8 @@ Variant List
                     {% for variant in variants %}
                     <tr>
                         <td>{{variant.variant_product.product_name}}</td>
-                        <td>{{variant.variant_color}}</td>
-                        <td>{{variant.variant_type}}</td>
                         <td>{{variant.variant_size.size}}</td>
                         <td>{{variant.variant_stock}}</td>
-                        
-                        
-                        
-                        <td>{{variant.variant_price}}</td>
                         {% comment %} <td><img style="max-width:2em " src=""></td> {% endcomment %}
                         <td>
                             <a href="delete_variant/{{variant.id}}" class="btn btn-danger ">Delete</a>

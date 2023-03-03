@@ -22,14 +22,17 @@
 
         <!-- Single Product Description -->
         <div class="single_product_desc clearfix">
-            <span>{{details.variant_product.product_brand.brand_name}} </span>
+            
+            <span>{{details.product_brand.brand_name}} </span>
             <a href="cart.html">
-                <h2>{{details.variant_product.product_name}}</h2>
+                <h2>{{details.product_name}}</h2>
             </a>
-            <p class="product-desc">{{details.variant_product.product_gender}}'s {{details.variant_type}}</p>
-            <p class="product-price"> ₹ {{details.variant_price}}</p>
-            <p class="product-desc">{{details.variant_product.product_description}}</p>
-
+            <p class="product-desc">{{details.product_gender}}'s {{details.product_type}}</p>
+    
+            <p class="product-price"> ₹ {{details.product_price}}</p>
+            
+            <p class="product-desc">{{details.product_description}}</p>
+            
             <!-- Form -->
             
                 <!-- Select Box -->

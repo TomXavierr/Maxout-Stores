@@ -8,22 +8,23 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-
+from django.db.models import Count
 
 # Create your views here.
 
 @login_required(login_url='user_login') 
 def mens_store(request):
-    products = Products.objects.filter(product_gender = 'Men')
-    variants = Variants.objects.filter(variant_product__in = products )
-    sports = Sport.objects.all()
-    brands = Brand.objects.all()
     
-    count = variants.count()
-    cart = Cart.objects.get(customer = request.user)
+    products     = Products.objects.filter(product_gender = 'Men')
+    variants     = Variants.objects.filter(variant_product__in = products )
+    count = products.count()
+    sports       =  Sport.objects.all()
+    brands       = Brand.objects.all()
+    
+    cart      = Cart.objects.get(customer = request.user)
     cartitems = CartItem.objects.filter(cart= cart)
-    total = cartitems.count
-    context = {'products':products, 'count': count,'cart_count':total, 'variants': variants , 'sports':sports ,'brands':brands}
+    total     = cartitems.count
+    context   = {'products':products,'count': count, 'variants': variants , 'cart_count':total, 'sports':sports ,'brands':brands  }
     
     return render(request,'store.html',context)
 
@@ -35,7 +36,7 @@ def womens_store(request):
     sports = Sport.objects.all()
     brands = Brand.objects.all()
     
-    count = variants.count()
+    count = products.count()
     cart = Cart.objects.get(customer = request.user)
     cartitems = CartItem.objects.filter(cart= cart)
     total = cartitems.count
@@ -50,7 +51,7 @@ def mensSport(request,id):
     sports = Sport.objects.all()
     brands = Brand.objects.all()
     
-    count = variants.count()
+    count = products.count()
     cart = Cart.objects.get(customer = request.user)
     cartitems = CartItem.objects.filter(cart= cart)
     total = cartitems.count
@@ -64,7 +65,7 @@ def womensSport(request,id):
     sports = Sport.objects.all()
     brands = Brand.objects.all()
     
-    count = variants.count()
+    count = products.count()
     cart = Cart.objects.get(customer = request.user)
     cartitems = CartItem.objects.filter(cart= cart)
     total = cartitems.count
@@ -106,9 +107,8 @@ def womensBrands(request,id):
 
 @login_required(login_url='user_login') 
 def product_details(request,id): 
-    details = Variants.objects.get(id=id)
-    colour = details.variant_color
-    product = Products.objects.get(id=details.variant_product.id)
+    details = Products.objects.get(id=id)
+    # product = Products.objects.get(id=details.variant_product.id)
     sports = Sport.objects.all()
     brands = Brand.objects.all()
     
@@ -116,7 +116,7 @@ def product_details(request,id):
     cartitems = CartItem.objects.filter(cart= cart)
     total = cartitems.count
     
-    variants  = Variants.objects.filter(variant_product=product,variant_color=colour)
+    variants  = Variants.objects.filter(variant_product=details.id)
     sizes = Variants.objects.values_list('variant_size', flat=True).distinct()
     print(sizes)
     context = {'details':details , 'variants':variants,'cart_count':total ,'sizes':sizes, 'sports':sports ,'brands':brands }

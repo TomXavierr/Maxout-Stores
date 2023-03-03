@@ -78,6 +78,7 @@ def product_list(request):
         return redirect('home')
     
 def add_product(request):
+    
     if request.method == 'POST':
         product_name          = request.POST['product_name']
         product_description   = request.POST['description']
@@ -85,9 +86,13 @@ def add_product(request):
         category              = request.POST['category']
         product_image         = request.FILES.get('image')
         gender                = request.POST['gender']
+        color                 = request.POST['color']
+        product_type          = request.POST['product_type']
+        price                 = request.POST['price']
         sport                 = request.POST['sport']
+        images                = request.FILES.getlist('images')
          
-        if product_name and product_description and product_brand and product_image:
+        if product_name and product_description and product_brand and product_image and product_type and color and price :
             product = Products.objects.create(
                 product_name          = product_name,
                 product_description   = product_description,
@@ -95,19 +100,31 @@ def add_product(request):
                 product_category      = Category.objects.get(category_name=category),
                 product_sport         = Sport.objects.get(sport_name=sport),
                 product_gender        = gender,
+                product_color         = color,
+                product_type          = product_type,
+                product_price         = price,
                 product_image         = product_image,
 
                 )
             product.save();
+            for i in reversed(images):
+                    image = Image.objects.create(
+                        product = Products.objects.get(product_name=product_name ),
+                        # variant = Variants.objects.get(id = variant.pk),
+                        image = i,
+                    )
+                    
+            
             return redirect('product_list')
         else:
             messages.info(request,'Input all fields')
             return redirect('add_product')
             
     # categories = Category.objects.all()
-    brands     = Brand.objects.all()
-    categories   = Category.objects.all()
+    brands      = Brand.objects.all()
+    categories  = Category.objects.all()
     sports      = Sport.objects.all()
+   
     
     context  = {'sports':sports,
         'brands':brands,
@@ -132,7 +149,8 @@ def edit_product(request,id):
     brands     = Brand.objects.all()
     categories = Category.objects.all()
     sports     = Sport.objects.all()
-
+   
+    
     if request.method == 'POST':
         # Update the product with the data from the form
         product_name          = request.POST['product_name']
@@ -142,6 +160,11 @@ def edit_product(request,id):
         product_category      = request.POST['category']
         product_image         = request.FILES.get('image')
         product_gender        = request.POST['gender']
+        product_type          = request.POST['product_type']
+        price                 = request.POST['price']
+        color                 = request.POST['color']
+        images                = request.FILES.getlist('images')
+        
         
         product.product_name        = product_name
         product.product_description = product_description
@@ -150,8 +173,27 @@ def edit_product(request,id):
         product.product_sport       = Sport.objects.get(sport_name=product_sport)
         product.product_category    = Category.objects.get(category_name = product_category)
         product.product_gender      = product_gender
+        product.product_type        = product_type
+        product.product_price       = price
+        product.product_color       = color
+    
+    
         product.save()
+        image   = Image.objects.filter(product = product.id)   
+        image_ids = [i.pk for i in image]
+            
+        for image, id in zip(reversed(images), image_ids):
+            
+            img = Image(
+                id = Image.objects.get(id = id).pk,
+                image = image,
+                product = Products.objects.get(product_name=product_name ),
+            )
+            img.save()
+        
         return redirect('product_list')
+    
+    
     else:
         # Render the product edit form
         brands     = Brand.objects.all()
@@ -178,57 +220,40 @@ def add_variant(request):
     sizes      = Size.objects.all()
      
     context = {
-        'sizes': sizes,
+        'sizes':sizes,
         'products':products, 
-       
     }
     
     if request.method == 'POST':
         product               = request.POST['product']
-        price                 = request.POST['price']
-        color                 = request.POST['color']
-        product_type          = request.POST['product_type']
-        size                  = request.POST['size']
         stock                 = request.POST['stock']
+        size                  = request.POST['size']
         
-        images                = request.FILES.getlist('images')
-         
-      
-
-        if  product and price and product_type and color and size and stock and images :
-            if Variants.objects.filter(variant_product=Products.objects.get(product_name=product),variant_color=color,variant_size=Size.objects.get(size=size)).exists():
+        
+        if  product and size and  stock :
+            if Variants.objects.filter(variant_product=Products.objects.get(product_name=product),variant_size=Size.objects.get(size=size)).exists():
                 messages.info(request,'Variant already exists')
                 return redirect('add_variant')
+            
+            
             else:
                 variant = Variants.objects.create(
                     variant_product       = Products.objects.get(product_name=product),
-                    variant_color         = color,
-                    variant_type          = product_type,
-                    variant_size          = Size.objects.get(size=size),
                     variant_stock         = stock,
-                    variant_price         = price,
-                    
+                    variant_size          = Size.objects.get(size=size),
                     )
                 variant.save();
-                
-                for i in reversed(images):
-                    image = Image.objects.create(
-                        product = Products.objects.get(product_name=product),
-                        variant = Variants.objects.get(id = variant.pk),
-                        image = i,
-                    )
-                    
                 return redirect('variant_list')
+            
+            
         else:
             messages.info(request,'Input all fields')
             return redirect('add_variant')
             
-
-
-    
-   
     
     return render(request,'add_variant.html',context)
+
+
 
 @login_required(login_url='admin_login')
 def edit_variant(request,id):
@@ -238,55 +263,27 @@ def edit_variant(request,id):
     if request.method == 'POST':
         # Update the product with the data from the form
         
-        price                 = request.POST['price']
-        color                 = request.POST['color']
-        product_type          = request.POST['product_type']
+
         size                  = request.POST['size']
         stock                 = request.POST['stock']
-        images                = request.FILES.getlist('images')
    
-        if  product and price and product_type and color and size and stock and images :
+        if  product and size and stock :
             # if Variants.objects.filter(variant_product=Products.objects.get(product_name=product),variant_color=color,variant_size=Size.objects.get(size=size)).exists():
             #     messages.info(request,'Variant already exists')
             #     return redirect('add_variant')
             # else:
        
                 variant.variant_product     = Products.objects.get(id = variant.variant_product.id)
-                variant.variant_price       = price
-                variant.variant_color       = color
-                variant.variant_type        = product_type
                 variant.variant_size        = Size.objects.get(size=size)
                 variant.variant_stock       = stock
                 variant.save()
-
-                
-                image   = Image.objects.filter(variant = id)   
-                image_ids = [i.pk for i in image]
-                
-                for image, id in zip(reversed(images), image_ids):
-                    
-                    img = Image(
-                        id = Image.objects.get(id = id).pk,
-                        image = image,
-                        variant = Variants.objects.get(id = variant.pk),
-                        
-                        product = Products.objects.get(id = variant.variant_product.id),
-                    )
-                    img.save()
-
-        
         return redirect('variant_list')
+    
     else:
         # Render the product edit form
-        sports     = Sport.objects.all()
-        products   = Products.objects.all()
-        categories = Category.objects.all()
         sizes      = Size.objects.all()
         
         context = {
-            'sports':sports,
-            'products':products,
-            'categories':categories, 
             'variant':variant,
             'variants':Variants,
             'sizes':sizes,
