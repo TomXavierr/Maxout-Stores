@@ -81,7 +81,7 @@ def mensBrands(request,id):
     sports = Sport.objects.all()
     brands = Brand.objects.all()
     
-    count = variants.count()
+    count = products.count()
     cart = Cart.objects.get(customer = request.user)
     cartitems = CartItem.objects.filter(cart= cart)
     total = cartitems.count
@@ -96,7 +96,7 @@ def womensBrands(request,id):
     sports = Sport.objects.all()
     brands = Brand.objects.all()
     
-    count = variants.count()
+    count = products.count()
     cart = Cart.objects.get(customer = request.user)
     cartitems = CartItem.objects.filter(cart= cart)
     total = cartitems.count
@@ -108,7 +108,6 @@ def womensBrands(request,id):
 @login_required(login_url='user_login') 
 def product_details(request,id): 
     details = Products.objects.get(id=id)
-    # product = Products.objects.get(id=details.variant_product.id)
     sports = Sport.objects.all()
     brands = Brand.objects.all()
     
@@ -116,10 +115,12 @@ def product_details(request,id):
     cartitems = CartItem.objects.filter(cart= cart)
     total = cartitems.count
     
-    variants  = Variants.objects.filter(variant_product=details.id)
-    sizes = Variants.objects.values_list('variant_size', flat=True).distinct()
-    print(sizes)
-    context = {'details':details , 'variants':variants,'cart_count':total ,'sizes':sizes, 'sports':sports ,'brands':brands }
+    variants  = Variants.objects.filter(variant_product=details.id).order_by('-variant_size')
+    # sizes = Variants.objects.values_list('variant_size', flat=True)
+    # print(sizes)
+    
+    
+    context = {'details':details , 'variants':variants,'cart_count':total ,'sports':sports ,'brands':brands }
     return render(request,'product_details.html',context)   
 
 

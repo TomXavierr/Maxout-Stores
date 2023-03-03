@@ -167,12 +167,11 @@ store
                             <div class="col-12 col-sm-6 col-lg-4">
                                 <div class="single-product-wrapper">
                                     <!-- Product Image -->
-                                    {% for image in product.images.all %}
-							        {% if forloop.first %}
+                                   
                                     <div class="product-img">
-                                        <img src="{{image.image.url}}" alt="">
-                                        <!-- Hover Thumb -->
-                                        <img class="hover-img" src="{{variant.variant_image2.url}}" alt="">
+                                        <img src="{{product.product_image.url}}" alt="">
+                                        
+                                       
                                       
 
                                         <!-- Product Badge -->
@@ -184,23 +183,20 @@ store
                                             <a href="#" class="favme fa fa-heart"></a>
                                         </div>
                                     </div>
-                                    {%endif%}
-							        {%endfor%}
+                                
                                     <!-- Product Description -->
                                     <div class="product-description">
                                         <span>{{product.product_brand.brand_name}}</span>
                                          <a href="{% url 'product_details' id=product.id %}">
                                             <h6>{{product.product_name}}</h6>
                                         </a>
-                                        {% for variant in product.variants.all %}
-							            {% if forloop.first %}
+                                        
                                         <p class="product-price">
                                             {% comment %} <span class="old-price">$75.00</span> {% endcomment %}
                                             ₹ {{product.product_price}}
                                             
                                         </p>
-                                        {%endif%}
-							            {%endfor%}
+                                     
                                        
                                     </div>
                                 </div>

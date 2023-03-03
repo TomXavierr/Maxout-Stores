@@ -57,6 +57,31 @@ Variant List
                 </tbody>
             </table>
         </div>
+       
+
+
+
+        {% if variants.has_previous %}
+            <a href="?page=1">&laquo First</a>
+            <a href="?page={{variants.previous_page_number}}">Previous</a>
+        {% endif %}
+
+    
+
+        Page {{ variants.number}} of {{variants.paginator.num_pages}}
+
+        {% if variants.has_next %}
+            <a href="?page={{variants.next_page_number}}">Next</a>
+            <a href="?page={{variants.paginator.num_pages}}">Last &raquo</a>
+        {% endif %} 
+
+      
+
+
+
+
+
+
     </div>
 </div>
        

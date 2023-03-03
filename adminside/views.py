@@ -5,6 +5,8 @@ from django.contrib.auth import login, authenticate,logout
 from customers.models import Account
 from store.models import Products,Brand,Sport,Category,Variants,Banners,Size,Image
 from django.views.decorators.cache import cache_control
+from django.core.paginator import Paginator
+
 
 # Create your views here.
 @cache_control(no_cache = True,must_revalidate = False,no_store=True) 
@@ -73,7 +75,14 @@ def unblock_user(request,id):
 def product_list(request):
     if request.user.is_superuser: 
         products   =  Products.objects.all().order_by('id')
+        
+    
+        # items_per_page = 4
+        # paginator = Paginator(products, items_per_page)
+        # page_number = request.GET.get('page')
+
         return render(request,'products_list.html',{'products':products})
+    
     else:
         return redirect('home')
     
@@ -211,7 +220,14 @@ def delete_product(request,id):
 def variant_list(request):
     if request.user.is_superuser: 
         variants   =  Variants.objects.all().order_by('id')
-        return render(request,'variants.html',{'variants':variants})
+        
+        
+        items_per_page = 10
+        paginator = Paginator(variants, items_per_page)
+        page_number = request.GET.get('page')
+        page_variants = paginator.get_page(page_number)
+        
+        return render(request,'variants.html',{'variants':page_variants})
     else:
         return redirect('home')
 
