@@ -73,3 +73,4 @@ class Addresses(models.Model):
     pincode                    = models.BigIntegerField(null=False,blank=False)      
     mobile                     = models.BigIntegerField(null=False,blank=False)
     user_id                    = models.ForeignKey("Account", on_delete=models.CASCADE, default=False , null=False)
+    is_primary                 = models.BooleanField(default=False)

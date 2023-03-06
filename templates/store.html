@@ -5,6 +5,10 @@
 store
 {% endblock title %}
 
+{% block links %}
+
+{% endblock links %}
+
 {% block content %}
         
 
@@ -169,7 +173,7 @@ store
                                     <!-- Product Image -->
                                    
                                     <div class="product-img">
-                                        <img src="{{product.product_image.url}}" alt="">
+                                        <img class="img-fluid mx-auto" src="{{product.product_image.url}}" alt="">
                                         
                                        
                                       

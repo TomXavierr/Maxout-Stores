@@ -5,6 +5,7 @@
 Cart
 {% endblock title %}
 
+{% block links %}<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">{% endblock links %}
 
 {% block content %}
 	<!-- Shoping Cart -->
@@ -27,8 +28,8 @@ Cart
 					<div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
 					  <!-- Image -->
 					  <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
-						<img src="{{items.product_var.variant_image1.url}}"
-						  class="w-100" alt="Blue Jeans Jacket" />
+						<img src="{{items.product.product_image.url}}"
+						  class="w-100" alt="items.product.product_name" />
 						<a href="#!">
 						  <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
 						</a>
@@ -38,11 +39,11 @@ Cart
 	  
 					<div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
 					  <!-- Data -->
-					  <p><strong>{{items.product_var.variant_product.product_name}}</strong></p>
-					  <p>Color: blue</p>
+					  <p><strong>{{items.product.product_name}}</strong></p>
+					  <p>{{items.product.product_gender}},s {{items.product.product_type}}</p> 
 					  <p>Size:{{items.size}}</p>
 					  <a href="{% url 'delete_cartitem' id=items.id %}">
-					  <button type="button" class="btn btn-primary btn-sm me-1 mb-2" data-mdb-toggle="tooltip"
+					  <button type="button" class="btn btn-danger btn-sm me-1 mb-2" data-mdb-toggle="tooltip"
 						title="Remove item">Remove
 						
 					  </button></a>
@@ -55,27 +56,24 @@ Cart
 	  
 					<div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
 					  <!-- Quantity -->
-					  <div class="d-flex mb-4" style="max-width: 300px">
-						<button class="btn btn-primary px-3 me-2"
-						  onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
-						  <i class="fas fa-minus"></i>
+					  <div class="d-flex mb-4 cart-item "  data-item-id="{{ items.id }}" style="max-width: 300px">
+						<button class="btn btn-danger px-3 me-2 minus-btn"  >
+						  <i class="fa fa-minus" aria-hidden="true"></i>
 						</button>
 	  
 						<div class="form-outline">
-						  <input id="form1" min="0" name="quantity" value="{{items.product_qty}}" type="number" class="form-control" />
-						  <label class="form-label" for="form1"></label>
+						  <input type="text" id="quantity" name="quantity" class="form-control input-number text-center ml-1 mr-1 qty-input" value="{{items.product_qty}}" min="1" max="100">
 						</div>
 	  
-						<button class="btn btn-primary px-3 ms-2"
-						  onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
-						  <i class="fas fa-plus"></i>
+						<button id="up" class="btn btn-success px-3 ms-2 plus-btn">
+						  <i class="fa fa-plus" aria-hidden="true"></i>
 						</button>
 					  </div>
 					  <!-- Quantity -->
 	  
 					  <!-- Price -->
-					  <p class="text-start text-md-center">
-						<strong>RS. {{items.get_total}}</strong>
+					  <p  class="text-start text-md-center">
+						<strong>₹</strong> <strong id="sub-total-{{items.id}}"> {{items.get_total}}</strong>
 					  </p>	
 					  <!-- Price -->
 					</div>
@@ -100,11 +98,11 @@ Cart
 					<li
 					  class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
 					  Products
-					  <span>{{cart.cart_total}}</span>
+					  <span id="cart_total">{{cart.cart_total}}</span>
 					</li>
 					<li class="list-group-item d-flex justify-content-between align-items-center px-0">
 					  Shipping
-					  <span>Gratis</span>
+					  <span>Free</span>
 					</li>
 					<li
 					  class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
@@ -126,26 +124,56 @@ Cart
 		</div>
 	  </section>
 
-	<script>
-		function updateCart(productId, action){
-			console.log('User is logged in, sending data...')
 
-			var url = '{% url 'updatecart' %}'
 
-			fetch(url, {
-				method: 'POST',
-				headers: {
-					'Content-Type' : 'application.json'
-				},
-				body:JSON.stringify({'productId:',productId, 'action:',action})
-			})
-			.then((response)=>{
-				return response.json()
-			})
-			.then((data) =>{
-				console.log('data:',data)
-			})
+	  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	  <script>
+	  $(document).on('click', '.plus-btn, .minus-btn', function() {
+		var $cartItem = $(this).closest('.cart-item');
+		var itemId = $cartItem.data('item-id');
+		var isAdding = $(this).hasClass('plus-btn');
+		var $qtyInput = $cartItem.find('.qty-input');
+		var quantity = parseInt($qtyInput.val());
+	  
+		if (isAdding) {
+		  quantity += 1;
+		} else if (quantity > 1) {
+		  quantity -= 1;
+		} else {
+		  return;
 		}
-	</script>
-		
+	  
+		$.ajax({
+		  type: 'POST',
+		  url: 'update_cart_quantity',
+		  data: {
+			item_id: itemId,
+			quantity: quantity,
+			csrfmiddlewaretoken: '{{ csrf_token }}'
+		  },
+		  success: function(data) {
+			if (data.status === 'error') {
+		 
+				alert(response.message);
+	  
+			  $('#message').text(data.message);
+			 
+			} else {
+			  console.log(data);
+			  $qtyInput.val(data.quantity);
+			  $('#cart_total').text(data.total);
+			  $('#sub-total-' + itemId).text(  data.Sub_total);
+			  console.log(data.Sub_total)
+			 
+			  $('#grand_total').text(data.grand_total);
+			}
+		  },
+		  error: function(xhr, textStatus, errorThrown) {
+			$('#errorMessage').text('An error occurred while updating the cart.');
+			$('#errorModal').modal('show');
+		  }
+		});
+	  });
+	  </script>
 {% endblock content %}

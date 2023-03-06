@@ -15,7 +15,7 @@
         <div class="single_product_thumb clearfix "  >
             <div class="product_thumbnail_slides owl-carousel ">
                 {% for image in details.images.all %}
-                <img style="max-width:55% " src="{{image.image.url}}" alt="">
+                <img  src="{{image.image.url}}" alt="">
                 {% endfor %}
             </div>
         </div>
@@ -50,7 +50,7 @@
                 <div class="select-box d-flex mt-50 mb-30">
                     <select name="select" id="productSize" class="mr-5">
                         {% for variant in variants %}
-                        <option value="{{ variant.variant_size.size }}">Size : {{ variant.variant_size.size }}</option>
+                        <option id={{variant.variant_size.id}} >Size : {{ variant.variant_size.size }}</option>
                         {% empty %}
                         <option value="">SIZE: Information not available</option>
                         {% endfor %}
@@ -62,29 +62,30 @@
                     {% csrf_token %}
                     <!-- Cart -->
                     
-                    <button onclick="addToCart({{ details.id }}, {{ details.variant_size.size }})" class="btn essence-btn">Add to cart</button>
+                    <button onclick="addToCart({{details.id}})" class="btn essence-btn">Add to cart</button>
                     <!-- Favourite -->
                     <div class="product-favourite ml-4">
                         <a href="#" class="favme fa fa-heart"></a>
-                    </div>
+                    </div> 
                 </div>
             
         </div>
     </section>
 
-{% comment %} <script>
-    function addToCart(productVariantId, size) {
+<script>
+    function addToCart(size) {
         var selectElement = document.getElementById("productSize");
-        var selectedOptionValue = selectElement.options[selectElement.selectedIndex].value;
+        var selectedOptionValue = selectElement.options[selectElement.selectedIndex].id;
         console.log("dasdsd");
         console.log(selectedOptionValue);
-
+        var productId ={{details.id}}
+        console.log(productId)
 
         $.ajax({
             type: 'POST',
             url: '{% url 'add_to_cart' %}',
             data: {
-                'product_variant_id': productVariantId,
+                'product_id': productId,
                 'size': selectedOptionValue,
                 'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
             },
@@ -104,7 +105,7 @@
     }
     
 </script>
-    {% endcomment %}
+    
     <!-- ##### Single Product Details Area End ##### -->
 
 

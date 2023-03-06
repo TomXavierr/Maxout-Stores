@@ -310,7 +310,7 @@ img {
         border-left: none; } }
     .header_area .search-area form input {
       border: none;
-      background-color: #ffffff;
+      background-color: #c5c5c3;
       width: 200px;
       height: 85px;
       padding: 0 15px 0 60px;
@@ -744,9 +744,15 @@ img {
   .single-product-wrapper .product-img {
     position: relative;
     z-index: 1;
-    overflow: hidden; }
+    overflow: hidden;   
+    }
     .single-product-wrapper .product-img img {
-      width: 100%;
+      width: 18rem;
+      height: 18rem;
+      object-fit: cover;
+     
+      
+      
       -webkit-transition-duration: 500ms;
       transition-duration: 500ms; }
     .single-product-wrapper .product-img .hover-img {

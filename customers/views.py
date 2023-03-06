@@ -256,19 +256,33 @@ def add_address(request):
                 return render(request, 'add_address.html', {'error_message': error_message})
             
             else:
-                address = Addresses.objects.create(
-                    first_name   = first_name,
-                    last_name    = last_name,
-                    house_name   = house_name,
-                    street_name  = street_name,
-                    city         = city,
-                    district     = district,
-                    state        = state,
-                    pincode      = pincode,
-                    mobile       = mobile,
-                    user_id      = Account.objects.get(id=user_id)
-                )
-                address.save()
+                if Addresses.objects.filter(user_id=user_id):
+                    address = Addresses.objects.create(
+                        first_name   = first_name,
+                        last_name    = last_name,
+                        house_name   = house_name,
+                        street_name  = street_name,
+                        city         = city,
+                        district     = district,
+                        state        = state,
+                        pincode      = pincode,
+                        mobile       = mobile,
+                        user_id      = Account.objects.get(id=user_id)
+                    )
+                else:
+                    address = Addresses.objects.create(
+                        first_name   = first_name,
+                        last_name    = last_name,
+                        house_name   = house_name,
+                        street_name  = street_name,
+                        city         = city,
+                        district     = district,
+                        state        = state,
+                        pincode      = pincode,
+                        mobile       = mobile,
+                        user_id      = Account.objects.get(id=user_id),
+                        is_primary   = True,
+                    )
             return redirect('address')
         else:
             messages.info(request,'Input all fields')

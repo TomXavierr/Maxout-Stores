@@ -49,8 +49,12 @@ class Image(models.Model):
 
 class Size(models.Model):
     size                       = models.CharField(max_length=20)
-             
-          
+    
+              
+              
+              
+                       
+
 class Cart(models.Model):
     customer                   = models.ForeignKey(Account, on_delete=models.CASCADE)
 
@@ -72,14 +76,14 @@ class Cart(models.Model):
 
     
 class CartItem(models.Model):
-    product_var                = models.ForeignKey(Variants, on_delete=models.CASCADE)
+    product                    = models.ForeignKey(Products, on_delete=models.CASCADE)
     cart                       = models.ForeignKey(Cart, on_delete=models.CASCADE)
     product_qty                = models.IntegerField(default=1)
-    size      = models.CharField(max_length=10)
+    size                       = models.CharField(max_length=10)
     
     @property
     def get_total(self):
-        return self.product_var.variant_price * self.product_qty
+        return self.product.product_price * self.product_qty
    
 
   
