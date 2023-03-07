@@ -11,7 +11,7 @@ Cart
 <body>
 
     <!-- ##### Breadcumb Area Start ##### -->
-    <div class="breadcumb_area bg-img" style="background-image: url(img/bg-img/breadcumb.jpg);">
+    <div class="breadcumb_area bg-img" style="">
         <div class="container h-100">
             <div class="row h-100 align-items-center">
                 <div class="col-12">
@@ -35,8 +35,61 @@ Cart
                         <div class="cart-page-heading mb-30">
                             <h5>Billing Address</h5>
                         </div>
+                        {% for address in addresses %}
+                        <div class="col-md-7">
+                            <div class="bg-white card addresses-item mb-4 border border-primary shadow">
+                                <div class="gold-members p-4">
+
+                                    <div class="media">
+
+                                        <div class="mr-3"><i class="icofont-ui-home icofont-3x"></i></div>
+
+                                        <div class="media-body">
+                                            {% comment %} <h6 class="mb-1 text-secondary">Home</h6> {% endcomment %}
+                                            <p style="line-height: 5px;" class="text-black">
+
+
+
+                                                <tr>
+                                                    {% if address.is_primary %}
+                                                    <input type="radio" name="address" checked/>
+                                                    {% else %}
+                                                    <input type="radio" name="address"/>
+                                                    {% endif %}
+                                                    
+                                                    <p style="line-height: 5px;">{{address.first_name}} {{address.last_name}}</p>
+                                                    
+                                                    <p style="line-height: 5px;">{{address.house_name}}</p>
+                                                    <p style="line-height: 5px;">{{address.street_name}}</p>
+                                                    
+                                                    <p style="line-height: 5px;">{{address.city}}, {{address.district}}</p>
+
+                                                    <p style="line-height: 5px;">{{address.pincode}}, {{address.state}}</p>
+                                                    <p style="line-height: 5px;">{{address.mobile}}</p>
+                                                  
+                                                </tr>
+                                            </p>
+                                            <p class="mb-0 text-black font-weight-bold">
+                                                <a class="text-primary mr-3" data-toggle="modal" data-target="#add-address-modal" href="#">
+                                                    <i class="icofont-ui-edit"></i> EDIT
+                                                </a> 
+                                                <a class="text-danger" ndata-toggle="modal" data-target="#delete-address-modal" href="{% url 'delete_address2' id=address.id %}">
+                                                    <i class="icofont-ui-delete"></i> DELETE
+                                                </a>
+                                            </p>
+                                            
+                                        </div>
+                                        
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
                        
-                        <form action="#" method="post">
+                        {% endfor %}
+                        <a href="add_checkout_address"><button type="button" class="btn essence-btn btn-sm "><i class="fa fa-plus" aria-hidden="true"></i>Add address</button></a>
+                        {% comment %} <form action="#" method="post">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="first_name">First Name <span>*</span></label>
@@ -46,23 +99,6 @@ Cart
                                     <label for="last_name">Last Name <span>*</span></label>
                                     <input type="text" class="form-control" id="last_name" value="{{address.last_name}}" required>
                                 </div>
-                                {% comment %} <div class="col-12 mb-3">
-                                    <label for="company">Company Name</label>
-                                    <input type="text" class="form-control" id="company" value="">
-                                </div> {% endcomment %}
-                                {% comment %} <div class="col-12 mb-3">
-                                    <label for="country">Country <span>*</span></label>
-                                    <select class="w-100" id="country">
-                                        <option value="usa">United States</option>
-                                        <option value="uk">United Kingdom</option>
-                                        <option value="ger">Germany</option>
-                                        <option value="fra">France</option>
-                                        <option value="ind">India</option>
-                                        <option value="aus">Australia</option>
-                                        <option value="bra">Brazil</option>
-                                        <option value="cana">Canada</option>
-                                    </select>
-                                </div> {% endcomment %}
                                 <div class="col-12 mb-3">
                                     <label for="street_address">Address <span>*</span></label>
                                     <input type="text" class="form-control mb-3" id="street_address" value="{{address.house_name}}">
@@ -84,10 +120,10 @@ Cart
                                     <label for="phone_number">Phone No <span>*</span></label>
                                     <input type="number" class="form-control" id="phone_number" min="0" value="{{address.mobile}}">
                                 </div>
-                                {% comment %} <div class="col-12 mb-4">
+                                <div class="col-12 mb-4">
                                     <label for="email_address">Email Address <span>*</span></label>
                                     <input type="email" class="form-control" id="email_address" value="">
-                                </div> {% endcomment %}
+                                </div> 
 
                                 {% comment %} <div class="col-12">
                                     <div class="custom-control custom-checkbox d-block mb-2">
@@ -102,9 +138,9 @@ Cart
                                         <input type="checkbox" class="custom-control-input" id="customCheck3">
                                         <label class="custom-control-label" for="customCheck3">Subscribe to our newsletter</label>
                                     </div>
-                                </div> {% endcomment %}
+                                </div>  
                             </div>
-                        </form>
+                        </form> {% endcomment %}
                         
                     </div>
                 </div>
@@ -116,70 +152,51 @@ Cart
                             <h5>Your Order</h5>
                             <p>The Details</p>
                         </div>
+                        <form>
+                            <ul class="order-details-form mb-4">
+                                <li><span>Product</span> <span>Total</span></li>
+                                {% for items in cartitems %}
+                                <li><span>{{items.product.product_name}} x {{items.product_qty}} </span> <span>{{items.get_total}}</span></li>
+                                {% endfor %}
+                                <li><span>Subtotal</span> <span>{{cart.cart_total}}</span></li>
+                                <li><span>Shipping</span> <span>Free</span></li>
 
-                        <ul class="order-details-form mb-4">
-                            <li><span>Product</span> <span>Total</span></li>
-                            {% for items in cartitems %}
-                            <li><span>{{items.product_var.variant_product.product_name}} x {{items.product_qty}} </span> <span>{{items.get_total}}</span></li>
+                                <li><span>Apply Coupon</span> <span><input type="text" id="form3Examplea2" name="coupon_code" class="form-control form-control-lg" />
+                                    </span></li>
+                                {% comment %} <h5 class="text-uppercase mb-3">Give code</h5>
+
+                                <div class="mb-5"> 
+                                    <input type="text" id="form3Examplea2" class="form-control form-control-lg" />
+                                    <label class="form-label" for="form3Examplea2">Enter your code</label>
+                                </div> {% endcomment %}
+                                <li><span>Total</span> <span>{{cart.cart_total}}</span></li>
+                            </ul>
+
+                            <div class="cart-page-heading mb-4">
+                                <h5>Payment methods</h5>
+                            </div>
+                            {% for method in Orders.PAYMENT_METHODS %}
+                            <div class="form-check mb-4">
+                                <label>
+                                    <input type="radio"  name="my_radio" value="{{ method.0 }}">
+                                     {{ method.1 }}
+                                </label> 
+                            </div>
                             {% endfor %}
-                            <li><span>Subtotal</span> <span>{{cart.cart_total}}</span></li>
-                            <li><span>Shipping</span> <span>Free</span></li>
-                            <li><span>Total</span> <span>{{cart.cart_total}}</span></li>
-                        </ul>
 
-                        <div id="accordion" role="tablist" class="mb-4">
-                            <div class="card">
-                                <div class="card-header" role="tab" id="headingOne">
-                                    <h6 class="mb-0">
-                                        <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne"><i class="fa fa-circle-o mr-3"></i>Paypal</a>
-                                    </h6>
-                                </div>
+                            {% comment %} <div id="accordion" role="tablist" class="mb-4">
+                                <div class="card">
+                                    <div class="card-header" role="tab" id="headingOne">
+                                        <h6 class="mb-0">
+                                            <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne"><i class="fa fa-circle-o mr-3"></i>Paypal</a>
+                                        </h6>
+                                    </div>
 
-                                <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
-                                    <div class="card-body">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pharetra tempor so dales. Phasellus sagittis auctor gravida. Integ er bibendum sodales arcu id te mpus. Ut consectetur lacus.</p>
-                                    </div>
                                 </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-header" role="tab" id="headingTwo">
-                                    <h6 class="mb-0">
-                                        <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"><i class="fa fa-circle-o mr-3"></i>cash on delievery</a>
-                                    </h6>
-                                </div>
-                                <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
-                                    <div class="card-body">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo quis in veritatis officia inventore, tempore provident dignissimos.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-header" role="tab" id="headingThree">
-                                    <h6 class="mb-0">
-                                        <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree"><i class="fa fa-circle-o mr-3"></i>credit card</a>
-                                    </h6>
-                                </div>
-                                <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
-                                    <div class="card-body">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse quo sint repudiandae suscipit ab soluta delectus voluptate, vero vitae</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-header" role="tab" id="headingFour">
-                                    <h6 class="mb-0">
-                                        <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour"><i class="fa fa-circle-o mr-3"></i>direct bank transfer</a>
-                                    </h6>
-                                </div>
-                                <div id="collapseFour" class="collapse show" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
-                                    <div class="card-body">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est cum autem eveniet saepe fugit, impedit magni.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                            </div> {% endcomment %}
 
-                        <a href="#" class="btn essence-btn">Place Order</a>
+                            <a href="{% url 'place_order' %}" class="btn essence-btn">Place Order</a>
+                        </form>
                     </div>
                 </div>
             </div>

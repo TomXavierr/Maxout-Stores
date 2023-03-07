@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 # from django.http import HttpResponse
 from django.contrib.auth import login, authenticate,logout
 from customers.models import Account,Addresses
+from orders.models import Orders    
 
 # from django.contrib import messages,auth
 from django.contrib.auth.decorators import login_required
@@ -9,6 +10,9 @@ from .models import *
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.db.models import Count
+from django.contrib import messages
+
+import re
 
 # Create your views here.
 
@@ -127,9 +131,12 @@ def product_details(request,id):
 @login_required(login_url='user_login') 
 def cart(request):
     customer  = request.user
-    cart      =Cart.objects.get(customer=customer)
+    cart      = Cart.objects.get(customer=customer)
     cartitems = cart.cartitem_set.all()   
-    context   = {'cartitems':cartitems,'cart':cart}
+    count     = cartitems.count
+    
+    
+    context   = {'cartitems':cartitems,'cart':cart, 'cart_count':count}
     return render(request,'cart.html',context)
 
 
@@ -137,7 +144,8 @@ def cart(request):
 
 def add_to_cart(request):
     if request.method == 'POST':
-        user_cart, created = Cart.objects.get_or_create(customer=request.user)
+        user_cart     = Cart.objects.get(customer=request.user)
+        print(user_cart)
         data          = request.POST
         product_id    = data.get('product_id')
         product       = Products.objects.get(id=product_id)
@@ -145,8 +153,8 @@ def add_to_cart(request):
         size          = Size.objects.get(id=size_id)
         print(size)
         print(product_id)
-        variant = Variants.objects.get(variant_product=product_id,variant_size=size.id)
-        
+        variant         = Variants.objects.get(variant_product=product_id,variant_size=size.id)
+       
         print(variant)
      
         print(variant.variant_stock)
@@ -178,6 +186,7 @@ def update_cart_quantity(request):
     print(email)
     data          = request.POST
     total        = 0
+    cartitems    = 0
     item_id      = data.get('item_id')
     print(item_id)
     cart_item    = CartItem.objects.get(id=item_id)
@@ -202,7 +211,7 @@ def update_cart_quantity(request):
     if stock < int(quantity):
         print('error message')
         response_data = {
-            'status': 'error', 'message': 'sorry only  '+ str(stock) + '  pieces in stock'
+            'success': False,'status': 'error', 'message': 'sorry only  '+ str(stock) + '  pieces in stock'
             }
         return JsonResponse({'status': 'error', 'message': 'sorry only  '+ str(stock) + '  pieces in stock'})
     
@@ -214,19 +223,22 @@ def update_cart_quantity(request):
     print(Sub_total)
     
     
+    
     cart_items = CartItem.objects.filter(cart__customer__email = email )
     print(cart_items)
     
     for items in cart_items:
         total += items.product_qty * items.product.product_price
-        
+        cartitems += items.product_qty
     print(total)
+    print(cartitems)
     
     # grand_total = (total+tax)
    
     return JsonResponse({
       'quantity': quantity,
       'total': total,
+      'cartitems':cartitems,
     #   'grand_total':grand_total, 
       'Sub_total':Sub_total,
     })
@@ -251,5 +263,70 @@ def checkout(request):
     cartitems = CartItem.objects.filter(cart=cart)
     user      = request.user
     addresses = Addresses.objects.filter(user_id=user)
-    address   = addresses.first()
-    return render(request,'checkout.html',{'cart':cart,'cartitems':cartitems,'address':address})
+    
+    return render(request,'checkout.html',{'cart':cart,'cartitems':cartitems,'addresses':addresses, 'Orders':Orders })
+
+
+def add_checkout_address(request):
+    user = request.user
+    user_id = user.id
+    print(user_id)
+    
+    if request.method == 'POST':
+        first_name     = request.POST['first_name']
+        last_name      = request.POST['last_name']
+        house_name     = request.POST['house_name']
+        street_name    = request.POST['street_name']
+        city           = request.POST['city']
+        district       = request.POST['district']
+        state          = request.POST['state']
+        pincode        = request.POST['pincode']
+        mobile         = request.POST['mobile']
+        
+        if first_name and last_name and house_name and street_name and city and district and state and pincode and mobile :
+            if not re.match(r'^\d{10}$', mobile):
+                # email is invalid
+                error_message = "Please enter a valid Mobile number."
+                return render(request, 'checkoutaddress.html', {'error_message': error_message})
+            
+            else:
+                if Addresses.objects.filter(user_id=user_id):
+                    address = Addresses.objects.create(
+                        first_name   = first_name,
+                        last_name    = last_name,
+                        house_name   = house_name,
+                        street_name  = street_name,
+                        city         = city,
+                        district     = district,
+                        state        = state,
+                        pincode      = pincode,
+                        mobile       = mobile,
+                        user_id      = Account.objects.get(id=user_id)
+                    )
+                else:
+                    address = Addresses.objects.create(
+                        first_name   = first_name,
+                        last_name    = last_name,
+                        house_name   = house_name,
+                        street_name  = street_name,
+                        city         = city,
+                        district     = district,
+                        state        = state,
+                        pincode      = pincode,
+                        mobile       = mobile,
+                        user_id      = Account.objects.get(id=user_id),
+                        is_primary   = True,
+                    )
+            return redirect('checkout')
+        else:
+            messages.info(request,'Input all fields')
+            return redirect('add_checkout_address')
+    else:
+        return render(request, 'checkoutaddress.html')
+    
+    
+def delete_address2(request,id):
+    address = Addresses.objects.get(id=id)
+    address.delete()
+    return redirect('checkout')
+    

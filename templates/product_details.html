@@ -50,7 +50,11 @@
                 <div class="select-box d-flex mt-50 mb-30">
                     <select name="select" id="productSize" class="mr-5">
                         {% for variant in variants %}
+                        {% if variant.variant_stock > 0 %}
                         <option id={{variant.variant_size.id}} >Size : {{ variant.variant_size.size }}</option>
+                        {% else %}
+                        <option id={{variant.variant_size.id}} disabled>Size :{{ variant.variant_size.size }}</option>
+                        {% endif %}
                         {% empty %}
                         <option value="">SIZE: Information not available</option>
                         {% endfor %}

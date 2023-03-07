@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
 
 
+
 # Create your models here.
 
 class MyAccountManager(BaseUserManager):
@@ -63,14 +64,15 @@ class Account(AbstractBaseUser):
         return True
     
 class Addresses(models.Model):
-    first_name                 = models.CharField(max_length=30,null=False,blank=False)
-    last_name                  = models.CharField(max_length=30,null=False,blank=False)
-    house_name                 = models.CharField(max_length=30,null=False,blank=False)
-    street_name                = models.CharField(max_length=30,null=False,blank=False)
-    city                       = models.CharField(max_length=30,null=False,blank=False)
-    district                   = models.CharField(max_length=30,null=False,blank=False)
-    state                      = models.CharField(max_length=30,null=False,blank=False)
-    pincode                    = models.BigIntegerField(null=False,blank=False)      
-    mobile                     = models.BigIntegerField(null=False,blank=False)
-    user_id                    = models.ForeignKey("Account", on_delete=models.CASCADE, default=False , null=False)
-    is_primary                 = models.BooleanField(default=False)
+    first_name          = models.CharField(max_length=30,null=False,blank=False)
+    last_name           = models.CharField(max_length=30,null=False,blank=False)
+    house_name          = models.CharField(max_length=30,null=False,blank=False)
+    street_name         = models.CharField(max_length=30,null=False,blank=False)
+    city                = models.CharField(max_length=30,null=False,blank=False)
+    district            = models.CharField(max_length=30,null=False,blank=False)
+    state               = models.CharField(max_length=30,null=False,blank=False)
+    pincode             = models.BigIntegerField(null=False,blank=False)      
+    mobile              = models.BigIntegerField(null=False,blank=False)
+    user_id             = models.ForeignKey("Account", on_delete=models.CASCADE, null=False)
+    is_primary          = models.BooleanField(default=False)
+    

@@ -15,7 +15,7 @@ Cart
 			<div class="col-md-8">
 			  <div class="card mb-4">
 				<div class="card-header py-3">
-				  <h5 class="mb-0">{{cart.get_cart_items}} items in your cart</h5>
+				  <h5 class="mb-0"><span  id="cartitems">{{cart.get_cart_items}}</span><span> items in your cart</span> </h5>
 				</div>
 
 				<div class="card-body">
@@ -80,7 +80,6 @@ Cart
 				  </div>
 				  <!-- Single item -->
 				  {% endfor %}
-				  {% comment %} <hr class="my-4" /> {% endcomment %}
 	
 				  <!-- Single item -->
 				</div>
@@ -114,7 +113,7 @@ Cart
 					</li>
 				  </ul>
 	  
-				  <a href="{% url 'checkout' %}"><button type="button" class="btn btn-primary btn-lg btn-block">
+				  <a href="{% url 'checkout' %}"><button type="button" class="btn essence-btn btn-lg btn-block">
 					Go to checkout
 				  </button></a>
 				</div>
@@ -155,7 +154,7 @@ Cart
 		  success: function(data) {
 			if (data.status === 'error') {
 		 
-				alert(response.message);
+				alert(data.message);
 	  
 			  $('#message').text(data.message);
 			 
@@ -163,6 +162,7 @@ Cart
 			  console.log(data);
 			  $qtyInput.val(data.quantity);
 			  $('#cart_total').text(data.total);
+			  $('#cartitems').text(data.cartitems);
 			  $('#sub-total-' + itemId).text(  data.Sub_total);
 			  console.log(data.Sub_total)
 			 

@@ -169,14 +169,15 @@ store
                             <!-- Single Product -->
                             
                             <div class="col-12 col-sm-6 col-lg-4">
+                                <a href="{% url 'product_details' id=product.id %}">
                                 <div class="single-product-wrapper">
                                     <!-- Product Image -->
-                                   
+                                    
                                     <div class="product-img">
-                                        <img class="img-fluid mx-auto" src="{{product.product_image.url}}" alt="">
-                                        
+                                        <a href="{% url 'product_details' id=product.id %}">
+                                            <img class="img-fluid mx-auto" src="{{product.product_image.url}}" alt="">
+                                        </a>
                                        
-                                      
 
                                         <!-- Product Badge -->
                                         {% comment %} <div class="product-badge offer-badge">
@@ -191,7 +192,7 @@ store
                                     <!-- Product Description -->
                                     <div class="product-description">
                                         <span>{{product.product_brand.brand_name}}</span>
-                                         <a href="{% url 'product_details' id=product.id %}">
+                                        <a href="{% url 'product_details' id=product.id %}">
                                             <h6>{{product.product_name}}</h6>
                                         </a>
                                         
@@ -203,6 +204,7 @@ store
                                      
                                        
                                     </div>
+                                
                                 </div>
                             </div>
                             {% empty %}

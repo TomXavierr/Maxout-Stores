@@ -1,6 +1,5 @@
 from django.db import models
-from customers.models import Account
-
+from customers.models  import Account
 
 # Create your models here.
 
@@ -38,7 +37,7 @@ class Variants(models.Model):
 class Image(models.Model):
     id = models.BigAutoField(primary_key=True,blank=True)
     product = models.ForeignKey(Products,related_name='images',on_delete=models.CASCADE,null=True,blank=True)
-    # variant = models.ForeignKey(Variants,related_name='images',on_delete=models.CASCADE,null=True,blank=True)
+  
     image = models.ImageField(upload_to='productphotos/',blank=True,null=True)
 
 
@@ -49,16 +48,11 @@ class Image(models.Model):
 
 class Size(models.Model):
     size                       = models.CharField(max_length=20)
-    
-              
-              
-              
-                       
+         
 
 class Cart(models.Model):
-    customer                   = models.ForeignKey(Account, on_delete=models.CASCADE)
+    customer                   = models.ForeignKey(Account,on_delete=models.CASCADE)
 
-    
     def __str__(self):
         return str(self.id)
 
@@ -102,7 +96,6 @@ class Brand(models.Model):
     brand_name                 = models.CharField(max_length=100)
   
   
-     
 class Sport(models.Model):
     sport_name                 = models.CharField(max_length=100)
 
