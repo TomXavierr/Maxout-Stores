@@ -120,9 +120,7 @@ def product_details(request,id):
     total = cartitems.count
     
     variants  = Variants.objects.filter(variant_product=details.id).order_by('-variant_size')
-    # sizes = Variants.objects.values_list('variant_size', flat=True)
-    # print(sizes)
-    
+   
     
     context = {'details':details , 'variants':variants,'cart_count':total ,'sports':sports ,'brands':brands }
     return render(request,'product_details.html',context)   
@@ -132,7 +130,8 @@ def product_details(request,id):
 def cart(request):
     customer  = request.user
     cart      = Cart.objects.get(customer=customer)
-    cartitems = cart.cartitem_set.all()   
+    cartitems = cart.cartitem_set.all() 
+    print(cartitems)  
     count     = cartitems.count
     
     

@@ -42,6 +42,9 @@ urlpatterns = [
     path('delete_sport/<int:id>',views.delete_sport,name='delete_sport'), 
     
     #====================Banner management=====================# 
+    path('orders',views.orders,name='orders'),
+    
+    #====================Banner management=====================# 
     path('banners',views.banners,name='banners'),
     path('add_banners',views.add_banners,name='add_banners'),
 ]

@@ -6,7 +6,7 @@ from customers.models import Account
 from store.models import Products,Brand,Sport,Category,Variants,Banners,Size,Image
 from django.views.decorators.cache import cache_control
 from django.core.paginator import Paginator
-
+from orders.models import Orders
 
 # Create your views here.
 @cache_control(no_cache = True,must_revalidate = False,no_store=True) 
@@ -306,20 +306,6 @@ def edit_variant(request,id):
             }
         return render(request, 'edit_variants.html', context)
 
-# def add_stock(request, id):
-#     variant = Variants.objects.get(id=id)
-#     if request.method == 'POST':
-#         size = request.POST.get('size')
-#         stock = request.POST.get('stock')
-#         try:
-#             variant_stock = variant.stock_set.get(size=size)
-#             variant_stock.stock = stock
-#             variant_stock.save()
-#         except Stock.DoesNotExist:
-#             Stock.objects.create(variant=variant, size=size, stock=stock)
-#         return redirect('variant_list')
-#     return render(request, 'add_stock.html', {'variant': variant}) 
-
 @login_required(login_url='admin_login')
 def delete_variant(request,id):
     variant=Variants.objects.get(id=id)
@@ -457,3 +443,8 @@ def delete_sport(request,id):
     sport=Sport.objects.get(id=id)
     sport.delete()
     return redirect('sport_list')
+
+@login_required(login_url='admin_login')
+def orders(request):
+    orders    = Orders.objects.all
+    return render(request,'orders_list.html',{'orders':orders})

@@ -2,36 +2,34 @@
 {% load static %}
 
 {% block title %}
-Cart
+Checkout
 {% endblock title %}
 
 
 {% block content %}
 
-<body>
-
-    <!-- ##### Breadcumb Area Start ##### -->
-    <div class="breadcumb_area bg-img" style="">
-        <div class="container h-100">
-            <div class="row h-100 align-items-center">
-                <div class="col-12">
-                    <div class="page-title text-center">
-                        <h2>Checkout</h2>
-                    </div>
+<!-- ##### Breadcumb Area Start ##### -->
+<div class="breadcumb_area bg-img" style="">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <div class="page-title text-center">
+                    <h2>Checkout</h2>
                 </div>
             </div>
         </div>
     </div>
-    <!-- ##### Breadcumb Area End ##### -->
+</div>
+<!-- ##### Breadcumb Area End ##### -->
 
-    <!-- ##### Checkout Area Start ##### -->
-    <div class="checkout_area section-padding-80">
-        <div class="container">
-            <div class="row">
-
+<!-- ##### Checkout Area Start ##### -->
+<div class="checkout_area section-padding-80">
+    <div class="container">
+    <form  method="post" action="{% url 'place_order' %}">
+        {% csrf_token %}
+        <div class="row">
                 <div class="col-12 col-md-6">
                     <div class="checkout_details_area mt-50 clearfix">
-
                         <div class="cart-page-heading mb-30">
                             <h5>Billing Address</h5>
                         </div>
@@ -39,34 +37,25 @@ Cart
                         <div class="col-md-7">
                             <div class="bg-white card addresses-item mb-4 border border-primary shadow">
                                 <div class="gold-members p-4">
-
                                     <div class="media">
-
-                                        <div class="mr-3"><i class="icofont-ui-home icofont-3x"></i></div>
-
+                                        <div class="mr-3">
+                                            <i class="icofont-ui-home icofont-3x"></i>
+                                        </div>
                                         <div class="media-body">
                                             {% comment %} <h6 class="mb-1 text-secondary">Home</h6> {% endcomment %}
                                             <p style="line-height: 5px;" class="text-black">
-
-
-
                                                 <tr>
                                                     {% if address.is_primary %}
-                                                    <input type="radio" name="address" checked/>
+                                                    <input type="radio" name="address" value="{{address.id}}" checked/>
                                                     {% else %}
-                                                    <input type="radio" name="address"/>
+                                                    <input type="radio" name="address" value="{{address.id}}" />
                                                     {% endif %}
-                                                    
                                                     <p style="line-height: 5px;">{{address.first_name}} {{address.last_name}}</p>
-                                                    
                                                     <p style="line-height: 5px;">{{address.house_name}}</p>
                                                     <p style="line-height: 5px;">{{address.street_name}}</p>
-                                                    
                                                     <p style="line-height: 5px;">{{address.city}}, {{address.district}}</p>
-
                                                     <p style="line-height: 5px;">{{address.pincode}}, {{address.state}}</p>
                                                     <p style="line-height: 5px;">{{address.mobile}}</p>
-                                                  
                                                 </tr>
                                             </p>
                                             <p class="mb-0 text-black font-weight-bold">
@@ -77,71 +66,16 @@ Cart
                                                     <i class="icofont-ui-delete"></i> DELETE
                                                 </a>
                                             </p>
-                                            
                                         </div>
-                                        
                                     </div>
-
                                 </div>
-
                             </div>
                         </div>
-                       
-                        {% endfor %}
+                    
+                         {% endfor %}
                         <a href="add_checkout_address"><button type="button" class="btn essence-btn btn-sm "><i class="fa fa-plus" aria-hidden="true"></i>Add address</button></a>
-                        {% comment %} <form action="#" method="post">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="first_name">First Name <span>*</span></label>
-                                    <input type="text" class="form-control" id="first_name" value="{{address.first_name}}" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="last_name">Last Name <span>*</span></label>
-                                    <input type="text" class="form-control" id="last_name" value="{{address.last_name}}" required>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label for="street_address">Address <span>*</span></label>
-                                    <input type="text" class="form-control mb-3" id="street_address" value="{{address.house_name}}">
-                                    <input type="text" class="form-control" id="street_address2" value="{{address.street_name}}">
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label for="postcode">Postcode <span>*</span></label>
-                                    <input type="text" class="form-control" id="postcode" value="{{address.pincode}}">
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label for="city">Town/City <span>*</span></label>
-                                    <input type="text" class="form-control" id="city" value="{{address.city}}">
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label for="state">District <span>*</span></label>
-                                    <input type="text" class="form-control" id="state" value="{{address.district}}">
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label for="phone_number">Phone No <span>*</span></label>
-                                    <input type="number" class="form-control" id="phone_number" min="0" value="{{address.mobile}}">
-                                </div>
-                                <div class="col-12 mb-4">
-                                    <label for="email_address">Email Address <span>*</span></label>
-                                    <input type="email" class="form-control" id="email_address" value="">
-                                </div> 
-
-                                {% comment %} <div class="col-12">
-                                    <div class="custom-control custom-checkbox d-block mb-2">
-                                        <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                        <label class="custom-control-label" for="customCheck1">Terms and conitions</label>
-                                    </div>
-                                    <div class="custom-control custom-checkbox d-block mb-2">
-                                        <input type="checkbox" class="custom-control-input" id="customCheck2">
-                                        <label class="custom-control-label" for="customCheck2">Create an accout</label>
-                                    </div>
-                                    <div class="custom-control custom-checkbox d-block">
-                                        <input type="checkbox" class="custom-control-input" id="customCheck3">
-                                        <label class="custom-control-label" for="customCheck3">Subscribe to our newsletter</label>
-                                    </div>
-                                </div>  
-                            </div>
-                        </form> {% endcomment %}
-                        
+                    
+                    
                     </div>
                 </div>
 
@@ -152,7 +86,7 @@ Cart
                             <h5>Your Order</h5>
                             <p>The Details</p>
                         </div>
-                        <form>
+                        
                             <ul class="order-details-form mb-4">
                                 <li><span>Product</span> <span>Total</span></li>
                                 {% for items in cartitems %}
@@ -160,15 +94,8 @@ Cart
                                 {% endfor %}
                                 <li><span>Subtotal</span> <span>{{cart.cart_total}}</span></li>
                                 <li><span>Shipping</span> <span>Free</span></li>
-
                                 <li><span>Apply Coupon</span> <span><input type="text" id="form3Examplea2" name="coupon_code" class="form-control form-control-lg" />
                                     </span></li>
-                                {% comment %} <h5 class="text-uppercase mb-3">Give code</h5>
-
-                                <div class="mb-5"> 
-                                    <input type="text" id="form3Examplea2" class="form-control form-control-lg" />
-                                    <label class="form-label" for="form3Examplea2">Enter your code</label>
-                                </div> {% endcomment %}
                                 <li><span>Total</span> <span>{{cart.cart_total}}</span></li>
                             </ul>
 
@@ -178,35 +105,30 @@ Cart
                             {% for method in Orders.PAYMENT_METHODS %}
                             <div class="form-check mb-4">
                                 <label>
-                                    <input type="radio"  name="my_radio" value="{{ method.0 }}">
-                                     {{ method.1 }}
+                                    <input type="radio"  name="payment_method" value="{{ method.0 }}">
+                                        {{ method.1 }}
                                 </label> 
                             </div>
                             {% endfor %}
-
-                            {% comment %} <div id="accordion" role="tablist" class="mb-4">
-                                <div class="card">
-                                    <div class="card-header" role="tab" id="headingOne">
-                                        <h6 class="mb-0">
-                                            <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne"><i class="fa fa-circle-o mr-3"></i>Paypal</a>
-                                        </h6>
-                                    </div>
-
-                                </div>
-                            </div> {% endcomment %}
-
-                            <a href="{% url 'place_order' %}" class="btn essence-btn">Place Order</a>
-                        </form>
+                            <div>
+                                    <span> <input type="hidden" name="cart_id" value="{{ cart.id }}"> </span>
+                            </div>
+                            <button type="submit" class="btn essence-btn" >Place Order</button>
+                            
                     </div>
                 </div>
-            </div>
         </div>
+    </form>
     </div>
-    <!-- ##### Checkout Area End ##### -->
+</div>
+<!-- ##### Checkout Area End ##### -->
 
+<script>
+ 
     
+</script>
 
-</body>
+
 
 		
 {% endblock content %}

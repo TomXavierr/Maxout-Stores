@@ -1,0 +1,71 @@
+{% extends 'adminbase.html' %}
+
+{% block title %}
+Orders List
+{% endblock title %}
+
+{% block content %}
+ 
+
+<div>
+    <nav class="navbar navbar-expand bg-light navbar-light  px-4 py-0">
+        <div>
+            <form class="d-flex" action="search_product" method="get">
+                {% csrf_token %}
+                <input class="form-control me-2" type="search" name="searchterm" placeholder="Search order" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+       
+        <div class="container">
+            <div class="col-sm-8">
+                <a href="add_product" class="btn btn-primary ">Add Product</a>
+            </div>
+        </div>
+    </nav>   
+</div>
+
+
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-light text-center rounded p-4">
+        
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-dark">
+                        <th scope="col">Order number</th>
+                        <th scope="col">User</th>
+                        <th scope="col">Payment method</th>
+                        <th scope="col">Grand total</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Date ordered</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>  
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{order.order_number}}</td>
+                        <td>{{order.user}} </td>
+                        <td>{{order.payment_method}}</td>
+                        <td>{{order.grand_total}}</td>
+                        <td>{{order.delivery_address}}</td>
+                        <td>{{order.order_date}}</td>
+                        <td>{{order.status}}</td>
+                        <td> </td>
+                        
+                    </tr>
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+       
+
+
+{% endblock content %}
+
