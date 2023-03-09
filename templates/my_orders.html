@@ -1,0 +1,124 @@
+{% extends 'storebase.html' %}
+{% load static %}
+
+{% block title %}
+My orders
+{% endblock title %}
+
+{% block links %}
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+		rel="stylesheet" 
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+		crossorigin="anonymous"
+  >
+  <link href="{% static 'profile/plugins/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+  <!-- CUSTOM CSS -->
+  <link href="{% static 'profile/css/style.css' %}" rel="stylesheet">
+
+  
+
+{% endblock links %}
+
+{% block content %}
+
+<!--==================================
+=            User Profile            =
+===================================-->
+
+<section class="user-profile section">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-10 offset-md-1 col-lg-4 offset-lg-0">
+				<div class="sidebar">
+					<!-- User Widget -->
+					<div class="widget user-dashboard-profile">
+						<!-- User Image -->
+						<div class="profile-thumb">
+							{% if user.profile_image %}
+								<img src="{{ user.profile_image.url }}" alt="{{ user.username }}">
+							{% else %}
+								<img src="/media/profile_photos/default.png" alt="{{ user.username }}">
+							{% endif %}
+							
+						</div>
+						<!-- User Name -->
+						<h5 class="text-center">{{user.username}}</h5>
+						<p>{{user.date_joined}}</p>
+					</div>
+					<!-- Dashboard Links -->
+					<div class="widget user-dashboard-menu">
+						<ul>
+							<li>
+								<a href="{% url 'profile' %}"><i class="fa fa-user"></i> My Profile</a>
+							</li>
+							<li>
+								<a href="{% url 'address' %}"><i class="fa fa-bookmark-o"></i> My Addresses</a>
+							</li>
+							<li>
+								<a href="{% url 'my_orders' %}"><i class="fa fa-bookmark-o"></i> My Orders</a>
+							</li>
+							<li>
+								<a href="{% url 'logout' %}"><i class="fa fa-cog"></i> Logout</a>
+							</li>
+							
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-10 offset-md-1 col-lg-8 offset-lg-0">
+				<div class="col-lg-9 col-md-8 col-12">
+                    <div class="pb-8 py-8">
+                      <!-- heading -->
+                      <h2 class="mb-6">Your Orders</h2>
+          
+                    
+                        <!-- Table -->
+                        <table class="table mb-0 text-nowrap">
+                          <!-- Table Head -->
+                          <thead class="table-light">
+                            <tr>
+                              <th class="border-0">Order</th>
+                              <th class="border-0">Amount</th>
+                              <th class="border-0">Date</th>
+                              <th class="border-0">Status</th>
+                              <th class="border-0"></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                         
+                            {% for order in orders %}
+                            <tr id="">
+                              <td class="align-middle border-top-0">
+                                <a href="{% url 'order_details' id=order.id %}" class="text-inherit">{{order.order_id}}</a>
+                              </td>
+                              <td class="align-middle border-top-0">
+                                ₹ {{order.grand_total}}
+                              </td>
+                              <td class="align-middle border-top-0">
+                                {{order.order_date}}
+                              </td>
+                              <td class="align-middle border-top-0">
+                                <span class="badge bg-warning">{{order.status}}</span>
+                              </td>
+                              <td class="align-middle border-top-0">
+                                <a  href="{% url 'cancel_order' id=order.id %}"><button class="badge bg-danger" >Cancel</button></a>
+                              </td>
+                              
+                            </tr>
+                            {% endfor %}
+                          
+                          </tbody>
+                        </table>
+                    
+                    </div>
+                  </div>
+			</div>
+		</div>
+</section>
+
+
+
+
+{% endblock content %}

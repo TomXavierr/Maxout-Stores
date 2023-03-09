@@ -43,6 +43,7 @@ urlpatterns = [
     
     #====================Banner management=====================# 
     path('orders',views.orders,name='orders'),
+    path('update_orders/<int:id>',views.update_orders,name='update_orders'),
     
     #====================Banner management=====================# 
     path('banners',views.banners,name='banners'),

@@ -448,3 +448,17 @@ def delete_sport(request,id):
 def orders(request):
     orders    = Orders.objects.all
     return render(request,'orders_list.html',{'orders':orders})
+
+def order_info(request,id):
+    pass
+
+def update_orders(request,id):
+    if request.method == 'POST':
+        
+        status = request.POST['status']
+            
+        order = Orders.objects.get(id = id)
+
+        order.status = status
+        order.save()
+        return redirect('orders')

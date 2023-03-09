@@ -3,6 +3,7 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth import login, authenticate,logout,update_session_auth_hash
 from .models import Account,Addresses
 from store.models import *
+from orders.models import *
 
 from django.contrib import messages,auth
 from django.contrib.auth.decorators import login_required
@@ -295,4 +296,8 @@ def delete_address(request,id):
     address.delete()
     return redirect('address')
     
+def my_orders(request):
+    user      = request.user
+    orders    = Orders.objects.filter(user = user)
     
+    return render(request,'my_orders.html',{'orders':orders})
