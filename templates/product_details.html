@@ -53,7 +53,7 @@
                         {% if variant.variant_stock > 0 %}
                         <option id={{variant.variant_size.id}} >Size : {{ variant.variant_size.size }}</option>
                         {% else %}
-                        <option id={{variant.variant_size.id}} disabled>Size :{{ variant.variant_size.size }}</option>
+                        <option id={{variant.variant_size.id}} disabled>Size :{{ variant.variant_size.size }} - Out of stock</option>
                         {% endif %}
                         {% empty %}
                         <option value="">SIZE: Information not available</option>

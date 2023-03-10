@@ -36,7 +36,7 @@ h6 {
   font-family: "Ubuntu", sans-serif; }
 
 p {
-  color: #787878;
+  color: #5a5959;
   font-size: 14px;
   line-height: 2;
   font-weight: 400; }
@@ -253,6 +253,7 @@ img {
   @media only screen and (max-width: 767px) {
     .header_area .classy-nav-container {
       -ms-flex-wrap: wrap;
+      background-color: #d7d7d6;
       flex-wrap: wrap; } }
   @media only screen and (max-width: 767px) {
     .header_area .classy-nav-container .classy-navbar-toggler {
@@ -310,7 +311,7 @@ img {
         border-left: none; } }
     .header_area .search-area form input {
       border: none;
-      background-color: #c5c5c3;
+      background-color: #d7d7d6;
       width: 200px;
       height: 85px;
       padding: 0 15px 0 60px;

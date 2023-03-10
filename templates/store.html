@@ -195,7 +195,7 @@ store
                                         <a href="{% url 'product_details' id=product.id %}">
                                             <h6>{{product.product_name}}</h6>
                                         </a>
-                                        
+                                        <span>{{product.product_type}}</span>
                                         <p class="product-price">
                                             {% comment %} <span class="old-price">$75.00</span> {% endcomment %}
                                             ₹ {{product.product_price}}

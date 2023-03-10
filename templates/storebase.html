@@ -59,7 +59,7 @@
                                                     <li><a href="{% url 'mens_brands' brand.id %}">{{brand.brand_name}}</a></li> 
                                                     {% endfor %}
                                                 </ul>
-                                                <ul class="single-mega cn-col-4">
+                                                {% comment %} <ul class="single-mega cn-col-4">
                                                     <li class="title">Shoes</li>
                                                     <li><a href="shop.html">All Shoes</a></li>
                                                     
@@ -71,7 +71,7 @@
                                                     <li><a href="shop.html">Pants & Leggings</a></li>
                                                     <li><a href="shop.html">Accessories</a></li>
                                                     <li><a href="shop.html">Shorts & Skirts</a></li>
-                                                </ul>
+                                                </ul> {% endcomment %}
                                             </div>
                                         </li>
                                         <li><a href="{% url 'women' %}">Women</a>
@@ -89,7 +89,7 @@
                                                     <li><a href="{% url 'womens_brands' brand.id %}">{{brand.brand_name}}</a></li> 
                                                     {% endfor %}
                                                 </ul>
-                                                <ul class="single-mega cn-col-4">
+                                                {% comment %} <ul class="single-mega cn-col-4">
                                                     <li class="title">Shoes</li>
                                                     <li><a href="shop.html">All Shoes</a></li>
                                                     
@@ -101,7 +101,7 @@
                                                     <li><a href="shop.html">Pants & Leggings</a></li>
                                                     <li><a href="shop.html">Accessories</a></li>
                                                     <li><a href="shop.html">Shorts & Skirts</a></li>
-                                                </ul>
+                                                </ul> {% endcomment %}
                                             </div>
                                         </li>
                                         </li>
@@ -117,9 +117,9 @@
                         <div class="header-meta d-flex clearfix justify-content-end">
                             <!-- Search Area -->
                             <div class="search-area">
-                                <form action="#" method="post">
-                                    <input type="search" name="search" id="headerSearch" placeholder="Type for search" />
-                                    <button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                <form action="{% url 'search_products' %}" method="get">
+                                    <span>  </span>
+                                    <span><button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button></span>
                                 </form>
                             </div>
                             <!-- Favourite Area -->

@@ -446,7 +446,7 @@ def delete_sport(request,id):
 
 @login_required(login_url='admin_login')
 def orders(request):
-    orders    = Orders.objects.all
+    orders    = Orders.objects.all().order_by('id')
     return render(request,'orders_list.html',{'orders':orders})
 
 def order_info(request,id):
@@ -456,7 +456,7 @@ def update_orders(request,id):
     if request.method == 'POST':
         
         status = request.POST['status']
-            
+
         order = Orders.objects.get(id = id)
 
         order.status = status

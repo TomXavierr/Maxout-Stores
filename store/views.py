@@ -329,3 +329,11 @@ def delete_address2(request,id):
     address.delete()
     return redirect('checkout')
     
+    
+def search_products(request):
+    if request.method=='GET':
+        searchterm =request.GET.get('searchterm')
+        print(searchterm)
+        products=Products.objects.filter(product_name__icontains = searchterm)
+        return render(request,'store.html',{'products':products})
+    
