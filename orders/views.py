@@ -53,17 +53,43 @@ def place_order(request):
 def order_success_page(request):
     order       = Orders.objects.get(order_id=request.session['order_id'])
     order_items = order.orderitem_set.all()
+    context = {
+    'main_banner':  Banners.objects.get(id=1).banners,
+    'cart_count':   CartItem.objects.filter(cart= Cart.objects.get(customer = request.user)).count(),
+    'sports':       Sport.objects.all(),
+    'brands':       Brand.objects.all() ,
+    'user':         request.user,
+    'Products':     Products,
+    'order':        order ,
+    'order_items':  order_items
+    }
+   
+    
     print(order_items)
     
-    return render(request,'order_succespage.html',{'order':order , 'order_items': order_items})
+    return render(request,'order_succespage.html',context)
 
 def order_details(request,id):
+    
     order       = Orders.objects.get(id=id)
     order_items = order.orderitem_set.all()
-    return render(request,'order_details.html',{'order':order ,'order_items': order_items})
+    context = {
+    'main_banner':  Banners.objects.get(id=1).banners,
+    'cart_count':   CartItem.objects.filter(cart= Cart.objects.get(customer = request.user)).count(),
+    'sports':       Sport.objects.all(),
+    'brands':       Brand.objects.all() ,
+    'user':         request.user,
+    'Products':     Products,
+    'order':        order ,
+    'order_items':  order_items
+    }
+    return render(request,'order_details.html',context)
 
 def cancel_order(request,id):
     order       = Orders.objects.get(id=id)   
-    order.delete()
-    
+    print(order)
+    print(order.status)
+    order.status = 'Cancelled'
+    order.save()
+    print(order.status)
     return redirect('my_orders')

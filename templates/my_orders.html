@@ -62,7 +62,6 @@ My orders
 							<li>
 								<a href="{% url 'logout' %}"><i class="fa fa-cog"></i> Logout</a>
 							</li>
-							
 						</ul>
 					</div>
 				</div>
@@ -100,10 +99,15 @@ My orders
                                 {{order.order_date}}
                               </td>
                               <td class="align-middle border-top-0">
-                                <span class="badge bg-warning">{{order.status}}</span>
+                                <span class="badge" style="{%if order.status == 'Cancelled'%} background-color:red !important{%elif order.status == 'Orderpending'%} background-color:yellow !important{%elif order.status == 'Delivered'%} background-color:green !important{%else%} background-color:blue !important{%endif%};" >{{order.status}}</span>
                               </td>
                               <td class="align-middle border-top-0">
+                                {% if order.status == 'Delivered' %}
+                                  <a  href=""><button class="badge bg-danger" >Return</button></a>
+                                {% else %}
                                 <a  href="{% url 'cancel_order' id=order.id %}"><button class="badge bg-danger" >Cancel</button></a>
+                                {% endif %}
+
                               </td>
                               
                             </tr>

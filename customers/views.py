@@ -6,8 +6,9 @@ from store.models import *
 from orders.models import *
 
 from django.contrib import messages,auth
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.cache import cache_control,never_cache
+from django.utils.decorators import method_decorator
 
 import smtplib 
 import secrets
@@ -15,10 +16,23 @@ import re
 
 # Create your views here.
 
+
+def check_user(view_func):
+    def wrapper_func(request, *args, **kwargs):
+        if request.user.is_staff == False and request.user.is_superuser == False and request.user.is_active == True and request.user.is_blocked == False:
+            return view_func(request, *args, **kwargs)
+        else:
+            messages.info(request,'Your account an admin')
+            return redirect('user_login')
+    return wrapper_func
+
+
+
 @cache_control(no_cache = True,must_revalidate = False,no_store=True)
 def index(request):
-    if 'user' in request.session:
-        return redirect('home')
+    if request.user.is_authenticated and not request.user.is_superuser:
+       return redirect('home')
+  
     main_banner = Banners.objects.get(id=1).banners
     sports = Sport.objects.all()
     brands = Brand.objects.all()
@@ -29,8 +43,10 @@ def index(request):
 
 @cache_control(no_cache = True,must_revalidate = False,no_store=True)
 def register_view(request):
-    if request.user.is_authenticated:
-       return redirect('home')
+    if 'user' in request.session :
+        return redirect('home')
+    # if request.user.is_authenticated:
+    #    return redirect('home')
    
     
           
@@ -59,7 +75,7 @@ def register_view(request):
                     message = generate_otp()
                     sender_email  = "maxoutstores@gmail.com"
                     receiver_mail = email
-                    password      = "wjfmukasnbppugai"
+                    password      = "aojgilhtcyfcyptj"
                    
                     server        = smtplib.SMTP("smtp.gmail.com",587)
                     server.ehlo()
@@ -97,7 +113,7 @@ def generate_otp(length=6):
    
 @cache_control(no_cache = True,must_revalidate = False,no_store=True)  
 def verify_signup(request):
-
+    
     if request.method == "POST":
      
         user = Account.objects.get(email=request.session['email'])
@@ -122,8 +138,10 @@ def verify_signup(request):
     
 @never_cache
 def user_login(request):
-    if request.user.is_authenticated:
-       return redirect('home')
+    if 'user' in request.session :
+        return redirect('home')
+    # if request.user.is_authenticated and not request.user.is_superuser and not request.user.is_blocked:
+    #    return redirect('home')
   
     
     if request.method== 'POST':
@@ -132,12 +150,17 @@ def user_login(request):
        
         if email and password:
             user=authenticate(email=email,password=password)
-            if user is not None and not user.is_blocked and user.is_verified:
-                print(user)
-                auth.login(request,user)
-                return redirect('home')
+            if user is not None and not user.is_blocked :
+                if  user.is_verified:
+                    print(user)
+                    request.session['user_type'] = 'user'
+                    login(request,user)
+                    return redirect('home')
+                else:
+                    messages.info(request,'Your account is not verified')
+                return redirect('user_login')
             else:
-                messages.info(request,'invalid credentials')
+                messages.info(request,'Your account has been blocked')
                 return redirect('user_login')
         else:
             messages.info(request,'Enter every details')
@@ -145,39 +168,57 @@ def user_login(request):
     else:
          return render(request,'signin.html')
     
-    
-@login_required(login_url='user_login') 
-def home(request):
-
-    # if 'user' in request.session:
-    main_banner = Banners.objects.get(id=1).banners
-    sports = Sport.objects.all()
-    brands = Brand.objects.all()
-    
-    cart = Cart.objects.get(customer = request.user)
-    cartitems = CartItem.objects.filter(cart= cart)
-    total = cartitems.count
-    return render(request,'home.html',{'main_banner':main_banner,'cart_count':total,'sports':sports,'brands':brands ,'Products':Products})
-    # else:
-    #     return redirect('user_login')
-
-@login_required(login_url='user_login') 
-def profile(request):
-    # if 'user' in request.session:
-        
-    user_detail = request.user
-    return render(request,'user_profile.html',{'user':user_detail})
-    # else:
-    #     return redirect('user_login')
-
-
 def logout(request):
+    
     auth.logout(request)
+    # del request.session['email']
     return redirect(index)
+
+   
+@login_required(login_url='user_login') 
+@check_user
+def home(request):
+    
+    context = {
+        'main_banner':  Banners.objects.get(id=1).banners,
+        'cart_count':   CartItem.objects.filter(cart= Cart.objects.get(customer = request.user)).count(),
+        'sports':       Sport.objects.all(),
+        'brands':       Brand.objects.all() ,
+        'Products':     Products}
+    return render(request,'home.html',context)
+    # else:
+    #     return redirect('user_login')
+
+@login_required(login_url='user_login') 
+@check_user
+def profile(request):
+    context = {
+        'main_banner':  Banners.objects.get(id=1).banners,
+        'cart_count':   CartItem.objects.filter(cart= Cart.objects.get(customer = request.user)).count(),
+        'sports':       Sport.objects.all(),
+        'brands':       Brand.objects.all() ,
+        'user':         request.user,
+        'Products':     Products,
+        }
+   
+    return render(request,'user_profile.html',context)
+    # else:
+    #     return redirect('user_login')
+
+
+
 
 @login_required(login_url='user_login') 
 def update_username(request):
-    
+    context = {
+    'main_banner':  Banners.objects.get(id=1).banners,
+    'cart_count':   CartItem.objects.filter(cart= Cart.objects.get(customer = request.user)).count(),
+    'sports':       Sport.objects.all(),
+    'brands':       Brand.objects.all() ,
+    'user':         request.user,
+    'Products':     Products,
+    }
+   
     if request.method == 'POST':
         # Get the new username from the form data
         current_username = request.user.username
@@ -198,9 +239,18 @@ def update_username(request):
         return redirect('profile')
     
     # If the request is not a POST request, render the change username template
-    return render(request, 'update_user.html')
+    return render(request, 'update_user.html',context)
 
 def upload_profile_img(request):
+    context = {
+    'main_banner':  Banners.objects.get(id=1).banners,
+    'cart_count':   CartItem.objects.filter(cart= Cart.objects.get(customer = request.user)).count(),
+    'sports':       Sport.objects.all(),
+    'brands':       Brand.objects.all() ,
+    'user':         request.user,
+    'Products':     Products,
+    }
+   
     user           = request.user
     if  request.method == 'POST':
         
@@ -208,10 +258,19 @@ def upload_profile_img(request):
         user.profile_image = profile_image
         user.save()
         return redirect('profile')
-    return render(request, 'upload_profile.html')
+    return render(request, 'upload_profile.html',context)
     
 @login_required(login_url='user_login') 
 def update_password(request):
+    context = {
+        'main_banner':  Banners.objects.get(id=1).banners,
+        'cart_count':   CartItem.objects.filter(cart= Cart.objects.get(customer = request.user)).count(),
+        'sports':       Sport.objects.all(),
+        'brands':       Brand.objects.all() ,
+        'user':         request.user,
+        'Products':     Products,
+        }
+   
     if request.method == 'POST':
         current_password = request.POST.get('current_password')
         new_password     = request.POST.get('new_password')
@@ -225,16 +284,32 @@ def update_password(request):
             user.save()
             update_session_auth_hash(request, user)
             return redirect('profile')
-    return render(request, 'update_password.html')
+    return render(request, 'update_password.html',context)
 
 def address(request):
-    details = request.user
-    addresses = Addresses.objects.filter(user_id=details)
-    
+    context = {
+        'main_banner':  Banners.objects.get(id=1).banners,
+        'cart_count':   CartItem.objects.filter(cart= Cart.objects.get(customer = request.user)).count(),
+        'sports':       Sport.objects.all(),
+        'brands':       Brand.objects.all() ,
+        'user':         request.user,
+        'Products':     Products,
+        'addresses':    Addresses.objects.filter(user_id=request.user),
+        }
 
-    return render(request, 'user_address.html', {'addresses':addresses})
+    return render(request, 'user_address.html', context)
 
 def add_address(request):
+    context = {
+    'main_banner':  Banners.objects.get(id=1).banners,
+    'cart_count':   CartItem.objects.filter(cart= Cart.objects.get(customer = request.user)).count(),
+    'sports':       Sport.objects.all(),
+    'brands':       Brand.objects.all() ,
+    'user':         request.user,
+    'Products':     Products,
+    }
+
+
     user = request.user
     user_id = user.id
     print(user_id)
@@ -289,7 +364,7 @@ def add_address(request):
             messages.info(request,'Input all fields')
             return redirect('add_address')
     else:
-        return render(request, 'add_address.html')
+        return render(request, 'add_address.html',context)
     
 def delete_address(request,id):
     address = Addresses.objects.get(id=id)
@@ -297,7 +372,14 @@ def delete_address(request,id):
     return redirect('address')
     
 def my_orders(request):
-    user      = request.user
-    orders    = Orders.objects.filter(user = user)
-    
-    return render(request,'my_orders.html',{'orders':orders})
+    context = {
+        'main_banner':  Banners.objects.get(id=1).banners,
+        'cart_count':   CartItem.objects.filter(cart= Cart.objects.get(customer = request.user)).count(),
+        'sports':       Sport.objects.all(),
+        'brands':       Brand.objects.all() ,
+        'user':         request.user,
+        'Products':     Products,
+        'orders':      Orders.objects.filter(user = request.user).order_by('-id'),
+        }
+   
+    return render(request,'my_orders.html',context)

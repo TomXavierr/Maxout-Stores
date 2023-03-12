@@ -15,20 +15,22 @@ def admin_dash(request):
     if request.user.is_superuser:
         return render(request,'admin_dashboard.html')
     else:
-        return redirect('home')
+        return redirect('admin_login')
   
     
 
 def admin_login(request):
-
-    if request.method== 'POST':
+    if 'admin' in request.session:
+        return redirect('admin_dash')
+    
+    elif request.method== 'POST':
         email = request.POST['email']
         password = request.POST['password']
-       
+    
         if email and password:
             admin=authenticate(email=email,password=password)
             if admin and admin.is_superuser:
-                # request.session['admin'] = password
+                request.session['admin'] = password
                 auth.login(request,admin)
                 return redirect('admin_dash')
             else:
@@ -37,21 +39,23 @@ def admin_login(request):
         else:
             messages.info(request,'Enter your email and password')
             return redirect('admin_login')
-    elif not request.user.is_authenticated:
-        return render(request,'admin_login.html')
     else:
-        return redirect('admin_dash')
+        return render(request,'admin_login.html')
+    # else:
+    #     return redirect('admin_dash')
+    
 def admin_logout(request):
-    auth.logout(request)
-    # del request.session['admin']
+    logout(request)
+    del request.session['admin']
     return redirect('admin_login')
 
 
 
     
 def user_list(request):
-    if request.user.is_superuser: 
-        users   =  Account.objects.all().order_by('id')
+    
+    if 'admin' in request.session:
+        users   =  Account.objects.filter(is_superuser=False).order_by('id')
         context = {'users': users}
         return render(request,'users_list.html',context)
     else:

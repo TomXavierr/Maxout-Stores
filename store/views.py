@@ -11,12 +11,14 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.db.models import Count
 from django.contrib import messages
+from customers.views import check_user
 
 import re
 
 # Create your views here.
 
 @login_required(login_url='user_login') 
+@check_user
 def mens_store(request):
     
     products     = Products.objects.filter(product_gender = 'Men')
@@ -34,6 +36,7 @@ def mens_store(request):
 
 
 @login_required(login_url='user_login') 
+@check_user
 def womens_store(request):
     products = Products.objects.filter(product_gender = 'Women')
     variants = Variants.objects.filter(variant_product__in = products )
@@ -49,6 +52,7 @@ def womens_store(request):
     return render(request,'store.html',context)
 
 @login_required(login_url='user_login') 
+@check_user
 def mensSport(request,id):
     products = Products.objects.filter(product_gender = 'Men', product_sport=id)
     variants = Variants.objects.filter(variant_product__in = products )
@@ -62,7 +66,9 @@ def mensSport(request,id):
     context = {'products':products, 'count': count,'cart_count':total, 'variants': variants, 'sports':sports ,'brands':brands}
     
     return render(request,'store.html',context)
+
 @login_required(login_url='user_login') 
+@check_user
 def womensSport(request,id):
     products = Products.objects.filter(product_gender = 'Women', product_sport=id)
     variants = Variants.objects.filter(variant_product__in = products )
@@ -79,6 +85,7 @@ def womensSport(request,id):
 
 
 @login_required(login_url='user_login') 
+@check_user
 def mensBrands(request,id):
     products = Products.objects.filter(product_gender = 'Men', product_brand=id)
     variants = Variants.objects.filter(variant_product__in = products )
@@ -94,6 +101,7 @@ def mensBrands(request,id):
     return render(request,'store.html',context)
 
 @login_required(login_url='user_login') 
+@check_user
 def womensBrands(request,id):
     products = Products.objects.filter(product_gender = 'Women', product_brand=id)
     variants = Variants.objects.filter(variant_product__in = products )
