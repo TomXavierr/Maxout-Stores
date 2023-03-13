@@ -41,11 +41,16 @@ urlpatterns = [
     path('add_sport',views.add_sport,name='add_sport'),  
     path('delete_sport/<int:id>',views.delete_sport,name='delete_sport'), 
     
-    #====================Banner management=====================# 
+    #====================Order management=====================# 
     path('orders',views.orders,name='orders'),
     path('update_orders/<int:id>',views.update_orders,name='update_orders'),
     
     #====================Banner management=====================# 
     path('banners',views.banners,name='banners'),
     path('add_banners',views.add_banners,name='add_banners'),
+    
+    #====================Coupon management=====================# 
+    path('coupons',views.coupons,name='coupons'),
+    path('add_coupon',views.add_coupon,name='add_coupon'),
+    
 ]

@@ -80,7 +80,19 @@ class CartItem(models.Model):
         return self.product.product_price * self.product_qty
    
 
-  
+class Coupons(models.Model):
+    coupon_code = models.CharField(max_length=10)
+    expired = models.BooleanField(default=False)
+    discount_price = models.FloatField(default=100)
+    minimum_amount = models.FloatField(default=500)
+    expiry_date = models.DateField(null=True,blank=True)
+
+    def __str__(self):
+        return self.coupon_code
+
+class Wishlist(models.Model):
+    user_id = models.ForeignKey(Account,on_delete=models.CASCADE)
+    variant = models.ForeignKey(Variants,on_delete=models.CASCADE)
 
 class Banners(models.Model):
     name                     = models.CharField(max_length=30,null=False)

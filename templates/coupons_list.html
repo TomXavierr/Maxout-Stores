@@ -1,0 +1,100 @@
+{% extends 'adminbase.html' %}
+
+{% block title %}
+Coupon List
+{% endblock title %}
+
+{% block content %}
+ 
+
+<div>
+    <nav class="navbar navbar-expand bg-light navbar-light  px-4 py-0">
+       
+        <div class="container">
+            <div class="col-sm-8">
+                <div class="col-sm-6">
+      
+                    <div>
+                      <div class="modal fade" id="exampleModalTogglebrand" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                          <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalToggleLabel">ADD</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                <form action='{% url 'add_coupon' %}' method="POST">
+                                  {%csrf_token%}
+                                  <div class="form-outline mb-4">
+                                    <input type="text"  class="form-control" name="code" id="brand_name" placeholder="Name" fdprocessedid="dl50sd" required>
+                                    <label for="floatingPassword">CouponCode</label>
+                                  </div>
+{% comment %}             
+                                  <div class="form-outline mb-4">
+                                    <input type="text" class="form-control date-input" id="expiry" name="expiry" placeholder="Expiry Date" required>
+                                    <label for="floatingPassword">Expiry Date</label>
+                                  </div> {% endcomment %}
+                                  <div class="form-outline mb-4">
+                                    <input type="number"  class="form-control" name="discount_price" id="brand_nam" placeholder="Discount" fdprocessedid="dl50sd" required>
+                                    <label for="floatingPassword">Discount</label>
+                                  </div>
+                                  <div class="form-outline mb-4">
+                                    <input type="number"  class="form-control" name="minimum_amount" id="brand_name" placeholder="Minimum Amount" fdprocessedid="dl50sd" required>
+                                    <label for="floatingPassword">Minimum purchase</label>
+                                  </div>
+            
+                          
+                                  </div>
+                                  <button class="w-100 btn btn-lg btn-primary" type="submit" fdprocessedid="k6q0td">Add</button>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+            
+                        <a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalTogglebrand" role="button">ADD</i></a> 
+                      </div>
+            
+            </div>
+        </div>
+    </nav>   
+</div>
+
+
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-light text-center rounded p-4">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col"> Coupon code</th>
+                            <th scope="col">Expired</th>
+                            {% comment %} <th scope="col">Expiry date</th> {% endcomment %}
+                            <th scope="col">Action</th>  
+                        </tr>
+                    </thead>
+                     <tbody>
+                        {% for coupon in coupons %}
+                        <tr>
+                            <td>{{coupon.coupon_code}}</td>
+                            <td>{{coupon.expired}} </td>
+                            {% comment %} <td>{{coupon.expiry_date}}</td> {% endcomment %}
+                      
+                            <td>
+                                <a href=""class="btn btn-danger ">Deactivate</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        
+                    </tbody> 
+                </table>
+            </div>
+        </div>
+        
+    </div>
+</div>
+       
+
+
+{% endblock content %}

@@ -59,9 +59,9 @@ Checkout
                                                 </tr>
                                             </p>
                                             <p class="mb-0 text-black font-weight-bold">
-                                                <a class="text-primary mr-3" data-toggle="modal" data-target="#add-address-modal" href="#">
+                                                {% comment %} <a class="text-primary mr-3" data-toggle="modal" data-target="#add-address-modal" href="#">
                                                     <i class="icofont-ui-edit"></i> EDIT
-                                                </a> 
+                                                </a>  {% endcomment %}
                                                 <a class="text-danger" ndata-toggle="modal" data-target="#delete-address-modal" href="{% url 'delete_address2' id=address.id %}">
                                                     <i class="icofont-ui-delete"></i> DELETE
                                                 </a>
@@ -94,9 +94,11 @@ Checkout
                                 {% endfor %}
                                 <li><span>Subtotal</span> <span>{{cart.cart_total}}</span></li>
                                 <li><span>Shipping</span> <span>Free</span></li>
-                                <li><span>Apply Coupon</span> <span><input type="text" id="form3Examplea2" name="coupon_code" class="form-control form-control-lg" />
-                                    </span></li>
-                                <li><span>Total</span> <span>{{cart.cart_total}}</span></li>
+                                <li><span>Apply Coupon</span>
+                                    <span><input type="text" name="coupon" id="coupon-code" class="form-control form-control-lg" /></span>
+                                    <span> <button onclick="applyCoupon()" class="btn btn-sm btn-success">Apply</button></span>
+                                </li>
+                                <li><span>Total</span> <span id="total-price">{{grand_total}}</span></li>
                             </ul>
 
                             <div class="cart-page-heading mb-4">
@@ -122,13 +124,76 @@ Checkout
     </div>
 </div>
 <!-- ##### Checkout Area End ##### -->
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
- 
-    
+function applyCoupon() {
+    var code = $('#coupon-code').val();
+    console.log("dasdsd");
+    console.log(code);
+    $.ajax({
+        url: '{% url 'redeem_coupon' %}',
+        method: 'POST',
+        data: { code: code },
+
+        success: function(response) {
+            if (response.success) {
+                // Update the total price displayed on the page
+                $('#total-price').text(response.total_price);
+            } else {
+                // Display an error message to the user
+                alert(response.message);
+            }
+        }
+    });
+}
 </script>
 
+{% comment %} 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
+<script>
+var options = {
+    "key": "rzp_test_6lIsuXRQbFxRKa", // Enter the Key ID generated from the Dashboard
+    "amount": "payment.amount", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "brandfocus",
+    "description": "Purchase",
+    "image": "https://example.com/your_logo",
+    "order_id": "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "prefill": {
+        "email": "{{user.email}}",
+        "contact": "{{addr.mobile}}"
+    },
+    // "handler": function (response){
 
-		
+    //  window.location.href =`http://127.0.0.1:8000/orders/order_success?razorpay_payment_id=${response.razorpay_payment_id}&razorpay_order_id=${response.razorpay_order_id}`
+
+    // alert(response.razorpay_payment_id);
+    // alert(response.razorpay_order_id);
+    // alert(response.razorpay_signature)},
+    
+    "callback_url": "http://127.0.0.1:8000/payment_verification",
+   
+    
+    "theme": {
+        "color": "#FFA500" 
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+    alert(response.error.code);
+    alert(response.error.description);
+    alert(response.error.source);
+    alert(response.error.step);
+    alert(response.error.reason);
+    alert(response.error.metadata.order_id);
+    alert(response.error.metadata.payment_id);
+});
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}  
+
+</script> {% endcomment %}
+
 {% endblock content %}

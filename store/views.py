@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 # from django.http import HttpResponse
 from django.contrib.auth import login, authenticate,logout
 from customers.models import Account,Addresses
-from orders.models import Orders    
+from orders.models import Orders ,Coupons   
+from django.views.decorators.http import require_POST
 
 # from django.contrib import messages,auth
 from django.contrib.auth.decorators import login_required
@@ -190,31 +191,26 @@ def update_cart_quantity(request):
    
   if request.method == 'POST':
     email = request.user
-    print(email)
+   # print(email)
     data          = request.POST
     total        = 0
     cartitems    = 0
     item_id      = data.get('item_id')
-    print(item_id)
+   # print(item_id)
     cart_item    = CartItem.objects.get(id=item_id)
-    print(cart_item)
+   # print(cart_item)
     quantity     = data.get('quantity')
     cart_item    = CartItem.objects.get(id=item_id)
     cart         = Cart.objects.filter(customer = request.user)
     
     
     product_id   = cart_item.product.id
-    product       = Products.objects.get(id=product_id)
-    print(product_id)
-    print(product)
     size       = cart_item.size
     size_obj    = Size.objects.get(size=size)
-    print(size)
+    #print(size)
     variant = Variants.objects.get(variant_product=product_id,variant_size=size_obj.id)
     stock = variant.variant_stock
 
-    print(stock)
-    print(quantity)
     if stock < int(quantity):
         print('error message')
         response_data = {
@@ -270,9 +266,22 @@ def checkout(request):
     cartitems = CartItem.objects.filter(cart=cart)
     user      = request.user
     addresses = Addresses.objects.filter(user_id=user)
+   
+    grand_total = 0
+    for items in cartitems:
+        grand_total += items.product_qty * items.product.product_price
+    print(grand_total)
     
-    return render(request,'checkout.html',{'cart':cart,'cartitems':cartitems,'addresses':addresses, 'Orders':Orders })
-
+    return render(request,'checkout.html',{'cart':cart,'cartitems':cartitems,'addresses':addresses, 'Orders':Orders ,'grand_total':grand_total})
+@require_POST
+def redeem_coupon(request):
+    code = request.POST.get('code')
+    try:
+        coupon = Coupons.objects.get(code=code)
+        request.session['coupon_id'] = coupon.id
+        return JsonResponse({'success': True})
+    except Coupons.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Invalid coupon code'})
 
 def add_checkout_address(request):
     user = request.user

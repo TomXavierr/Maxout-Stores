@@ -3,7 +3,7 @@ from store.models import *
 from .models import *
 from customers.models import *
 import uuid
-
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 
@@ -49,6 +49,36 @@ def place_order(request):
             request.session['order_id'] = order_id
         return redirect('order_success_page')
         
+# @csrf_exempt
+# def payment_verification(request):
+    
+#             try:
+#                   payment_id = request.POST.get('razorpay_payment_id','')
+#                   order_id = request.POST.get('razorpay_order_id','')
+#                   signature = request.POST.get('razorpay_signature','')
+#                   params_dict = {
+#                         'razorpay_payment_id':payment_id ,
+#                         'razorpay_order_id': order_id ,
+#                         'razorpay_signature':signature
+#                   }
+
+#                   print(payment_id,'id')
+#                   print(order_id,'order')
+#                   print(signature,'signat')
+#             except:
+#                   pass
+#             try:
+#                 client.utility.verify_payment_signature(params_dict)
+#             except:
+#                   messages.info(request,'Payment Failed')
+#                   print('failed')
+#                   return redirect('checkout')
+            
+            
+#             request.session['payment_id'] = payment_id
+           
+#             return redirect('placeorder')
+
 
 def order_success_page(request):
     order       = Orders.objects.get(order_id=request.session['order_id'])

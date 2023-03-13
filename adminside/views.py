@@ -3,7 +3,7 @@ from django.contrib import messages,auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate,logout
 from customers.models import Account
-from store.models import Products,Brand,Sport,Category,Variants,Banners,Size,Image
+from store.models import Products,Brand,Sport,Category,Variants,Banners,Size,Image,Coupons
 from django.views.decorators.cache import cache_control
 from django.core.paginator import Paginator
 from orders.models import Orders
@@ -43,9 +43,9 @@ def admin_login(request):
         return render(request,'admin_login.html')
     # else:
     #     return redirect('admin_dash')
-    
+@login_required(login_url='admin_login')   
 def admin_logout(request):
-    logout(request)
+    auth.logout(request)
     del request.session['admin']
     return redirect('admin_login')
 
@@ -220,7 +220,7 @@ def delete_product(request,id):
     return redirect('product_list')
 
 #================================Functions for categories=======================================
-
+@login_required(login_url='admin_login')
 def variant_list(request):
     if request.user.is_superuser: 
         variants   =  Variants.objects.all().order_by('id')
@@ -234,7 +234,7 @@ def variant_list(request):
         return render(request,'variants.html',{'variants':page_variants})
     else:
         return redirect('home')
-
+@login_required(login_url='admin_login')
 def add_variant(request):
     products   = Products.objects.all()
     sizes      = Size.objects.all()
@@ -316,6 +316,7 @@ def delete_variant(request,id):
     variant.delete()
     return redirect('variant_list')
 
+@login_required(login_url='admin_login')
 def search_variant(request):
     if request.method=='GET':
         searchterm =request.GET.get('searchterm')
@@ -327,14 +328,15 @@ def search_variant(request):
         return redirect('variant_list')
 
 #================================Functions for Banners=======================================
-
+@login_required(login_url='admin_login')
 def banners(request):
     if request.user.is_superuser: 
         banners   =  Banners.objects.all().order_by('id')
         return render(request,'banners.html',{'banners':banners})
     else:
         return redirect('home')
-    
+ 
+@login_required(login_url='admin_login')   
 def add_banners(request):
     if request.method == 'POST':
         name                   = request.POST['name']
@@ -351,6 +353,7 @@ def add_banners(request):
 
 #================================Functions for categories=======================================
 
+@login_required(login_url='admin_login')
 def category_list(request):
     if request.user.is_superuser:
         categories   =  Category.objects.all
@@ -358,6 +361,7 @@ def category_list(request):
     else:
         return redirect('home')
 
+@login_required(login_url='admin_login')
 def add_category(request):
     if request.method == 'POST':
         category_name        = request.POST['category_name']
@@ -384,7 +388,7 @@ def delete_category(request,id):
 
 
 #=====================================Functions for brands============================================
-
+@login_required(login_url='admin_login')
 def brand_list(request):
     if request.user.is_superuser:
         brands   =  Brand.objects.all
@@ -419,7 +423,7 @@ def delete_brand(request,id):
 
 
 #=====================================Functions for Sports============================================
-
+@login_required(login_url='admin_login')
 def sport_list(request):
     sports   =  Sport.objects.all
     return render(request,'sport_list.html',{'sports':sports})
@@ -453,9 +457,11 @@ def orders(request):
     orders    = Orders.objects.all().order_by('id')
     return render(request,'orders_list.html',{'orders':orders})
 
+@login_required(login_url='admin_login')
 def order_info(request,id):
     pass
 
+@login_required(login_url='admin_login')
 def update_orders(request,id):
     if request.method == 'POST':
         
@@ -466,3 +472,27 @@ def update_orders(request,id):
         order.status = status
         order.save()
         return redirect('orders')
+    
+@login_required(login_url='admin_login')   
+def coupons(request):
+    coupons   =  Coupons.objects.all
+    return render(request,'coupons_list.html',{'coupons':coupons}) 
+
+@login_required(login_url='admin_login')
+def add_coupon(request):
+    # if request.method == 'POST':
+        code = request.POST['code']
+        minimum_amount = request.POST['minimum_amount']
+        discount_price = request.POST['discount_price']
+    
+
+        coupon = Coupons(
+            coupon_code = code,
+            minimum_amount = minimum_amount,
+            discount_price = discount_price
+        )
+
+        coupon.save()
+        messages.warning(request,'Coupon added successfully')
+        return redirect('coupons')
+   
