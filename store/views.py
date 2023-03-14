@@ -191,14 +191,14 @@ def update_cart_quantity(request):
    
   if request.method == 'POST':
     email = request.user
-   # print(email)
+    # print(email)
     data          = request.POST
     total        = 0
     cartitems    = 0
     item_id      = data.get('item_id')
-   # print(item_id)
+    # print(item_id)
     cart_item    = CartItem.objects.get(id=item_id)
-   # print(cart_item)
+    # print(cart_item)
     quantity     = data.get('quantity')
     cart_item    = CartItem.objects.get(id=item_id)
     cart         = Cart.objects.filter(customer = request.user)
@@ -226,7 +226,6 @@ def update_cart_quantity(request):
     print(Sub_total)
     
     
-    
     cart_items = CartItem.objects.filter(cart__customer__email = email )
     print(cart_items)
     
@@ -236,20 +235,15 @@ def update_cart_quantity(request):
     print(total)
     print(cartitems)
     
-    # grand_total = (total+tax)
    
     return JsonResponse({
       'quantity': quantity,
       'total': total,
       'cartitems':cartitems,
-    #   'grand_total':grand_total, 
       'Sub_total':Sub_total,
     })
   else:
     return JsonResponse({})
-
-
-    
     
 def delete_cartitem(request,id):
     
@@ -275,13 +269,32 @@ def checkout(request):
     return render(request,'checkout.html',{'cart':cart,'cartitems':cartitems,'addresses':addresses, 'Orders':Orders ,'grand_total':grand_total})
 @require_POST
 def redeem_coupon(request):
-    code = request.POST.get('code')
-    try:
-        coupon = Coupons.objects.get(code=code)
-        request.session['coupon_id'] = coupon.id
-        return JsonResponse({'success': True})
-    except Coupons.DoesNotExist:
-        return JsonResponse({'success': False, 'message': 'Invalid coupon code'})
+     
+    if request.method == 'POST':
+        email = request.user
+        data           = request.POST
+        grand_total          = 0
+     
+        coupon_code    = data.get('code')
+        sub_total      = data.get('sub_total')
+        print(coupon_code)
+        print(sub_total)
+        try:
+            coupon = Coupons.objects.get(coupon_code=coupon_code)
+            request.session['coupon_code'] = coupon.coupon_code
+            discount  = coupon.discount_price
+            print(discount)
+            grand_total = float(sub_total) - discount
+            print(grand_total)
+            return JsonResponse({
+                'success': True,
+                'grand_total': grand_total,
+                })
+        
+        
+        
+        except Coupons.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Invalid coupon code'})
 
 def add_checkout_address(request):
     user = request.user

@@ -4,50 +4,67 @@ from .models import *
 from customers.models import *
 import uuid
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 # Create your views here.
 
 
-def place_order(request):
+def place_cod_order(request):
     
     if request.method == 'POST':
-        address        = request.POST['address']
-        payment_method = request.POST['payment_method']
+        data           = request.POST
+        address        = data.get('address_id')
+        coupon_code    = data.get('coupon_code')
+        payment_method = 'COD'
         print(address)
-        print(payment_method)  
+        print(coupon_code)
+        
         order_id    = uuid.uuid4().hex[:8].upper()
         user        = request.user
         cart        = Cart.objects.get(customer=user)
-        cart_total  = cart.cart_total
-        grand_total = cart_total
+        sub_total   = cart.cart_total
         cart_items  = CartItem.objects.filter(cart__customer=user)
         print(cart)
         print(cart_items)
-        print(cart_total)
-         
-        if payment_method == 'COD':
-            order =  Orders.objects.create(
-                order_id          = order_id,
-                user              = user,
-                delivery_address  = Addresses.objects.get(id=address),
-                order_total       = cart_total,
-                payment_method    = payment_method,
-                grand_total       = grand_total,
-                cart              = cart,          
+        print(sub_total)
+        
+        
+        if coupon_code:
+            coupon = Coupons.objects.get(coupon_code=coupon_code)
+            discount = coupon.discount_price
+            grand_total = float(sub_total) - discount
+        else:
+            discount = 0
+            grand_total = sub_total
+
+        
+        order =  Orders.objects.create(
+            order_id          = order_id,
+            user              = user,
+            delivery_address  = Addresses.objects.get(id=address),
+            order_total       = sub_total,
+            payment_method    = payment_method,
+            grand_total       = grand_total,
+            cart              = cart,          
+        )
+        order.save()
+        
+        for item in cart_items:
+            orderitem = OrderItem.objects.create(
+                order      = order,
+                product    = item.product,
+                size       = item.size,
+                quantity   = item.product_qty,
+                price      = item.product.product_price,
             )
-            order.save()
-            
-            for item in cart_items:
-                orderitem = OrderItem.objects.create(
-                    order      = order,
-                    product    = item.product,
-                    size       = item.size,
-                    quantity   = item.product_qty,
-                    price      = item.product.product_price,
-                )
-                orderitem.save()
-            cart_items.delete()
-            request.session['order_id'] = order_id
-        return redirect('order_success_page')
+            orderitem.save()
+        cart_items.delete()
+        
+        request.session['order_id'] = order_id
+        
+        
+        return JsonResponse  ({'success': True})
+        # else:
+        #     return redirect('order_success_page')
         
 # @csrf_exempt
 # def payment_verification(request):
