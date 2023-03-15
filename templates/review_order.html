@@ -1,0 +1,146 @@
+{% extends 'storebase.html' %}
+{% load static %}
+
+{% block title %}
+Checkout
+{% endblock title %}
+
+
+{% block content %}
+
+<!-- ##### Breadcumb Area Start ##### -->
+<div class="breadcumb_area bg-img" style="">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <div class="page-title text-center">
+                    <h2>Review you order</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ##### Breadcumb Area End ##### -->
+
+
+<!-- ##### Checkout Area Start ##### -->
+<div class="checkout_area section-padding-80">
+    <div class="container">
+    {% comment %} <form  method="post" action="{% url 'place_order' %}"> {% endcomment %}
+        {% csrf_token %}
+        <div class="row">
+                <div class="col-12 col-md-6">
+                    <div class="checkout_details_area mt-50 clearfix">
+                        <div class="cart-page-heading mb-30">
+                            <h5>Billing Address</h5>
+                        </div>
+                        
+                        <div class="col-md-7">
+                            <div class="bg-white card addresses-item mb-4 border border-primary shadow">
+                                <div class="gold-members p-4">
+                                    <div class="media">
+                                        <div class="mr-3">
+                                            <i class="icofont-ui-home icofont-3x"></i>
+                                        </div>
+                                        <div class="media-body">
+                                            {% comment %} <h6 class="mb-1 text-secondary">Home</h6> {% endcomment %}
+                                            <p style="line-height: 5px;" class="text-black">
+                                                <tr>
+                                                    <p style="line-height: 5px;">{{address.first_name}} {{address.last_name}}</p>
+                                                    <p style="line-height: 5px;">{{address.house_name}}</p>
+                                                    <p style="line-height: 5px;">{{address.street_name}}</p>
+                                                    <p style="line-height: 5px;">{{address.city}}, {{address.district}}</p>
+                                                    <p style="line-height: 5px;">{{address.pincode}}, {{address.state}}</p>
+                                                    <p style="line-height: 5px;">{{address.mobile}}</p>
+                                                </tr>
+                                            </p>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                       
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-5 ml-lg-auto">
+                    <div class="order-details-confirmation">
+
+                        <div class="cart-page-heading">
+                            <h5>Your Order</h5>
+                            <p>The Details</p>
+                        </div>
+                        
+                            <ul class="order-details-form mb-4">
+                                <li><span>Product</span> <span>Total</span></li>
+                                {% for items in cart_items %}
+                                <li><span>{{items.product.product_name}} x {{items.product_qty}} </span> <span>₹ {{items.get_total}}</span></li>
+                                {% endfor %}
+                                <li><span>Subtotal</span> <span >₹ {{sub_total}}</span></li>
+                                <li><span>Discount</span> <span></span>₹ {{discount}}</li>
+                               
+                                <li><span>Total</span> <span id="total-price" value="{{grand_total}}">₹ {{grand_total}}</span></li>
+                            </ul>
+
+                            
+                            <button type="submit" class="btn essence-btn" id="rzp-button1">Proceed to pay</button>
+                    </div>
+                </div> 
+        </div>
+    </form>
+    </div>
+</div>
+<!-- ##### Checkout Area End ##### -->
+
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+var options = {
+    "key": "rzp_test_WV3YippkTn0iML", // Enter the Key ID generated from the Dashboard
+    "amount": "{{payment.amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "Maxout",
+    "description": "Purchase transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "prefill": {
+        "email": "{{user.email}}",
+        "contact": "{{addr.mobile}}"
+    },
+    // "handler": function (response){
+
+    //  window.location.href =`http://127.0.0.1:8000/orders/order_success?razorpay_payment_id=${response.razorpay_payment_id}&razorpay_order_id=${response.razorpay_order_id}`
+
+    // alert(response.razorpay_payment_id);
+    // alert(response.razorpay_order_id);
+    // alert(response.razorpay_signature)},
+    
+    "callback_url": "http://127.0.0.1:8000/orders/payment_verification",
+   
+    
+    "theme": {
+        "color": "#FFA500" 
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+    alert(response.error.code);
+    alert(response.error.description);
+    alert(response.error.source);
+    alert(response.error.step);
+    alert(response.error.reason);
+    alert(response.error.metadata.order_id);
+    alert(response.error.metadata.payment_id);
+});
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}  
+
+</script> 
+
+{% endblock content %}

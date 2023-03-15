@@ -226,7 +226,7 @@ def variant_list(request):
         variants   =  Variants.objects.all().order_by('id')
         
         
-        items_per_page = 10
+        items_per_page = 15
         paginator = Paginator(variants, items_per_page)
         page_number = request.GET.get('page')
         page_variants = paginator.get_page(page_number)

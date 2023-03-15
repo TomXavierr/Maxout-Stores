@@ -28,6 +28,7 @@ class Orders(models.Model):
     delivery_address    = models.ForeignKey(Addresses,on_delete=models.CASCADE)
     order_total         = models.DecimalField(max_digits=10, decimal_places=2, null=False,default=0)
     payment_method      = models.CharField(max_length=30,choices=PAYMENT_METHODS,null=True,blank=True)
+    discount_given      = models.DecimalField(max_digits=8, decimal_places=2, null=False,default=00)
     grand_total         = models.DecimalField(max_digits=10, decimal_places=2, null=False,default=0)
     
     cart                = models.ForeignKey(Cart,on_delete=models.CASCADE)

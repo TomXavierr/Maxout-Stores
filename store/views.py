@@ -13,6 +13,7 @@ from django.http import JsonResponse
 from django.db.models import Count
 from django.contrib import messages
 from customers.views import check_user
+import razorpay
 
 import re
 
@@ -267,6 +268,7 @@ def checkout(request):
     print(grand_total)
     
     return render(request,'checkout.html',{'cart':cart,'cartitems':cartitems,'addresses':addresses, 'Orders':Orders ,'grand_total':grand_total})
+
 @require_POST
 def redeem_coupon(request):
      
@@ -281,9 +283,10 @@ def redeem_coupon(request):
         print(sub_total)
         try:
             coupon = Coupons.objects.get(coupon_code=coupon_code)
-            request.session['coupon_code'] = coupon.coupon_code
+            request.session['coupon_code'] = coupon_code
             discount  = coupon.discount_price
             print(discount)
+            
             grand_total = float(sub_total) - discount
             print(grand_total)
             return JsonResponse({
@@ -295,6 +298,56 @@ def redeem_coupon(request):
         
         except Coupons.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Invalid coupon code'})
+
+# def checkout(request):
+#     total_price = 0
+#     discount = 0
+    
+#     user = users.objects.get(email=request.session.get('name'))
+#     cart = Cart.objects.filter(user=user)
+#     addr = Address.objects.filter(user=user,is_difault=True)
+#     for item in cart:
+#         total_price += item.product.price * item.quantity 
+
+#     if 'coupons' in request.session:
+#         coupons = request.session['coupons']
+#         coup = Coupon.objects.get(coupon_code =coupons )
+#         print(coup)
+#         discount = coup.discount
+#         print(discount)
+#         messages.info(request,'')
+#         Usedcoupoon.objects.create(user = user,Coupon = coup)
+#     coupon = Coupon.objects.all()
+    
+
+#     order_totel=total_price + 75
+#     shipping = 20
+#     payable =Decimal( (order_totel + shipping) - discount)
+#     amount_in_paisa = int(payable * 100)  
+
+#     # client = razorpay.Client(auth = (settings.key,settings.secret))
+#     client = razorpay.Client(auth = (settings.KEY,settings.SECRET))
+
+#     order_data = {
+#     'amount': amount_in_paisa,
+#     'currency': 'INR',
+# }
+
+
+#     payment = client.order.create(data=order_data)
+#     # context = {
+#     #     'order_totel':order_totel,
+#     #     'shipping':shipping,
+#     #     'payment':payment,
+
+
+#     # }
+   
+  
+   
+#     print(payment)
+#     return render(request,'checkout.html',locals())
+
 
 def add_checkout_address(request):
     user = request.user

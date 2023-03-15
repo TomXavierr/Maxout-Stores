@@ -45,7 +45,7 @@ My orders
 						</div>
 						<!-- User Name -->
 						<h5 class="text-center">{{user.username}}</h5>
-						<p>{{user.date_joined}}</p>
+						<p>Joined on {{user.date_joined|date:"d/m/Y" }}</p>
 					</div>
 					<!-- Dashboard Links -->
 					<div class="widget user-dashboard-menu">
@@ -68,56 +68,59 @@ My orders
 			</div>
 			<div class="col-md-10 offset-md-1 col-lg-8 offset-lg-0">
 				<div class="col-lg-9 col-md-8 col-12">
-                    <div class="pb-8 py-8">
-                      <!-- heading -->
-                      <h2 class="mb-6">Your Orders</h2>
-          
-                    
-                        <!-- Table -->
-                        <table class="table mb-0 text-nowrap">
-                          <!-- Table Head -->
-                          <thead class="table-light">
-                            <tr>
-                              <th class="border-0">Order</th>
-                              <th class="border-0">Amount</th>
-                              <th class="border-0">Date</th>
-                              <th class="border-0">Status</th>
-                              <th class="border-0"></th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                         
-                            {% for order in orders %}
-                            <tr id="">
-                              <td class="align-middle border-top-0">
-                                <a href="{% url 'order_details' id=order.id %}" class="text-inherit">{{order.order_id}}</a>
-                              </td>
-                              <td class="align-middle border-top-0">
-                                ₹ {{order.grand_total}}
-                              </td>
-                              <td class="align-middle border-top-0">
-                                {{order.order_date}}
-                              </td>
-                              <td class="align-middle border-top-0">
-                                <span class="badge" style="{%if order.status == 'Cancelled'%} background-color:red !important{%elif order.status == 'Orderpending'%} background-color:yellow !important{%elif order.status == 'Delivered'%} background-color:green !important{%else%} background-color:blue !important{%endif%};" >{{order.status}}</span>
-                              </td>
-                              <td class="align-middle border-top-0">
-                                {% if order.status == 'Delivered' %}
-                                  <a  href=""><button class="badge bg-danger" >Return</button></a>
-                                {% else %}
-                                <a  href="{% url 'cancel_order' id=order.id %}"><button class="badge bg-danger" >Cancel</button></a>
-                                {% endif %}
+          <div class="pb-8 py-8">
+            <!-- heading -->
+            <h2 class="mb-6">Your Orders</h2>
+            <div class="table-responsive border-0">
+              <!-- Table -->
+              <table class="table mb-0 text-nowrap">
+                <!-- Table Head -->
+                <thead class="table-light">
+                  <tr>
+                    <th class="border-0">Order</th>
+                    <th class="border-0">Amount</th>
+                    <th class="border-0">Payment method</th>
+                    <th class="border-0">Date</th>
+                    <th class="border-0">Status</th>
+                    <th class="border-0"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                
+                  {% for order in orders %}
+                  <tr id="">
+                    <td class="align-middle border-top-0">
+                      <a href="{% url 'order_details' id=order.id %}" class="text-inherit">{{order.order_id}}</a>
+                    </td>
+                    <td class="align-middle border-top-0">
+                      ₹ {{order.grand_total}}
+                    </td>
+                    <td class="align-middle border-top-0">
+                      ₹ {{order.payment_method}}
+                    </td>
+                    <td class="align-middle border-top-0">
+                      {{order.order_date|date:"d/m/Y" }}
+                    </td>
+                    <td class="align-middle border-top-0">
+                      <span class="badge" style="{%if order.status == 'Cancelled'%} background-color:red !important{%elif order.status == 'Orderpending'%} background-color:yellow !important{%elif order.status == 'Delivered'%} background-color:green !important{%else%} background-color:blue !important{%endif%};" >{{order.status}}</span>
+                    </td>
+                    <td class="align-middle border-top-0">
+                      {% if order.status == 'Delivered' %}
+                        <a  href=""><button class="badge bg-danger" >Return</button></a>
+                      {% else %}
+                      <a  href="{% url 'cancel_order' id=order.id %}"><button class="badge bg-danger" >Cancel</button></a>
+                      {% endif %}
 
-                              </td>
-                              
-                            </tr>
-                            {% endfor %}
-                          
-                          </tbody>
-                        </table>
+                    </td>
                     
-                    </div>
-                  </div>
+                  </tr>
+                  {% endfor %}
+                
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
 			</div>
 		</div>
 </section>

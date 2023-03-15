@@ -105,13 +105,13 @@ Checkout
                             
                             <div class="form-check mb-4">
                                 <label>
-                                    <input onclick="proceed_cod()" type="radio"  name="payment_method" value="COD">
+                                    <input onclick="proceed_cod()" type="radio"  name="payment_method" checked>
                                         COD
                                 </label>
                             </div>
                             <div class="form-check mb-4">
                                 <label>
-                                    <input onclick="proceed_razor()" type="radio"  name="payment_method" value="COD">
+                                    <input onclick="proceed_razor()" type="radio"  name="payment_method">
                                         Razorpay
                                 </label>  
                             </div>
@@ -119,9 +119,9 @@ Checkout
                             <div>
                                     <span> <input type="hidden" name="cart_id" value="{{ cart.id }}"> </span>
                             </div>{% csrf_token %} 
-                            <button onclick="place_cod_order()" class="btn essence-btn" id ="COD_BTN" style="display:none">Place Order</button>
+                            <button onclick="place_cod_order()" class="btn essence-btn" id ="COD_BTN" style="display:block">Place Order</button>
                             
-                            <button onclick="razorpay()" class="btn essence-btn" id="rzp-button1" style="display:none">Payment</button>
+                            <button onclick="razorpay()" class="btn essence-btn" id="rzp-button1" style="display:none">Review payment</button>
                     </div>
                 </div>
         </div>
@@ -160,6 +160,19 @@ function applyCoupon() {
 }
 </script>
 
+{% comment %} Button change function {% endcomment %}
+<script>
+    function proceed_cod(){
+        document.getElementById('COD_BTN').style.display ='block'
+        document.getElementById('rzp-button1').style.display = 'none'
+        
+    }
+    function proceed_razor(){
+        document.getElementById('rzp-button1').style.display ='block'
+        document.getElementById('COD_BTN').style.display = 'none'
+    }
+</script>
+
 
 <script>
     function place_cod_order() {
@@ -168,8 +181,6 @@ function applyCoupon() {
       
         console.log(address_id);
         console.log(coupon_code);
-        
-        
         
         $.ajax({
             url: '{% url 'place_cod_order' %}',
@@ -192,69 +203,31 @@ function applyCoupon() {
     
 </script>
 
-
 <script>
-    function proceed_cod(){
-        document.getElementById('COD_BTN').style.display ='block'
-        document.getElementById('rzp-button1').style.display = 'none'
+    function razorpay() {
+        var address_id = $("input[name='address']:checked").val();
+        console.log(address_id);
         
+        $.ajax({
+            url: '{% url 'review_order' %}',
+            method: 'POST',
+            data: {
+                'address_id': address_id,
+                'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+            },
+            dataType: 'json',
+            success: function(response) {
+                window.location.href = '{% url 'payment' %}'
+                // Handle the success response
+            },
+            error: function(xhr, status, error) {
+                // Handle the error response
+            }
+        });
     }
-    function proceed_razor(){
-        document.getElementById('rzp-button1').style.display ='block'
-        document.getElementById('COD_BTN').style.display = 'none'
-    }
+    
 </script>
 
 
-
-
-
-{% comment %} 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-<script>
-var options = {
-    "key": "rzp_test_6lIsuXRQbFxRKa", // Enter the Key ID generated from the Dashboard
-    "amount": "payment.amount", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-    "currency": "INR",
-    "name": "brandfocus",
-    "description": "Purchase",
-    "image": "https://example.com/your_logo",
-    "order_id": "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-    "prefill": {
-        "email": "{{user.email}}",
-        "contact": "{{addr.mobile}}"
-    },
-    // "handler": function (response){
-
-    //  window.location.href =`http://127.0.0.1:8000/orders/order_success?razorpay_payment_id=${response.razorpay_payment_id}&razorpay_order_id=${response.razorpay_order_id}`
-
-    // alert(response.razorpay_payment_id);
-    // alert(response.razorpay_order_id);
-    // alert(response.razorpay_signature)},
-    
-    "callback_url": "http://127.0.0.1:8000/payment_verification",
-   
-    
-    "theme": {
-        "color": "#FFA500" 
-    }
-};
-var rzp1 = new Razorpay(options);
-rzp1.on('payment.failed', function (response){
-    alert(response.error.code);
-    alert(response.error.description);
-    alert(response.error.source);
-    alert(response.error.step);
-    alert(response.error.reason);
-    alert(response.error.metadata.order_id);
-    alert(response.error.metadata.payment_id);
-});
-document.getElementById('rzp-button1').onclick = function(e){
-    rzp1.open();
-    e.preventDefault();
-}  
-
-</script> {% endcomment %}
 
 {% endblock content %}

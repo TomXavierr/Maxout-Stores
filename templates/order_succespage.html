@@ -54,12 +54,12 @@ success
                    </div>
        
                    <div class="d-flex justify-content-between pt-2">
-                     <p class="text-muted mb-0">Invoice Number : </p>
-                     <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span> </p>
+                     <p class="text-muted mb-0">Order ID : {{order.order_id}}</p>
+                     <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span>{{order.discount_given}} </p>
                    </div>
        
                    <div class="d-flex justify-content-between">
-                     <p class="text-muted mb-0">Invoice Date : {{order.order_date}}
+                     <p class="text-muted mb-0">Order Date : {{order.order_date|date:"d/m/Y" }}
                      
                    </div>
        
