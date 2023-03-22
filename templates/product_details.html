@@ -69,7 +69,12 @@
                     <button onclick="addToCart({{details.id}})" class="btn essence-btn">Add to cart</button>
                     <!-- Favourite -->
                     <div class="product-favourite ml-4">
-                        <a href="#" class="favme fa fa-heart"></a>
+                        <a data-product-id="{{ details.id }}" 
+                            class="favme fa fa-heart{% if in_wishlist == True %} active{% endif %}" 
+                            onclick="addToWishlist({{ details.id }})">
+                        </a>
+                        {% comment %} <a  onclick="addToWishlist({{details.id}})"class="favme active fa fa-heart "></a> {% endcomment %}
+                        
                     </div> 
                 </div>
             
@@ -107,7 +112,31 @@
             
         });
     }
-    
+
+
+    function addToWishlist(productId) {
+        var favme = $('a[data-product-id="' + productId + '"]');
+        var csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
+        console.log(productId)
+        $.ajax({
+            type: "POST",
+            url: "{% url 'toggle_wishlist' %}",
+            data: {
+                product_id: productId,
+                csrfmiddlewaretoken: csrftoken
+            },
+            success: function(response) {
+                if (response.status === 'added') {
+                    console.log(productId)
+                    favme.addClass('active');
+
+
+                } else if (response.status === 'removed') {
+                    favme.removeClass('active');
+                }
+            }
+        });
+    }
 </script>
     
     <!-- ##### Single Product Details Area End ##### -->

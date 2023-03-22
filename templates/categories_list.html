@@ -10,8 +10,10 @@ Category List
 <div>
     <nav class="navbar navbar-expand bg-light navbar-light  px-4 py-0">
         <div>
-            <form class="d-none d-md-flex ms-4">
-                <input class="form-control border-0" type="search" placeholder="Search">
+            <form class="d-flex" action="{% url 'search_category' %}" method="get">
+                {% csrf_token %}
+                <input class="form-control me-2" type="search" name="searchterm" placeholder="Search Variant" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
         </div>
        

@@ -3,6 +3,11 @@ from . import views
 
 urlpatterns = [
      path('cart',views.cart,name='cart'),
+     # path('add-to-wishlist/', views.add_to_wishlist, name='add_to_wishlist'),
+     
+     path('shop',views.shop,name='shop'),
+     path('all_sport/<id>',views.all_sport,name='all_sport'),
+     path('all_brands/<id>',views.all_brands,name='all_brands'),
      
      path('mens',views.mens_store,name='men'),
      path('mens_sport/<id>',views.mensSport,name='mens_sport'),
@@ -21,6 +26,10 @@ urlpatterns = [
      path('add_to_cart',views.add_to_cart,name='add_to_cart'),
      path('update_cart_quantity',views.update_cart_quantity,name="update_cart_quantity"),
      path('delete_cartitem/<int:id>',views.delete_cartitem,name="delete_cartitem"),
+     
+     path('wishlist',views.wishlist,name="wishlist"),
+     path('toggle_wishlist',views.toggle_wishlist,name='toggle_wishlist'),
+     path('delete_wishlist_item/<int:id>',views.delete_wishlist_item,name='delete_wishlist_item'),
      
      path('checkout',views.checkout,name="checkout"),
      path('add_checkout_address',views.add_checkout_address,name="add_checkout_address"),

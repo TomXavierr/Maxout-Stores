@@ -105,15 +105,15 @@ store
 
                             <div class="widget-desc">
                                 <div class="slider-range">
-                                    <div data-min="49" data-max="360" data-unit="$" class="slider-range-price ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" data-value-min="49" data-value-max="360" data-label-result="Range:">
+                                    <div data-min="1000" data-max="25000" data-unit="₹" class="slider-range-price ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" data-value-min="1000" data-value-max="25000" data-label-result="Range:">
                                         <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
                                         <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
                                         <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
                                     </div>
-                                    <div class="range-price">Range: $49.00 - $360.00</div>
+                                    <div class="range-price">Range: ₹1000 - ₹25000</div>
                                 </div>
                             </div>
-                        </div>
+                        </div> 
 
                         <!-- ##### Single Widget ##### -->
                         <div class="widget color mb-50">
@@ -184,9 +184,9 @@ store
                                             <span>-30%</span>
                                         </div> {% endcomment %}
                                         <!-- Favourite -->
-                                        <div class="product-favourite">
-                                            <a href="#" class="favme fa fa-heart"></a>
-                                        </div>
+                                        {% comment %} <div class="product-favourite">
+                                            <a href="#" class="favme fa fa-heart" data-product-id="{{ product.id }}"></a>
+                                        </div> {% endcomment %}
                                     </div>
                                 
                                     <!-- Product Description -->
@@ -231,6 +231,32 @@ store
         </div>
     </section>
     <!-- ##### Shop Grid Area End ##### -->
+
+<script>
+    $(document).ready(function() {
+        $('.product-favourite .favme').click(function(e) {
+            e.preventDefault();
+            var product_id = $(this).data('product-id');
+            $.ajax({
+                type: "POST",
+                url: "/add-to-wishlist/",
+                data: {
+                    'product_id': product_id,
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(response) {
+                    if (response['status'] == 'success') {
+                        alert('Product added to wishlist!');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+
 
 {% endblock content %}
   

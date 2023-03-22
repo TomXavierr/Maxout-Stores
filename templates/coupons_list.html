@@ -69,7 +69,7 @@ Coupon List
                     <thead>
                         <tr>
                             <th scope="col"> Coupon code</th>
-                            <th scope="col">Expired</th>
+                            <th scope="col">Active status</th>
                             {% comment %} <th scope="col">Expiry date</th> {% endcomment %}
                             <th scope="col">Action</th>  
                         </tr>
@@ -82,7 +82,12 @@ Coupon List
                             {% comment %} <td>{{coupon.expiry_date}}</td> {% endcomment %}
                       
                             <td>
-                                <a href=""class="btn btn-danger ">Deactivate</a>
+                              {% if not coupon.expired %}
+                              <a href="{% url 'deactivateCoupon' id=coupon.id %}"><button type="button" class="btn btn-danger">Deactivate</button></a>
+                              {% else %}
+                              <a href="{% url 'activateCoupon' id=coupon.id %}"><button type="button" class="btn btn-success">Activate</button></a>
+                              {% endif %}
+                          
                             </td>
                         </tr>
                         {% endfor %}

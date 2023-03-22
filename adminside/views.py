@@ -386,7 +386,15 @@ def delete_category(request,id):
     category.delete()
     return redirect('category_list')
 
-
+def search_category(request):
+    if request.method=='GET':
+        searchterm =request.GET.get('searchterm')
+        print(searchterm)
+        categories=Category.objects.filter(category_name__icontains = searchterm)
+        return render(request,'categories_list.html',{'categories':categories})
+    else:
+        print('Nothing similar')
+        return redirect('categories_list')
 #=====================================Functions for brands============================================
 @login_required(login_url='admin_login')
 def brand_list(request):
@@ -496,3 +504,15 @@ def add_coupon(request):
         messages.warning(request,'Coupon added successfully')
         return redirect('coupons')
    
+def deactivateCoupon(request,id):
+    coupon = Coupons.objects.get(id=id)
+    coupon.expired = True
+    coupon.save()
+    return redirect('coupons')
+
+
+def activateCoupon(request,id):
+    coupon = Coupons.objects.get(id=id)
+    coupon.expired = False
+    coupon.save()
+    return redirect('coupons')

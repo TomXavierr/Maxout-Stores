@@ -43,8 +43,37 @@
                                 <!-- Nav Start -->
                                 <div class="classynav">
                                     <ul>
-                                        
-                                        <li><a href="{% url 'men' %} ">Mens</a>
+                                        <li><a href="{% url 'shop' %}">Shop</a>
+                                            <div class="megamenu">
+                                                <ul class="single-mega cn-col-4">
+                                                    <li class="title">Shop By Sport</li>
+                                                    {% for sport in sports %}
+                                                    <li><a href="{% url 'all_sport' sport.id %}">{{sport.sport_name}}</a></li> 
+                                                    {% endfor %}
+                                                    
+                                                </ul>
+                                                <ul class="single-mega cn-col-4">
+                                                    <li class="title">Shop by Brand</li>
+                                                    {% for brand in brands %}
+                                                    <li><a href="{% url 'all_brands' brand.id %}">{{brand.brand_name}}</a></li> 
+                                                    {% endfor %}
+                                                </ul>
+                                                {% comment %} <ul class="single-mega cn-col-4">
+                                                    <li class="title">Shoes</li>
+                                                    <li><a href="shop.html">All Shoes</a></li>
+                                                    
+                                                </ul>
+                                                <ul class="single-mega cn-col-4">
+                                                    <li class="title">Clothing</li>
+                                                    <li><a href="shop.html">All Clothing</a></li>
+                                                    <li><a href="shop.html">Tops & T-Shirts</a></li>
+                                                    <li><a href="shop.html">Pants & Leggings</a></li>
+                                                    <li><a href="shop.html">Accessories</a></li>
+                                                    <li><a href="shop.html">Shorts & Skirts</a></li>
+                                                </ul> {% endcomment %}
+                                            </div>
+                                        </li>
+                                        <li><a href="{% url 'men' %} ">Men</a>
                                             <div class="megamenu">
                                                 <ul class="single-mega cn-col-4">
                                                     <li class="title">Shop By Sport</li>
@@ -104,9 +133,6 @@
                                                 </ul> {% endcomment %}
                                             </div>
                                         </li>
-                                        </li>
-                                      
-                                        <li><a href="#">Contact</a></li>
                                     </ul>
                                 </div>
                                 <!-- Nav End -->
@@ -124,7 +150,7 @@
                             </div>
                             <!-- Favourite Area -->
                             <div class="favourite-area">
-                                <a href="#"><img src="{% static 'user/img/core-img/heart.svg' %}" alt="" /></a>
+                                <a href="{% url 'wishlist' %}"><img src="{% static 'user/img/core-img/heart.svg' %}" alt="" /></a>
                             </div>
                             <!-- User Login Info -->
                             <div class="user-login-info">

@@ -125,6 +125,7 @@ def verify_signup(request):
             user.is_verified = True
             user.save()
             cart = Cart.objects.create(customer=user)
+            wishlist  = Wishlist.objects.create(user=user)
             del request.session['email'] 
             del request.session['otp']
             

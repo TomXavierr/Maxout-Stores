@@ -9,13 +9,18 @@ Cart
 
 {% block content %}
 	<!-- Shoping Cart -->
+	
 	<section class="h-100 gradient-custom">
 		<div class="container py-5">
 		  <div class="row d-flex justify-content-center my-4">
 			<div class="col-md-8">
 			  <div class="card mb-4">
 				<div class="card-header py-3">
-				  <h5 class="mb-0"><span  id="cartitems">{{cart.get_cart_items}}</span><span> items in your cart</span> </h5>
+					{% if cart.get_cart_items > 0 %}
+				  		<h5 class="mb-0"><span  id="cartitems">{{cart.get_cart_items}}</span><span> items in your cart</span> </h5>
+				 	{% else %}
+					 <h5 class="mb-0"><span> Oops ! Your cart is Empty</span>
+					{% endif %}
 				</div>
 
 				<div class="card-body">
@@ -112,17 +117,19 @@ Cart
 					  <span  id="cart_total"><strong>{{cart.cart_total}}</strong></span>
 					</li>
 				  </ul>
-	  
+				  {% if cart.get_cart_items > 0 %}
 				  <a href="{% url 'checkout' %}"><button type="button" class="btn essence-btn btn-lg btn-block">
 					Go to checkout
 				  </button></a>
+				  {% else %}
+				  {% endif %}
 				</div>
 			  </div>
 			</div>
 		  </div>
 		</div>
-	  </section>
-
+	</section>
+	
 
 
 	  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

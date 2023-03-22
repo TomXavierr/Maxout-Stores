@@ -91,8 +91,11 @@ class Coupons(models.Model):
         return self.coupon_code
 
 class Wishlist(models.Model):
-    user_id = models.ForeignKey(Account,on_delete=models.CASCADE)
-    variant = models.ForeignKey(Variants,on_delete=models.CASCADE)
+    user = models.ForeignKey(Account,on_delete=models.CASCADE)
+    
+class WishlistItems(models.Model):
+    product                    = models.ForeignKey(Products, on_delete=models.CASCADE)
+    wishlist                   = models.ForeignKey(Wishlist, on_delete=models.CASCADE)
 
 class Banners(models.Model):
     name                     = models.CharField(max_length=30,null=False)
@@ -111,3 +114,6 @@ class Brand(models.Model):
 class Sport(models.Model):
     sport_name                 = models.CharField(max_length=100)
 
+class Wallet(models.Model):
+    user                = models.ForeignKey(Account,on_delete=models.CASCADE)
+    balance             = models.DecimalField(max_digits=8, decimal_places=2, default=0)

@@ -14,13 +14,29 @@ from django.db.models import Count
 from django.contrib import messages
 from customers.views import check_user
 import razorpay
-
 import re
 
 # Create your views here.
 
-@login_required(login_url='user_login') 
-@check_user
+
+
+def shop(request):
+    
+    products     = Products.objects.all()
+    variants     = Variants.objects.filter(variant_product__in = products )
+    count = products.count()
+    sports       =  Sport.objects.all()
+    brands       = Brand.objects.all()
+    if 'user' in request.session:
+        cart      = Cart.objects.get(customer = request.user)
+        cartitems = CartItem.objects.filter(cart= cart)
+        total     = cartitems.count
+    
+    
+    return render(request,'store.html',locals())
+
+ 
+
 def mens_store(request):
     
     products     = Products.objects.filter(product_gender = 'Men')
@@ -29,112 +45,138 @@ def mens_store(request):
     sports       =  Sport.objects.all()
     brands       = Brand.objects.all()
     
-    cart      = Cart.objects.get(customer = request.user)
-    cartitems = CartItem.objects.filter(cart= cart)
-    total     = cartitems.count
-    context   = {'products':products,'count': count, 'variants': variants , 'cart_count':total, 'sports':sports ,'brands':brands  }
+    if 'user' in request.session:
+        cart      = Cart.objects.get(customer = request.user)
+        cartitems = CartItem.objects.filter(cart= cart)
+        total     = cartitems.count
     
-    return render(request,'store.html',context)
+    
+    return render(request,'store.html',locals())
 
 
-@login_required(login_url='user_login') 
-@check_user
 def womens_store(request):
     products = Products.objects.filter(product_gender = 'Women')
     variants = Variants.objects.filter(variant_product__in = products )
     sports = Sport.objects.all()
     brands = Brand.objects.all()
-    
     count = products.count()
-    cart = Cart.objects.get(customer = request.user)
-    cartitems = CartItem.objects.filter(cart= cart)
-    total = cartitems.count
-    context = {'products':products, 'count': count,'cart_count':total, 'variants': variants, 'sports':sports ,'brands':brands}
     
-    return render(request,'store.html',context)
+    if 'user' in request.session:
+        cart      = Cart.objects.get(customer = request.user)
+        cartitems = CartItem.objects.filter(cart= cart)
+        total     = cartitems.count
+    
+    
+    return render(request,'store.html',locals())
 
-@login_required(login_url='user_login') 
-@check_user
+
+def all_sport(request,id):
+    products = Products.objects.filter(product_sport=id)
+    variants = Variants.objects.filter(variant_product__in = products )
+    sports = Sport.objects.all()
+    brands = Brand.objects.all()
+    count = products.count()
+    
+    if 'user' in request.session:
+        cart      = Cart.objects.get(customer = request.user)
+        cartitems = CartItem.objects.filter(cart= cart)
+        total     = cartitems.count
+    
+    
+    return render(request,'store.html',locals())
+
+
+
 def mensSport(request,id):
     products = Products.objects.filter(product_gender = 'Men', product_sport=id)
     variants = Variants.objects.filter(variant_product__in = products )
     sports = Sport.objects.all()
     brands = Brand.objects.all()
-    
     count = products.count()
-    cart = Cart.objects.get(customer = request.user)
-    cartitems = CartItem.objects.filter(cart= cart)
-    total = cartitems.count
-    context = {'products':products, 'count': count,'cart_count':total, 'variants': variants, 'sports':sports ,'brands':brands}
     
-    return render(request,'store.html',context)
+    if 'user' in request.session:
+        cart      = Cart.objects.get(customer = request.user)
+        cartitems = CartItem.objects.filter(cart= cart)
+        total     = cartitems.count
 
-@login_required(login_url='user_login') 
-@check_user
+    return render(request,'store.html',locals())
+
+
 def womensSport(request,id):
     products = Products.objects.filter(product_gender = 'Women', product_sport=id)
     variants = Variants.objects.filter(variant_product__in = products )
     sports = Sport.objects.all()
     brands = Brand.objects.all()
-    
     count = products.count()
-    cart = Cart.objects.get(customer = request.user)
-    cartitems = CartItem.objects.filter(cart= cart)
-    total = cartitems.count
-    context = {'products':products, 'count': count,'cart_count':total, 'variants': variants, 'sports':sports ,'brands':brands}
     
-    return render(request,'store.html',context)
+    if 'user' in request.session:
+        cart      = Cart.objects.get(customer = request.user)
+        cartitems = CartItem.objects.filter(cart= cart)
+        total     = cartitems.count
+    
+    return render(request,'store.html',locals())
 
 
-@login_required(login_url='user_login') 
-@check_user
+def all_brands(request,id):
+    products = Products.objects.filter(product_brand=id)
+    variants = Variants.objects.filter(variant_product__in = products )
+    sports = Sport.objects.all()
+    brands = Brand.objects.all()
+    count = products.count()
+    
+    if 'user' in request.session:
+        cart      = Cart.objects.get(customer = request.user)
+        cartitems = CartItem.objects.filter(cart= cart)
+        total     = cartitems.count
+    
+    return render(request,'store.html',locals())
+
+ 
 def mensBrands(request,id):
     products = Products.objects.filter(product_gender = 'Men', product_brand=id)
     variants = Variants.objects.filter(variant_product__in = products )
     sports = Sport.objects.all()
     brands = Brand.objects.all()
-    
     count = products.count()
-    cart = Cart.objects.get(customer = request.user)
-    cartitems = CartItem.objects.filter(cart= cart)
-    total = cartitems.count
-    context = {'products':products, 'count': count,'cart_count':total, 'variants': variants, 'sports':sports ,'brands':brands}
+    
+    if 'user' in request.session:
+        cart      = Cart.objects.get(customer = request.user)
+        cartitems = CartItem.objects.filter(cart= cart)
+        total     = cartitems.count
+    
+    return render(request,'store.html',locals())
 
-    return render(request,'store.html',context)
+ 
 
-@login_required(login_url='user_login') 
-@check_user
 def womensBrands(request,id):
     products = Products.objects.filter(product_gender = 'Women', product_brand=id)
     variants = Variants.objects.filter(variant_product__in = products )
     sports = Sport.objects.all()
     brands = Brand.objects.all()
-    
     count = products.count()
-    cart = Cart.objects.get(customer = request.user)
-    cartitems = CartItem.objects.filter(cart= cart)
-    total = cartitems.count
-    context = {'products':products, 'count': count,'cart_count':total, 'variants': variants, 'sports':sports ,'brands':brands}
+    
+    if 'user' in request.session:
+        cart      = Cart.objects.get(customer = request.user)
+        cartitems = CartItem.objects.filter(cart= cart)
+        total     = cartitems.count
+    
+    return render(request,'store.html',locals())
 
-    return render(request,'store.html',context)
 
-
-@login_required(login_url='user_login') 
 def product_details(request,id): 
     details = Products.objects.get(id=id)
     sports = Sport.objects.all()
     brands = Brand.objects.all()
     
-    cart = Cart.objects.get(customer = request.user)
-    cartitems = CartItem.objects.filter(cart= cart)
-    total = cartitems.count
-    
+    if 'user' in request.session:
+        cart      = Cart.objects.get(customer = request.user)
+        cartitems = CartItem.objects.filter(cart= cart)
+        total     = cartitems.count
+        
     variants  = Variants.objects.filter(variant_product=details.id).order_by('-variant_size')
    
-    
-    context = {'details':details , 'variants':variants,'cart_count':total ,'sports':sports ,'brands':brands }
-    return render(request,'product_details.html',context)   
 
+    return render(request,'product_details.html',locals())   
 
 @login_required(login_url='user_login') 
 def cart(request):
@@ -147,8 +189,6 @@ def cart(request):
     
     context   = {'cartitems':cartitems,'cart':cart, 'cart_count':count}
     return render(request,'cart.html',context)
-
-
 
 
 def add_to_cart(request):
@@ -252,9 +292,49 @@ def delete_cartitem(request,id):
     item.delete()
     return redirect('cart')
 
-
 def updatecart(request):
     return JsonResponse('Item was added',safe=False)
+
+@login_required(login_url='user_login') 
+def wishlist(request):
+    wishlist      = Wishlist.objects.get(user=request.user)
+    wishlist_items = WishlistItems.objects.filter(wishlist=wishlist)
+    print(wishlist_items)  
+    
+    
+    
+    context   = {'wishlist_items':wishlist_items,'wishlist':wishlist}
+    return render(request,'wishlist.html',context)
+
+@login_required
+def toggle_wishlist(request):
+    if request.method == 'POST':
+    
+        product_id = request.POST.get('product_id')
+        print(product_id)
+        wishlist = Wishlist.objects.get(user_id=request.user.id)
+        product = get_object_or_404(Products, id=product_id)
+        print(product)
+        print(wishlist)
+        
+        if WishlistItems.objects.filter(wishlist=wishlist,product=product).exists():
+            wishlist_item = WishlistItems.objects.get(wishlist=wishlist, product=product)
+            wishlist_item.delete()
+            status = 'removed'
+        else:
+            wishlist_item = WishlistItems.objects.create(wishlist=wishlist, product=product)
+            wishlist_item.save()
+            status = 'added'
+        return JsonResponse({'status': status})
+    else:
+        return JsonResponse({'status': 'error'})
+
+def delete_wishlist_item(request,id):
+    
+    item = WishlistItems.objects.get(id=id)
+    item.delete()
+    return redirect('wishlist')
+
 
 def checkout(request):
     cart      = Cart.objects.get(customer=request.user)
@@ -298,56 +378,6 @@ def redeem_coupon(request):
         
         except Coupons.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Invalid coupon code'})
-
-# def checkout(request):
-#     total_price = 0
-#     discount = 0
-    
-#     user = users.objects.get(email=request.session.get('name'))
-#     cart = Cart.objects.filter(user=user)
-#     addr = Address.objects.filter(user=user,is_difault=True)
-#     for item in cart:
-#         total_price += item.product.price * item.quantity 
-
-#     if 'coupons' in request.session:
-#         coupons = request.session['coupons']
-#         coup = Coupon.objects.get(coupon_code =coupons )
-#         print(coup)
-#         discount = coup.discount
-#         print(discount)
-#         messages.info(request,'')
-#         Usedcoupoon.objects.create(user = user,Coupon = coup)
-#     coupon = Coupon.objects.all()
-    
-
-#     order_totel=total_price + 75
-#     shipping = 20
-#     payable =Decimal( (order_totel + shipping) - discount)
-#     amount_in_paisa = int(payable * 100)  
-
-#     # client = razorpay.Client(auth = (settings.key,settings.secret))
-#     client = razorpay.Client(auth = (settings.KEY,settings.SECRET))
-
-#     order_data = {
-#     'amount': amount_in_paisa,
-#     'currency': 'INR',
-# }
-
-
-#     payment = client.order.create(data=order_data)
-#     # context = {
-#     #     'order_totel':order_totel,
-#     #     'shipping':shipping,
-#     #     'payment':payment,
-
-
-#     # }
-   
-  
-   
-#     print(payment)
-#     return render(request,'checkout.html',locals())
-
 
 def add_checkout_address(request):
     user = request.user
@@ -404,14 +434,12 @@ def add_checkout_address(request):
             messages.info(request,'Input all fields')
             return redirect('add_checkout_address')
     else:
-        return render(request, 'checkoutaddress.html')
-    
+        return render(request, 'checkoutaddress.html') 
     
 def delete_address2(request,id):
     address = Addresses.objects.get(id=id)
     address.delete()
-    return redirect('checkout')
-    
+    return redirect('checkout')   
     
 def search_products(request):
     if request.method=='GET':
