@@ -146,7 +146,35 @@ def mensBrands(request,id):
     
     return render(request,'store.html',locals())
 
- 
+def footwear(request):
+    category = Category.objects.get(category_name='Footwear')
+    products = Products.objects.filter(product_category=category)
+    variants = Variants.objects.filter(variant_product__in = products )
+    sports = Sport.objects.all()
+    brands = Brand.objects.all()
+    count = products.count()
+    
+    if 'user' in request.session:
+        cart      = Cart.objects.get(customer = request.user)
+        cartitems = CartItem.objects.filter(cart= cart)
+        total     = cartitems.count
+    
+    return render(request,'store.html',locals())
+
+def apparels(request):
+    category = Category.objects.get(category_name='Apparels')
+    products = Products.objects.filter(product_category=category)
+    variants = Variants.objects.filter(variant_product__in = products )
+    sports = Sport.objects.all()
+    brands = Brand.objects.all()
+    count = products.count()
+    
+    if 'user' in request.session:
+        cart      = Cart.objects.get(customer = request.user)
+        cartitems = CartItem.objects.filter(cart= cart)
+        total     = cartitems.count
+    
+    return render(request,'store.html',locals())
 
 def womensBrands(request,id):
     products = Products.objects.filter(product_gender = 'Women', product_brand=id)
@@ -299,6 +327,8 @@ def updatecart(request):
 def wishlist(request):
     wishlist      = Wishlist.objects.get(user=request.user)
     wishlist_items = WishlistItems.objects.filter(wishlist=wishlist)
+    
+    
     print(wishlist_items)  
     
     
@@ -335,6 +365,22 @@ def delete_wishlist_item(request,id):
     item.delete()
     return redirect('wishlist')
 
+def view_product(request,name): 
+    
+    
+    details = Products.objects.get(product_name=name)
+    sports = Sport.objects.all()
+    brands = Brand.objects.all()
+    
+    if 'user' in request.session:
+        cart      = Cart.objects.get(customer = request.user)
+        cartitems = CartItem.objects.filter(cart= cart)
+        total     = cartitems.count
+        
+    variants  = Variants.objects.filter(variant_product=details.id).order_by('-variant_size')
+   
+
+    return render(request,'product_details.html',locals()) 
 
 def checkout(request):
     cart      = Cart.objects.get(customer=request.user)
@@ -372,6 +418,7 @@ def redeem_coupon(request):
             return JsonResponse({
                 'success': True,
                 'grand_total': grand_total,
+                'discount': discount,
                 })
         
         

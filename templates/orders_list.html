@@ -27,7 +27,7 @@ Orders List
     <div class="bg-light text-center rounded p-4">
         
         <div class="table-responsive">
-            <table class="table text-start align-middle table-bordered table-hover mb-0">
+            <table id="mytable" class="table text-start align-middle table-bordered table-hover mb-0">
                 <thead>
                     <tr class="text-dark">
                         <th scope="col">Order number</th>
@@ -36,6 +36,7 @@ Orders List
                         <th scope="col">Grand total</th>
                         <th scope="col">Date ordered</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Action</th>
                         <th scope="col">Action</th>  
                     </tr>
                 </thead>
@@ -85,7 +86,10 @@ Orders List
                                     </div>
                                   </div>
                                 </div>
+                                {% if order.status == 'Delivered' %}
+                                {% else %}
                                 <button class="btn btn-primary ml-2" data-bs-target="#statuschange{{order.id}}" data-bs-toggle="modal">Submit</button>
+                                {% endif %}
                             </div> 
                           
 
@@ -102,6 +106,21 @@ Orders List
 </div>
        
 
+{% comment %} <script src="https://code.jquery.com/jquery-3.5.1.js"></script> {% endcomment %}
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.3.4/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.3.4/js/buttons.html5.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.3.4/js/buttons.print.min.js"></script>
+
+<script>
+$(document).ready( function(){
+  $('#mytable').DataTable();
+})
+</script>
 
 {% endblock content %}
 

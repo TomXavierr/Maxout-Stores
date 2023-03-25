@@ -207,8 +207,6 @@ def profile(request):
     #     return redirect('user_login')
 
 
-
-
 @login_required(login_url='user_login') 
 def update_username(request):
     context = {

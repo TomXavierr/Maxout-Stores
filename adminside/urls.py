@@ -56,4 +56,10 @@ urlpatterns = [
     path('deactivateCoupon/<int:id>',views.deactivateCoupon,name="deactivateCoupon"),
     path('activateCoupon/<int:id>',views.activateCoupon,name="activateCoupon"),
     
+    
+    
+    
+    
+    path('sales',views.sales,name='sales'),
+    path('get_order_data',views.get_order_data,name='get_order_data'),
 ]

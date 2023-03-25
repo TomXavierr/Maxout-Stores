@@ -87,16 +87,17 @@ Checkout
                             <ul class="order-details-form mb-4">
                                 <li><span>Product</span> <span>Total</span></li>
                                 {% for items in cartitems %}
-                                <li><span>{{items.product.product_name}} x {{items.product_qty}} </span> <span>{{items.get_total}}</span></li>
+                                <li><span>{{items.product.product_name}} x {{items.product_qty}} </span> <span>₹{{items.get_total}}</span></li>
                                 {% endfor %}
-                                <li><span>Subtotal</span> <span >{{cart.cart_total}}</span></li>
+                                <li><span>Subtotal</span> <span >₹{{cart.cart_total}}</span></li>
                                 <li><span>Shipping</span> <span>Free</span></li>
                                 <li>
                                     <span>Apply Coupon</span>
                                     <span><input type="text" name="coupon" id="coupon-code" class="form-control form-control-lg" /></span>
                                     <span>{% csrf_token %} <button onclick="applyCoupon()" class="btn btn-sm btn-success">Apply</button></span>
                                 </li>
-                                <li><span>Total</span> <span id="total-price" value="{{grand_total}}">{{grand_total}}</span></li>
+                                <li><span>Discount</span> <span id="discount"> {{discount}}</span></li>
+                                <li><span>Total</span> <span id="total-price" value="{{grand_total}}">₹{{grand_total}}</span></li>
                             </ul>
 
                             <div class="cart-page-heading mb-4">
@@ -149,8 +150,16 @@ function applyCoupon() {
 
         success: function(response) {
             if (response.success) {
+
+                var formattedTotal = '\u20B9' + response.grand_total.toFixed(2);
+                var formattedDiscount = '\u20B9' + response.discount.toFixed(2);
+
                 // Update the total price displayed on the page
-                $('#total-price').text(response. grand_total);
+                $('#total-price').text(formattedTotal);
+                $('#discount').text(formattedDiscount);
+                // Update the total price displayed on the page
+                //$('#total-price').text(response. grand_total);
+                //$('#discount').text(response. discount);
             } else {
                 // Display an error message to the user
                 alert(response.message);

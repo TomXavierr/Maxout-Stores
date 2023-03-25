@@ -33,6 +33,7 @@ def place_cod_order(request):
             coupon = Coupons.objects.get(coupon_code=coupon_code)
             discount = coupon.discount_price
             grand_total = float(sub_total) - discount
+            del request.session['coupon_code']
         else:
             discount = 0
             grand_total = sub_total
@@ -41,6 +42,7 @@ def place_cod_order(request):
         order =  Orders.objects.create(
             order_id          = order_id,
             user              = user,
+            discount_given    = discount,
             delivery_address  = Addresses.objects.get(id=address),
             order_total       = sub_total,
             payment_method    = payment_method,
@@ -48,6 +50,7 @@ def place_cod_order(request):
             cart              = cart,          
         )
         order.save()
+         
         
         for item in cart_items:
             size      = item.size
@@ -71,6 +74,7 @@ def place_cod_order(request):
             )
             orderitem.save()
         cart_items.delete()
+        
         
         request.session['order_id'] = order_id
         
@@ -182,6 +186,7 @@ def payment_success(request):
         coupon = Coupons.objects.get(coupon_code=coupon_code)
         discount = coupon.discount_price
         grand_total = float(sub_total) - discount
+        del request.session['coupon_code']
     else:
         discount = 0
         grand_total = sub_total

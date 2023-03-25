@@ -6,18 +6,56 @@ from customers.models import Account
 from store.models import Products,Brand,Sport,Category,Variants,Banners,Size,Image,Coupons
 from django.views.decorators.cache import cache_control
 from django.core.paginator import Paginator
-from orders.models import Orders
+from orders.models import *
+from django.utils.dateparse import parse_date
+import datetime
+from django.db.models import Sum
+from django.http import JsonResponse
+from django.db.models import Count
+import calendar
+from django.db.models.functions import TruncDate
 
 # Create your views here.
 @cache_control(no_cache = True,must_revalidate = False,no_store=True) 
 @login_required(login_url='admin_login')
 def admin_dash(request):
     if request.user.is_superuser:
-        return render(request,'admin_dashboard.html')
+        orders = Orders.objects.all()
+        total_orders = orders.count()
+        total_sales = orders.aggregate(Sum('grand_total'))['grand_total__sum']
+        context = {
+            'total_orders': total_orders,
+            'total_sales': total_sales,
+        }
+        return render(request,'admin_dashboard.html',context)
     else:
         return redirect('admin_login')
   
-    
+def sales(request):
+    return render(request,'saleschart.html') 
+
+def get_order_data(request):
+    # Retrieve the data from the database
+    order_items = OrderItem.objects.values('product__product_name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity')[:10]
+    order_data = Orders.objects.filter(status='Delivered').values('order_date__month').annotate(total_orders=Count('id')).order_by('order_date__month')
+ 
+    # Prepare the data for the chart
+    top_products_labels = [item['product__product_name'] for item in order_items]
+    top_products_data = [item['total_quantity'] for item in order_items]
+
+    order_month_labels = [calendar.month_name[m] for m in range(1, 13)]
+    order_month_data = [0] * 12
+    for data in order_data:
+        order_month_data[data['order_date__month']-1] = data['total_orders']
+       
+    data = {
+        'top_products_labels': top_products_labels,
+        'top_products_data': top_products_data,
+        'order_month_labels': order_month_labels,
+        'order_month_data': order_month_data,
+    }
+
+    return JsonResponse(data)
 
 def admin_login(request):
     if 'admin' in request.session:
@@ -462,7 +500,7 @@ def delete_sport(request,id):
 
 @login_required(login_url='admin_login')
 def orders(request):
-    orders    = Orders.objects.all().order_by('id')
+    orders    = Orders.objects.all().order_by('-id')
     return render(request,'orders_list.html',{'orders':orders})
 
 @login_required(login_url='admin_login')

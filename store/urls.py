@@ -17,8 +17,9 @@ urlpatterns = [
      path('womens_sport/<id>',views.womensSport,name='womens_sport'),
      path('womens_brands/<id>',views.womensBrands,name='womens_brands'),
     
+     path('footwear',views.footwear,name='footwear'),   
+     path('apparels',views.apparels,name='apparels'),
      
-   
      path('product_details/<int:id>',views.product_details,name="product_details"),
      path('search_products',views.search_products,name="search_products"),
 
@@ -30,6 +31,7 @@ urlpatterns = [
      path('wishlist',views.wishlist,name="wishlist"),
      path('toggle_wishlist',views.toggle_wishlist,name='toggle_wishlist'),
      path('delete_wishlist_item/<int:id>',views.delete_wishlist_item,name='delete_wishlist_item'),
+     path('view_product/<str:name>',views.view_product,name='view_product'),
      
      path('checkout',views.checkout,name="checkout"),
      path('add_checkout_address',views.add_checkout_address,name="add_checkout_address"),
