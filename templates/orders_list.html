@@ -86,7 +86,7 @@ Orders List
                                     </div>
                                   </div>
                                 </div>
-                                {% if order.status == 'Delivered' %}
+                                {% if order.status == 'Delivered' or order.status == 'Cancelled' %}
                                 {% else %}
                                 <button class="btn btn-primary ml-2" data-bs-target="#statuschange{{order.id}}" data-bs-toggle="modal">Submit</button>
                                 {% endif %}

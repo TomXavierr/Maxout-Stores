@@ -5,9 +5,12 @@
   product details
 {% endblock title %}
 
+{% block links %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.min.css">
+{% endblock links %}
 
 {% block content %}
-
+  
     <!-- ##### Single Product Details Area Start ##### -->
     <section class="single_product_details_area d-flex align-items-center">
 
@@ -33,34 +36,33 @@
             
             <p class="product-desc">{{details.product_description}}</p>
             
-            <!-- Form -->
-            
-                <!-- Select Box -->
-                {% comment %} <h1>{{ variant.name }}</h1>
-                <p>Price: {{ variant.price }}</p>
-                <h2>Stock:</h2>
-                <ul>
-                   
-                        <li>: {{ item.stock }}</li>
-                    {% empty %}
-                        <li>No stock information available.</li>
-                  
-                </ul> {% endcomment %}
-
-                <div class="select-box d-flex mt-50 mb-30">
+                <div class="dsafs d-flex mt-50 mb-30">
                     <select name="select" id="productSize" class="mr-5">
-                        {% for variant in variants %}
-                        {% if variant.variant_stock > 0 %}
-                        <option id={{variant.variant_size.id}} >Size : {{ variant.variant_size.size }}</option>
-                        {% else %}
-                        <option id={{variant.variant_size.id}} disabled>Size :{{ variant.variant_size.size }} - Out of stock</option>
-                        {% endif %}
-                        {% empty %}
-                        <option value="">SIZE: Information not available</option>
-                        {% endfor %}
                         
+                        {% for variant in variants %}
+                            {% if variant.variant_stock > 0 %}
+                                <option id="{{ variant.variant_size.id }}">Size: {{ variant.variant_size.size }}</option>
+                            {% else %}
+                                <option id="{{ variant.variant_size.id }}" disabled>Size: {{ variant.variant_size.size }} - Out of stock</option>
+                            {% endif %}
+                        {% empty %}
+                            <option value="">SIZE: Information not available</option>
+                        {% endfor %}
+                    </select>
+                    <select name="select" id="productQuantity" class="mr-5">
+                        <option value="1">QTY: 1</option>
+                        <option value="2">QTY: 2</option>
+                        <option value="3">QTY: 3</option>
+                        <option value="4">QTY: 4</option>
+                        <option value="5">QTY: 5</option>
+                        <option value="6">QTY: 6</option>
+                        <option value="7">QTY: 7</option>
+                        <option value="8">QTY: 8</option>
+                        <option value="9">QTY: 9</option>
+                        <option value="10">QTY: 10</option>
                     </select>
                 </div>
+
                 <!-- Cart & Favourite Box -->
                 <div class="cart-fav-box d-flex align-items-center">
                     {% csrf_token %}
@@ -80,30 +82,41 @@
             
         </div>
     </section>
+    
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.min.js"></script>
 
-<script>
-    function addToCart(size) {
+
+
+ <script>
+
+    function addToCart() {
+        
         var selectElement = document.getElementById("productSize");
         var selectedOptionValue = selectElement.options[selectElement.selectedIndex].id;
-        console.log("dasdsd");
+        var quantityElement = document.getElementById("productQuantity");
+        var selectedQuantity = quantityElement.options[quantityElement.selectedIndex].value;
         console.log(selectedOptionValue);
+        console.log(selectedQuantity);
         var productId ={{details.id}}
         console.log(productId)
 
+        {% if user.is_authenticated %}
         $.ajax({
             type: 'POST',
             url: '{% url 'add_to_cart' %}',
             data: {
                 'product_id': productId,
-                'size': selectedOptionValue,
+                'size':       selectedOptionValue,
+                'quantity':   selectedQuantity,
                 'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
             },
             success: function (response) {
                 if (response.success) {
-                    
+                    console.log(response.cart_item_count)
                     $('#cart-item-count').text(response.cart_item_count);
+                    Swal.fire('Item added to cart.');
                 } else {
-                    alert(response.message);
+                    Swal.fire(response.message);            
                 }
             },
             error: function (response) {
@@ -111,6 +124,11 @@
             }
             
         });
+        {% else %}
+            // Prompt the user to log in
+            Swal.fire('Please log in to add items to your cart.');
+
+        {% endif %}
     }
 
 
@@ -129,10 +147,11 @@
                 if (response.status === 'added') {
                     console.log(productId)
                     favme.addClass('active');
-
+                    Swal.fire('Item added to wishlist.');
 
                 } else if (response.status === 'removed') {
                     favme.removeClass('active');
+                    Swal.fire('Item removed from wishlist.');
                 }
             }
         });

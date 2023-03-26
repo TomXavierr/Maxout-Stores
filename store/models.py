@@ -18,7 +18,7 @@ class Products(models.Model):
     product_color             = models.CharField(max_length=30, null=False)
     product_type              = models.CharField(max_length=30, null=False)
     product_price             = models.DecimalField(max_digits=8, decimal_places=2, null=False)
-    
+
     def __str__(self):
         return str(self.pk)
     
@@ -26,7 +26,7 @@ class Variants(models.Model):
     variant_product           = models.ForeignKey(Products,related_name='variants', on_delete=models.CASCADE)
     variant_size              = models.ForeignKey("Size", on_delete=models.CASCADE, default=False , null=False)
     variant_stock             = models.IntegerField()
-    created_on                = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    
     
     
     def __str__(self):

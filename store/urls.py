@@ -24,6 +24,7 @@ urlpatterns = [
      path('search_products',views.search_products,name="search_products"),
 
 
+     
      path('add_to_cart',views.add_to_cart,name='add_to_cart'),
      path('update_cart_quantity',views.update_cart_quantity,name="update_cart_quantity"),
      path('delete_cartitem/<int:id>',views.delete_cartitem,name="delete_cartitem"),
@@ -37,4 +38,6 @@ urlpatterns = [
      path('add_checkout_address',views.add_checkout_address,name="add_checkout_address"),
      path('delete_address2/<int:id>',views.delete_address2,name='delete_address2'),
      path('redeem_coupon',views.redeem_coupon,name='redeem_coupon'),
+     
+     path('color_filter/<str:name>/', views.color_filter, name='color_filter'),
 ]

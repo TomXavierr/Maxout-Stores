@@ -101,7 +101,7 @@ store
                             <!-- Widget Title -->
                             <h6 class="widget-title mb-30">Filter by</h6>
                             <!-- Widget Title 2 -->
-                            <p class="widget-title2 mb-30">Price</p>
+                            {% comment %} <p class="widget-title2 mb-30">Price</p>
 
                             <div class="widget-desc">
                                 <div class="slider-range">
@@ -112,7 +112,7 @@ store
                                     </div>
                                     <div class="range-price">Range: ₹1000 - ₹25000</div>
                                 </div>
-                            </div>
+                            </div> {% endcomment %}
                         </div> 
 
                         <!-- ##### Single Widget ##### -->
@@ -121,16 +121,16 @@ store
                             <p class="widget-title2 mb-30">Color</p>
                             <div class="widget-desc">
                                 <ul class="d-flex">
-                                    <li><a href="#" class="color1"></a></li>
-                                    <li><a href="#" class="color2"></a></li>
-                                    <li><a href="#" class="color3"></a></li>
-                                    <li><a href="#" class="color4"></a></li>
-                                    <li><a href="#" class="color5"></a></li>
-                                    <li><a href="#" class="color6"></a></li>
-                                    <li><a href="#" class="color7"></a></li>
-                                    <li><a href="#" class="color8"></a></li>
-                                    <li><a href="#" class="color9"></a></li>
-                                    <li><a href="#" class="color10"></a></li>
+                                    <li><a href="{% url 'color_filter' name="white" %}" class="color1"></a></li>
+                                    <li><a href="{% url 'color_filter' name="grey" %}" class="color2"></a></li>
+                                    <li><a href="{% url 'color_filter' name="black" %}" class="color3"></a></li>
+                                    <li><a href="{% url 'color_filter' name="blue" %}" class="color4"></a></li>
+                                    <li><a href="{% url 'color_filter' name="orange" %}" class="color5"></a></li>
+                                    <li><a href="{% url 'color_filter' name="yellow" %}" class="color6"></a></li>
+                                    <li><a href="{% url 'color_filter' name="red" %}" class="color7"></a></li>
+                                    <li><a href="{% url 'color_filter' name="brown" %}" class="color8"></a></li>
+                                    <li><a href="{% url 'color_filter' name="green" %}" class="color9"></a></li>
+                                    <li><a href="{% url 'color_filter' name="purple" %}" class="color10"></a></li>
                                 </ul>
                             </div>
                         </div>
@@ -148,17 +148,25 @@ store
                                         <p><span>{{count}}</span> products found</p>
                                     </div>
                                     <!-- Sorting -->
-                                    <div class="product-sorting d-flex">
+                                    {% comment %} <div class="product-sorting d-flex">
                                         <p>Sort by:</p>
-                                        <form action="#" method="get">
+                                        <form action="" method="get">
                                             <select name="select" id="sortByselect">
                                                 <option value="value">Highest Rated</option>
                                                 <option value="value">Newest</option>
-                                                <option value="value">Price: $$ - $</option>
-                                                <option value="value">Price: $ - $$</option>
+                                                <option value="value"><a href="?sort=price_desc">Price: $$ - $</a></option>
+                                                <option value="value"><a href="?sort=price_asc">Price: $ - $$</a></option>
                                             </select>
                                             <input type="submit" class="d-none" value="">
                                         </form>
+                                    </div> {% endcomment %}
+                                    <div class="product-sorting d-flex">
+                                        <p>Sort by:</p>
+                                        <select name="sort" id="sort-select">
+                                            <option value="date">Newest</option>
+                                            <option value="price_asc">Price: $ - $$</option>
+                                            <option value="price_desc">Price: $$ - $</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -231,31 +239,26 @@ store
         </div>
     </section>
     <!-- ##### Shop Grid Area End ##### -->
-
-<script>
-    $(document).ready(function() {
-        $('.product-favourite .favme').click(function(e) {
-            e.preventDefault();
-            var product_id = $(this).data('product-id');
-            $.ajax({
-                type: "POST",
-                url: "/add-to-wishlist/",
-                data: {
-                    'product_id': product_id,
-                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-                },
-                success: function(response) {
-                    if (response['status'] == 'success') {
-                        alert('Product added to wishlist!');
+    {% comment %} <script>
+        $(document).ready(function() {
+            $('#sort-select').on('change', function() {
+                var selectedValue = $(this).val();
+                $.ajax({
+                    type: 'GET',
+                    url: '{% url "shop" %}',
+                    data: {'sort': selectedValue},
+                    success: function(response) {
+                        $('#product-list').html(response);
+                    },
+                    error: function(response) {
+                        console.log(response);
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.log(xhr.responseText);
-                }
+                });
             });
         });
-    });
-</script>
+        </script> {% endcomment %}
+
+
 
 
 {% endblock content %}

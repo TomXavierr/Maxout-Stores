@@ -14,6 +14,7 @@ from django.http import JsonResponse
 from django.db.models import Count
 import calendar
 from django.db.models.functions import TruncDate
+from django.utils import timezone
 
 # Create your views here.
 @cache_control(no_cache = True,must_revalidate = False,no_store=True) 
@@ -22,12 +23,17 @@ def admin_dash(request):
     if request.user.is_superuser:
         orders = Orders.objects.all()
         total_orders = orders.count()
+        orders    = Orders.objects.all().order_by('-id')
         total_sales = orders.aggregate(Sum('grand_total'))['grand_total__sum']
-        context = {
-            'total_orders': total_orders,
-            'total_sales': total_sales,
-        }
-        return render(request,'admin_dashboard.html',context)
+        
+        today = timezone.now().date()
+        daily_orders = Orders.objects.filter(order_date__date=today).values('status').annotate(num_orders=Count('id')).order_by('status')
+        orders_today = daily_orders.aggregate(total_orders=Sum('num_orders'))['total_orders']
+        today_sales = daily_orders.aggregate(Sum('grand_total'))['grand_total__sum']
+
+        print(orders_today)
+      
+        return render(request,'admin_dashboard.html',locals())
     else:
         return redirect('admin_login')
   
@@ -36,7 +42,7 @@ def sales(request):
 
 def get_order_data(request):
     # Retrieve the data from the database
-    order_items = OrderItem.objects.values('product__product_name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity')[:10]
+    order_items = OrderItem.objects.values('product__product_name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity')[:5]
     order_data = Orders.objects.filter(status='Delivered').values('order_date__month').annotate(total_orders=Count('id')).order_by('order_date__month')
  
     # Prepare the data for the chart
@@ -220,27 +226,30 @@ def edit_product(request,id):
         product.product_name        = product_name
         product.product_description = product_description
         product.product_brand       = Brand.objects.get(brand_name=product_brand)
-        product.product_image       = product_image
+        
         product.product_sport       = Sport.objects.get(sport_name=product_sport)
         product.product_category    = Category.objects.get(category_name = product_category)
         product.product_gender      = product_gender
         product.product_type        = product_type
         product.product_price       = price
         product.product_color       = color
+        if product_image:
+            product.product_image       = product_image
     
     
         product.save()
-        image   = Image.objects.filter(product = product.id)   
-        image_ids = [i.pk for i in image]
-            
-        for image, id in zip(reversed(images), image_ids):
-            
-            img = Image(
-                id = Image.objects.get(id = id).pk,
-                image = image,
-                product = Products.objects.get(product_name=product_name ),
-            )
-            img.save()
+        if images:
+            image   = Image.objects.filter(product = product.id)   
+            image_ids = [i.pk for i in image]
+                
+            for image, id in zip(reversed(images), image_ids):
+                
+                img = Image(
+                    id = Image.objects.get(id = id).pk,
+                    image = image,
+                    product = Products.objects.get(product_name=product_name ),
+                )
+                img.save()
         
         return redirect('product_list')
     

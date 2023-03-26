@@ -15,6 +15,7 @@ from django.contrib import messages
 from customers.views import check_user
 import razorpay
 import re
+import json
 
 # Create your views here.
 
@@ -27,15 +28,13 @@ def shop(request):
     count = products.count()
     sports       =  Sport.objects.all()
     brands       = Brand.objects.all()
-    if 'user' in request.session:
+    if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
         cartitems = CartItem.objects.filter(cart= cart)
-        total     = cartitems.count
-    
+        cart_count     = cartitems.count
     
     return render(request,'store.html',locals())
 
- 
 
 def mens_store(request):
     
@@ -45,11 +44,10 @@ def mens_store(request):
     sports       =  Sport.objects.all()
     brands       = Brand.objects.all()
     
-    if 'user' in request.session:
+    if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
         cartitems = CartItem.objects.filter(cart= cart)
-        total     = cartitems.count
-    
+        cart_count     = cartitems.count
     
     return render(request,'store.html',locals())
 
@@ -61,10 +59,10 @@ def womens_store(request):
     brands = Brand.objects.all()
     count = products.count()
     
-    if 'user' in request.session:
+    if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
         cartitems = CartItem.objects.filter(cart= cart)
-        total     = cartitems.count
+        cart_count     = cartitems.count
     
     
     return render(request,'store.html',locals())
@@ -77,14 +75,13 @@ def all_sport(request,id):
     brands = Brand.objects.all()
     count = products.count()
     
-    if 'user' in request.session:
+    if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
         cartitems = CartItem.objects.filter(cart= cart)
-        total     = cartitems.count
+        cart_count     = cartitems.count
     
     
     return render(request,'store.html',locals())
-
 
 
 def mensSport(request,id):
@@ -94,10 +91,10 @@ def mensSport(request,id):
     brands = Brand.objects.all()
     count = products.count()
     
-    if 'user' in request.session:
+    if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
         cartitems = CartItem.objects.filter(cart= cart)
-        total     = cartitems.count
+        cart_count     = cartitems.count
 
     return render(request,'store.html',locals())
 
@@ -109,10 +106,10 @@ def womensSport(request,id):
     brands = Brand.objects.all()
     count = products.count()
     
-    if 'user' in request.session:
+    if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
         cartitems = CartItem.objects.filter(cart= cart)
-        total     = cartitems.count
+        cart_count     = cartitems.count
     
     return render(request,'store.html',locals())
 
@@ -124,11 +121,11 @@ def all_brands(request,id):
     brands = Brand.objects.all()
     count = products.count()
     
-    if 'user' in request.session:
+    if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
         cartitems = CartItem.objects.filter(cart= cart)
-        total     = cartitems.count
-    
+        cart_count     = cartitems.count
+        
     return render(request,'store.html',locals())
 
  
@@ -139,12 +136,13 @@ def mensBrands(request,id):
     brands = Brand.objects.all()
     count = products.count()
     
-    if 'user' in request.session:
+    if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
         cartitems = CartItem.objects.filter(cart= cart)
-        total     = cartitems.count
+        cart_count     = cartitems.count    
     
     return render(request,'store.html',locals())
+
 
 def footwear(request):
     category = Category.objects.get(category_name='Footwear')
@@ -154,12 +152,13 @@ def footwear(request):
     brands = Brand.objects.all()
     count = products.count()
     
-    if 'user' in request.session:
+    if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
         cartitems = CartItem.objects.filter(cart= cart)
-        total     = cartitems.count
+        cart_count     = cartitems.count
     
     return render(request,'store.html',locals())
+
 
 def apparels(request):
     category = Category.objects.get(category_name='Apparels')
@@ -169,12 +168,13 @@ def apparels(request):
     brands = Brand.objects.all()
     count = products.count()
     
-    if 'user' in request.session:
+    if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
         cartitems = CartItem.objects.filter(cart= cart)
-        total     = cartitems.count
+        cart_count     = cartitems.count
     
     return render(request,'store.html',locals())
+
 
 def womensBrands(request,id):
     products = Products.objects.filter(product_gender = 'Women', product_brand=id)
@@ -183,10 +183,10 @@ def womensBrands(request,id):
     brands = Brand.objects.all()
     count = products.count()
     
-    if 'user' in request.session:
+    if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
         cartitems = CartItem.objects.filter(cart= cart)
-        total     = cartitems.count
+        cart_count     = cartitems.count
     
     return render(request,'store.html',locals())
 
@@ -195,16 +195,25 @@ def product_details(request,id):
     details = Products.objects.get(id=id)
     sports = Sport.objects.all()
     brands = Brand.objects.all()
-    
-    if 'user' in request.session:
-        cart      = Cart.objects.get(customer = request.user)
-        cartitems = CartItem.objects.filter(cart= cart)
-        total     = cartitems.count
-        
     variants  = Variants.objects.filter(variant_product=details.id).order_by('-variant_size')
-   
-
+    variants_json = json.dumps(list(variants.values()))
+    
+    
+    if request.user.is_authenticated:
+        cart            = Cart.objects.get(customer = request.user)
+        cartitems       = CartItem.objects.filter(cart= cart)
+        cart_count      = cartitems.count
+        wishlist        = Wishlist.objects.get(user=request.user)
+        wishlist_items  = WishlistItems.objects.filter(wishlist=wishlist, product=details)
+        if wishlist_items.exists():
+            in_wishlist = True
+        else:
+            in_wishlist = False
+            
+        
+    
     return render(request,'product_details.html',locals())   
+
 
 @login_required(login_url='user_login') 
 def cart(request):
@@ -218,43 +227,60 @@ def cart(request):
     context   = {'cartitems':cartitems,'cart':cart, 'cart_count':count}
     return render(request,'cart.html',context)
 
-
+@login_required(login_url='user_login') 
 def add_to_cart(request):
     if request.method == 'POST':
         user_cart     = Cart.objects.get(customer=request.user)
         print(user_cart)
         data          = request.POST
         product_id    = data.get('product_id')
+        data_quantity = data.get('quantity')
+        quantity      = int(data_quantity)
         product       = Products.objects.get(id=product_id)
         size_id       = data.get('size')
         size          = Size.objects.get(id=size_id)
         print(size)
         print(product_id)
+        print(quantity)
         variant         = Variants.objects.get(variant_product=product_id,variant_size=size.id)
        
         print(variant)
-     
         print(variant.variant_stock)
         
-        if(variant.variant_stock >0):
-            cart_item, created = CartItem.objects.get_or_create(cart=user_cart, product=product, size=size.size)
-            if not created:
-                cart_item.product_qty += 1
+        if CartItem.objects.filter(cart=user_cart,product=product,size=size.size).exists():
+            cart_item     = CartItem.objects.get(cart=user_cart,product=product,size=size.size)
+            item_quantity = cart_item.product_qty
+            if quantity <= variant.variant_stock - item_quantity:
+                cart_item.product_qty += quantity
                 cart_item.save()
+                print(cart_item.product_qty)
+                response_data = {
+                    'success': True,
+                    'message': 'Item added to cart.',
+                    'cart_item_count': user_cart.cartitem_set.count()
+                }
             else:
-                cart_item.product_qty = 1
-                cart_item.save()
-            response_data = {
-                'success': True,
-                'message': 'Item added to cart.',
-                'cart_item_count': user_cart.cartitem_set.count()
-            }
-        else:
-            response_data = {
+                response_data = {
                 'success': False,
-                'message': 'Item out of Stock.',
+                'message': 'Not enough stock.',
             }
+                
+        else:
+            if quantity <= variant.variant_stock:
+                cart_item = CartItem.objects.create(cart=user_cart, product=product, size=size.size,product_qty=int(quantity))
+                response_data = {
+                    'success': True,
+                    'message': 'Item added to cart.',
+                    'cart_item_count': user_cart.cartitem_set.count()
+                }
+            else:
+                response_data = {
+                    'success': False,
+                    'message': 'Not enough stock.',
+                }
+                
         return JsonResponse(response_data)
+    
     
 def update_cart_quantity(request):
    
@@ -314,14 +340,17 @@ def update_cart_quantity(request):
   else:
     return JsonResponse({})
     
+    
 def delete_cartitem(request,id):
     
     item =CartItem.objects.get(id=id)
     item.delete()
     return redirect('cart')
 
+
 def updatecart(request):
     return JsonResponse('Item was added',safe=False)
+
 
 @login_required(login_url='user_login') 
 def wishlist(request):
@@ -335,6 +364,7 @@ def wishlist(request):
     
     context   = {'wishlist_items':wishlist_items,'wishlist':wishlist}
     return render(request,'wishlist.html',context)
+
 
 @login_required
 def toggle_wishlist(request):
@@ -359,11 +389,13 @@ def toggle_wishlist(request):
     else:
         return JsonResponse({'status': 'error'})
 
+
 def delete_wishlist_item(request,id):
     
     item = WishlistItems.objects.get(id=id)
     item.delete()
     return redirect('wishlist')
+
 
 def view_product(request,name): 
     
@@ -382,6 +414,7 @@ def view_product(request,name):
 
     return render(request,'product_details.html',locals()) 
 
+
 def checkout(request):
     cart      = Cart.objects.get(customer=request.user)
     cartitems = CartItem.objects.filter(cart=cart)
@@ -394,6 +427,7 @@ def checkout(request):
     print(grand_total)
     
     return render(request,'checkout.html',{'cart':cart,'cartitems':cartitems,'addresses':addresses, 'Orders':Orders ,'grand_total':grand_total})
+
 
 @require_POST
 def redeem_coupon(request):
@@ -425,6 +459,7 @@ def redeem_coupon(request):
         
         except Coupons.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Invalid coupon code'})
+
 
 def add_checkout_address(request):
     user = request.user
@@ -483,10 +518,12 @@ def add_checkout_address(request):
     else:
         return render(request, 'checkoutaddress.html') 
     
+    
 def delete_address2(request,id):
     address = Addresses.objects.get(id=id)
     address.delete()
     return redirect('checkout')   
+    
     
 def search_products(request):
     if request.method=='GET':
@@ -495,3 +532,7 @@ def search_products(request):
         products=Products.objects.filter(product_name__icontains = searchterm)
         return render(request,'store.html',{'products':products})
     
+def color_filter(request,name):
+    products = Products.objects.filter(product_color__icontains=name)
+    context = {'products': products}
+    return render(request, 'store.html', context)
