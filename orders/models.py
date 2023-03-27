@@ -45,3 +45,17 @@ class OrderItem(models.Model):
     quantity            = models.IntegerField( null=False,default=1)
     price               = models.DecimalField(max_digits=8, decimal_places=2, null=False,default=0)
     
+class Payment(models.Model):
+    user                = models.ForeignKey(Account,on_delete=models.CASCADE, null=True)
+    order               = models.ForeignKey(Orders,on_delete=models.CASCADE,null=False)
+    payment_id          = models.CharField(max_length=100,null=True,blank=True)
+    payment_method      = models.CharField(max_length=100)
+    amount_paid         = models.CharField(max_length=100)
+    status              = models.CharField(max_length=100)
+    created_at          = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        verbose_name        ='payment'
+        verbose_name_plural ='payments'
+        
+    def __str__(self):
+        return self.payment_method

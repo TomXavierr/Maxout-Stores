@@ -103,7 +103,7 @@ My orders
                             <p class="text-muted mb-0 small">{{item.price}} X {{item.quantity}}</p>
                           </div>
                         </div>
-                        <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">                      
+                        <hr class="mb-4" style="background-color: #000000; opacity: 1;">                      
                       </div>
                     </div>
                     {% endfor %}
@@ -112,16 +112,19 @@ My orders
                       <p class="text-muted mb-0"><span class="fw-bold me-4">Total: </span>{{order.order_total}}</p>
                     </div>
         
-                    {% comment %} <div class="d-flex justify-content-between pt-2">
-                      <p class="text-muted mb-0">Invoice Number : </p>
-                      <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span> </p>
-                    </div> {% endcomment %}
         
                     <div class="d-flex justify-content-between">
                       <p class="text-muted mb-0">Date ordered : {{order.order_date}}
                       
                     </div>
-        
+                    <div class="d-flex justify-content-between pt-2">
+                      <p class="fw-bold mb-0">Payment Details</p>
+                    </div>
+                    <div class="">
+                      <p class="text-muted mb-0">Payment Method : {{payment.payment_method}}</p>
+                      <p class="text-muted mb-0">Payment ID : {{payment.payment_id}}</p>
+
+                    </div>
 			</div>
 		</div>
 </section>

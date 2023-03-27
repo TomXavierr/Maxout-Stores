@@ -49,7 +49,7 @@ Variant List
                         {% comment %} <td><img style="max-width:2em " src=""></td> {% endcomment %}
                         <td>
                             <a href="delete_variant/{{variant.id}}" class="btn btn-danger ">Delete</a>
-                            <a href="{% url 'edit_variant' id=variant.id %}" class="btn btn-success ">Edit</a>
+                            <a href="{% url 'addVariantStock' id=variant.id %}" class="btn btn-success ">Add Stock</a>
                         </td>
                     </tr>
                     {% endfor %}

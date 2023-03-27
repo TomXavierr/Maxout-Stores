@@ -37,31 +37,6 @@ def admin_dash(request):
     else:
         return redirect('admin_login')
   
-def sales(request):
-    return render(request,'saleschart.html') 
-
-def get_order_data(request):
-    # Retrieve the data from the database
-    order_items = OrderItem.objects.values('product__product_name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity')[:5]
-    order_data = Orders.objects.filter(status='Delivered').values('order_date__month').annotate(total_orders=Count('id')).order_by('order_date__month')
- 
-    # Prepare the data for the chart
-    top_products_labels = [item['product__product_name'] for item in order_items]
-    top_products_data = [item['total_quantity'] for item in order_items]
-
-    order_month_labels = [calendar.month_name[m] for m in range(1, 13)]
-    order_month_data = [0] * 12
-    for data in order_data:
-        order_month_data[data['order_date__month']-1] = data['total_orders']
-       
-    data = {
-        'top_products_labels': top_products_labels,
-        'top_products_data': top_products_data,
-        'order_month_labels': order_month_labels,
-        'order_month_data': order_month_data,
-    }
-
-    return JsonResponse(data)
 
 def admin_login(request):
     if 'admin' in request.session:
@@ -87,6 +62,8 @@ def admin_login(request):
         return render(request,'admin_login.html')
     # else:
     #     return redirect('admin_dash')
+
+
 @login_required(login_url='admin_login')   
 def admin_logout(request):
     auth.logout(request)
@@ -95,6 +72,7 @@ def admin_logout(request):
 
 
 
+#=====================================User management============================================
     
 def user_list(request):
     
@@ -105,11 +83,13 @@ def user_list(request):
     else:
         return redirect('home')
 
+
 def block_user(request,id):
     user=Account.objects.get(id=id)
     user.is_blocked = True
     user.save()
     return redirect('user_list')
+
 
 def unblock_user(request,id):
     user=Account.objects.get(id=id)
@@ -118,7 +98,7 @@ def unblock_user(request,id):
     return redirect('user_list')
 
 
-#=====================================Functions for products============================================
+#=====================================Product management============================================
 
 def product_list(request):
     if request.user.is_superuser: 
@@ -133,6 +113,7 @@ def product_list(request):
     
     else:
         return redirect('home')
+    
     
 def add_product(request):
     
@@ -190,6 +171,7 @@ def add_product(request):
        }
     return render(request,'add_product.html',context)
     
+    
 def search_product(request):
     if request.method=='GET':
         searchterm =request.GET.get('searchterm')
@@ -199,6 +181,7 @@ def search_product(request):
     else:
         print('Nothing similar')
         return redirect('product_list')
+
 
 @login_required(login_url='admin_login')
 def edit_product(request,id):
@@ -260,13 +243,16 @@ def edit_product(request,id):
         context = {'product': product ,'brands':brands ,'categories':categories ,'sports':sports , 'Products':Products}
         return render(request, 'edit_product.html', context)
 
+
 @login_required(login_url='admin_login')
 def delete_product(request,id):
     product=Products.objects.get(id=id)
     product.delete()
     return redirect('product_list')
 
-#================================Functions for categories=======================================
+
+
+#================================Variant management=======================================
 @login_required(login_url='admin_login')
 def variant_list(request):
     if request.user.is_superuser: 
@@ -281,6 +267,8 @@ def variant_list(request):
         return render(request,'variants.html',{'variants':page_variants})
     else:
         return redirect('home')
+
+
 @login_required(login_url='admin_login')
 def add_variant(request):
     products   = Products.objects.all()
@@ -321,47 +309,35 @@ def add_variant(request):
     return render(request,'add_variant.html',context)
 
 
-
 @login_required(login_url='admin_login')
-def edit_variant(request,id):
-    variant      = Variants.objects.get(id=id)
-    product      = variant.variant_product
-    print(product)
+def addVariantStock(request,id):
+    variant       = Variants.objects.get(id=id)
+    product       = variant.variant_product
+    variant_stock = variant.variant_stock
+    
     if request.method == 'POST':
-        # Update the product with the data from the form
-        
-
-        size                  = request.POST['size']
+        # Add the entered quantity to existing stock
         stock                 = request.POST['stock']
-   
-        if  product and size and stock :
-            # if Variants.objects.filter(variant_product=Products.objects.get(product_name=product),variant_color=color,variant_size=Size.objects.get(size=size)).exists():
-            #     messages.info(request,'Variant already exists')
-            #     return redirect('add_variant')
-            # else:
-       
-                variant.variant_product     = Products.objects.get(id = variant.variant_product.id)
-                variant.variant_size        = Size.objects.get(size=size)
-                variant.variant_stock       = stock
+        if stock :
+                variant.variant_stock  += int(stock)
                 variant.save()
         return redirect('variant_list')
     
-    else:
-        # Render the product edit form
-        sizes      = Size.objects.all()
-        
-        context = {
-            'variant':variant,
-            'variants':Variants,
-            'sizes':sizes,
-            }
-        return render(request, 'edit_variants.html', context)
+    # Render the product edit form
+    sizes      = Size.objects.all()
+    
+    context = {
+        'variant':variant,
+        }
+    return render(request, 'add_stock.html', context)
+
 
 @login_required(login_url='admin_login')
 def delete_variant(request,id):
     variant=Variants.objects.get(id=id)
     variant.delete()
     return redirect('variant_list')
+
 
 @login_required(login_url='admin_login')
 def search_variant(request):
@@ -374,6 +350,8 @@ def search_variant(request):
         print('Nothing similar')
         return redirect('variant_list')
 
+
+
 #================================Functions for Banners=======================================
 @login_required(login_url='admin_login')
 def banners(request):
@@ -382,6 +360,7 @@ def banners(request):
         return render(request,'banners.html',{'banners':banners})
     else:
         return redirect('home')
+ 
  
 @login_required(login_url='admin_login')   
 def add_banners(request):
@@ -398,7 +377,9 @@ def add_banners(request):
    
     return render(request,'add_banners.html')
 
-#================================Functions for categories=======================================
+
+
+#================================Category management=======================================
 
 @login_required(login_url='admin_login')
 def category_list(request):
@@ -407,6 +388,7 @@ def category_list(request):
         return render(request,'categories_list.html',{'categories':categories})
     else:
         return redirect('home')
+
 
 @login_required(login_url='admin_login')
 def add_category(request):
@@ -427,11 +409,13 @@ def add_category(request):
             return redirect('add_category')
     return render(request,'add_categories.html')
 
+
 @login_required(login_url='admin_login')
 def delete_category(request,id):
     category=Category.objects.get(id=id)
     category.delete()
     return redirect('category_list')
+
 
 def search_category(request):
     if request.method=='GET':
@@ -442,7 +426,10 @@ def search_category(request):
     else:
         print('Nothing similar')
         return redirect('categories_list')
-#=====================================Functions for brands============================================
+
+
+
+#=====================================Brand management============================================
 @login_required(login_url='admin_login')
 def brand_list(request):
     if request.user.is_superuser:
@@ -450,6 +437,7 @@ def brand_list(request):
         return render(request,'brand_list.html',{'brands':brands})
     else:
         return redirect('home')
+
 
 @login_required(login_url='admin_login')
 def add_brand(request):
@@ -469,6 +457,7 @@ def add_brand(request):
             return redirect('add_brand')
     return render(request,'add_brand.html')
 
+
 @login_required(login_url='admin_login')
 def delete_brand(request,id):
     brand=Brand.bjects.get(id=id)
@@ -477,11 +466,12 @@ def delete_brand(request,id):
 
 
 
-#=====================================Functions for Sports============================================
+#=====================================Sports management============================================
 @login_required(login_url='admin_login')
 def sport_list(request):
     sports   =  Sport.objects.all
     return render(request,'sport_list.html',{'sports':sports})
+
 
 @login_required(login_url='admin_login')
 def add_sport(request):
@@ -501,20 +491,27 @@ def add_sport(request):
             return redirect('add_sport')
     return render(request,'add_sport.html')
 
+
 @login_required(login_url='admin_login')
 def delete_sport(request,id):
     sport=Sport.objects.get(id=id)
     sport.delete()
     return redirect('sport_list')
 
+
+
+
+#=====================================Order management============================================
 @login_required(login_url='admin_login')
 def orders(request):
     orders    = Orders.objects.all().order_by('-id')
     return render(request,'orders_list.html',{'orders':orders})
 
+
 @login_required(login_url='admin_login')
 def order_info(request,id):
     pass
+
 
 @login_required(login_url='admin_login')
 def update_orders(request,id):
@@ -528,10 +525,14 @@ def update_orders(request,id):
         order.save()
         return redirect('orders')
     
+    
+
+#=====================================Coupon management============================================   
 @login_required(login_url='admin_login')   
 def coupons(request):
     coupons   =  Coupons.objects.all
     return render(request,'coupons_list.html',{'coupons':coupons}) 
+
 
 @login_required(login_url='admin_login')
 def add_coupon(request):
@@ -563,3 +564,42 @@ def activateCoupon(request,id):
     coupon.expired = False
     coupon.save()
     return redirect('coupons')
+
+
+
+#=====================================Charts============================================
+def sales(request):
+    return render(request,'saleschart.html') 
+
+def get_order_data(request):
+    # Retrieve the data from the database
+    order_items = OrderItem.objects.values('product__product_name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity')[:5]
+    order_data = Orders.objects.filter(status='Delivered').values('order_date__month').annotate(total_orders=Count('id')).order_by('order_date__month')
+    daily_order_data = Orders.objects.filter(status='Delivered').values('order_date').annotate(total_orders=Count('id')).order_by('order_date')
+
+
+    # Prepare the data for the chart
+    top_products_labels = [item['product__product_name'] for item in order_items]
+    top_products_data = [item['total_quantity'] for item in order_items]
+
+    order_month_labels = [calendar.month_name[m] for m in range(1, 13)]
+    order_month_data = [0] * 12
+    for data in order_data:
+        order_month_data[data['order_date__month']-1] = data['total_orders']
+       
+    daily_order_labels = [str(d) for d in range(1, 32)]
+    order_day_data = [0] * 31
+    for data in daily_order_data:
+        order_day_data[int(data['order_date'].day)-1] = data['total_orders']
+
+    
+    data = {
+        'top_products_labels': top_products_labels,
+        'top_products_data': top_products_data,
+        'order_month_labels': order_month_labels,
+        'order_month_data': order_month_data,
+        'daily_order_labels': daily_order_labels,
+        'daily_order_data': order_day_data ,
+    }
+
+    return JsonResponse(data)

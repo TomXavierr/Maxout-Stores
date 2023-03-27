@@ -184,6 +184,7 @@ def home(request):
         'main_banner':  Banners.objects.get(id=1).banners,
         'cart_count':   CartItem.objects.filter(cart= Cart.objects.get(customer = request.user)).count(),
         'sports':       Sport.objects.all(),
+        'categories':   Category.objects.all(),
         'brands':       Brand.objects.all() ,
         'Products':     Products}
     return render(request,'home.html',context)
@@ -382,3 +383,21 @@ def my_orders(request):
         }
    
     return render(request,'my_orders.html',context)
+
+def order_details(request,id):
+    
+    order       = Orders.objects.get(id=id)
+    order_items = order.orderitem_set.all()
+    payment     = Payment.objects.get(order=order)
+    context = {
+    'main_banner':  Banners.objects.get(id=1).banners,
+    'cart_count':   CartItem.objects.filter(cart= Cart.objects.get(customer = request.user)).count(),
+    'sports':       Sport.objects.all(),
+    'brands':       Brand.objects.all() ,
+    'user':         request.user,
+    'Products':     Products,
+    'order':        order ,
+    'order_items':  order_items,
+    'payment':      payment,
+    }
+    return render(request,'order_details.html',context)

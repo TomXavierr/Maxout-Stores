@@ -29,38 +29,18 @@ Home
             <div class="container">
                 <div class="row justify-content-center">
                     <!-- Single Catagory -->
+                    {% for category in categories %}
                     <div class="col-12 col-sm-6 col-md-4">
                         <div
                             class="single_catagory_area d-flex align-items-center justify-content-center bg-img"
-                            style="background-image: url(img/bg-img/bg-2.jpg)"
+                            style="background-image: url('{{category.thumbnail.url}}')"
                         >
                             <div class="catagory-content">
-                                <a href="{% url 'apparels' %}">Clothing</a>
+                                <a href="">{{category.category_name}}</a>
                             </div>
                         </div>
                     </div>
-                    <!-- Single Catagory -->
-                    <div class="col-12 col-sm-6 col-md-4">
-                        <div
-                            class="single_catagory_area d-flex align-items-center justify-content-center bg-img"
-                            style="background-image: url(img/bg-img/bg-3.jpg)"
-                        >
-                            <div class="catagory-content">
-                                <a href="{% url 'footwear' %}">Shoes</a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Single Catagory -->
-                    <div class="col-12 col-sm-6 col-md-4">
-                        <div
-                            class="single_catagory_area d-flex align-items-center justify-content-center bg-img"
-                            style="background-image: url(img/bg-img/bg-4.jpg)"
-                        >
-                            <div class="catagory-content">
-                                <a href="#">Accessories</a>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

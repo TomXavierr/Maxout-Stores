@@ -50,7 +50,10 @@ def place_cod_order(request):
             cart              = cart,          
         )
         order.save()
-         
+        
+        #saves the payment information 
+        payment = Payment.objects.create(user = request.user, payment_method=payment_method,status='NOT PAID',amount_paid ='0',order=order )
+        payment.save()
         
         for item in cart_items:
             size      = item.size
@@ -185,6 +188,7 @@ def payment_success(request):
     print(sub_total)
     
     
+    
     if coupon_code:
         coupon = Coupons.objects.get(coupon_code=coupon_code)
         discount = coupon.discount_price
@@ -194,6 +198,7 @@ def payment_success(request):
         discount = 0
         grand_total = sub_total
 
+    
     order =  Orders.objects.create(
         order_id          = order_id,
         user              = user,
@@ -205,6 +210,13 @@ def payment_success(request):
         cart              = cart,          
     )
     order.save()
+    
+    #checks for the payment id in the session and creates payment information data
+    if 'payment_id'  in request.session:
+          payment_id = request.session['payment_id']
+          payment = Payment.objects.create(user = request.user,payment_id=payment_id, payment_method=payment_method,status='Paid',amount_paid =grand_total,order=order )
+          payment.save()
+          del request.session['payment_id'] 
     
     for item in cart_items:
         orderitem = OrderItem.objects.create(
@@ -238,21 +250,6 @@ def order_success_page(request):
     
     return render(request,'order_succespage.html',context)
 
-def order_details(request,id):
-    
-    order       = Orders.objects.get(id=id)
-    order_items = order.orderitem_set.all()
-    context = {
-    'main_banner':  Banners.objects.get(id=1).banners,
-    'cart_count':   CartItem.objects.filter(cart= Cart.objects.get(customer = request.user)).count(),
-    'sports':       Sport.objects.all(),
-    'brands':       Brand.objects.all() ,
-    'user':         request.user,
-    'Products':     Products,
-    'order':        order ,
-    'order_items':  order_items
-    }
-    return render(request,'order_details.html',context)
 
 def cancel_order(request,id):
     order       = Orders.objects.get(id=id)   

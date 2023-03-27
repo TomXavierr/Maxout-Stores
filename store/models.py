@@ -104,6 +104,7 @@ class Banners(models.Model):
     
 class Category(models.Model):
     category_name              = models.CharField(max_length=100)
+    thumbnail                  = models.ImageField(upload_to='photos/',null=False,blank=False)
   
   
   

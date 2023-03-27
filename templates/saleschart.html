@@ -98,7 +98,11 @@
             <div class="container-fluid pt-4 px-4">
                 <h6 class="mb-0">Monthly Orders</h6>
                 <canvas id="monthly-orders"></canvas>
-            </div>     
+            </div>  
+            <div class="container-fluid pt-4 px-4">
+                <h6 class="mb-0">Daily Orders</h6>
+                <canvas id="daily-orders"></canvas>
+            </div>   
         </div> 
     </div>
 
@@ -115,7 +119,9 @@
                 var top_products_data = data.top_products_data;
                 var order_month_labels = data.order_month_labels;
                 var order_month_data = data.order_month_data;
-                
+                var daily_order_labels = data.daily_order_labels;
+                var daily_order_data  = data.daily_order_data;
+
                 // Update the top products chart
                 var ctx1 = $("#top-products").get(0).getContext("2d");
                 var myChart1 = new Chart(ctx1, {
@@ -143,6 +149,23 @@
                         datasets: [{
                             label: "Orders",
                             data: order_month_data,
+                            backgroundColor: "rgba(0, 156, 255, .5)",
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+                // Update the daily orders chart
+                var ctx3 = $("#daily-orders").get(0).getContext("2d");
+                var myChart3 = new Chart(ctx3, {
+                    type: "line",
+                    data: {
+                        labels: daily_order_labels,
+                        datasets: [{
+                            label: "Orders",
+                            data: daily_order_data,
                             backgroundColor: "rgba(0, 156, 255, .5)",
                             fill: true
                         }]

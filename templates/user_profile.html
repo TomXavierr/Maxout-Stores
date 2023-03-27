@@ -45,11 +45,17 @@ Profile
 						<!-- User Image -->
 						<div class="profile-thumb">
 							{% if user.profile_image %}
-								<img src="{{ user.profile_image.url }}" alt="{{ user.username }}">
+								<img src="{{ user.profile_image.url }}" alt="{{ user.username }}" style="width: 130px; height: auto; border: 5px solid #F4F7F9; background-color: #a8729a; border-radius: 50%">
+								<span><a href="upload_profile_img"><button type="button" class="btn-dark btn-sm">Edit</button></a></span>
 							{% else %}
-								<img src="/media/profile_photos/default.png" alt="{{ user.username }}">
+								<span>
+									
+									<img src="" alt=""  style="width: 130px; height: 130px; border: 5px solid #F4F7F9; background-color: #a8729a; border-radius: 50%" >
+									
+								</span>
+								<span><a href="upload_profile_img"><button type="button" class="btn-dark btn-sm">Add Image</button></a></span>
 							{% endif %}
-							<span><a href="upload_profile_img"><button type="button" class="btn-dark btn-sm">edit</button></a></span>
+							
 							{% comment %} <img src="{{user.profile_image.url}}" alt="" class="rounded-circle"> {% endcomment %}
 						</div>
 						<!-- User Name -->

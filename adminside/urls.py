@@ -22,7 +22,7 @@ urlpatterns = [
     path('variant_list',views.variant_list,name='variant_list'),
     path('add_variant',views.add_variant,name='add_variant'),
     path('search_variant',views.search_variant,name='search_variant'),
-    path('edit-variant/<int:id>',views.edit_variant,name='edit_variant'),
+    path('addVariantStock/<int:id>',views.addVariantStock,name='addVariantStock'),
     path('delete_variant/<int:id>',views.delete_variant,name='delete_variant'),
    
     
