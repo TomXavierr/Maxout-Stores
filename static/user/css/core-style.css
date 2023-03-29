@@ -233,7 +233,7 @@ img {
   text-transform: uppercase;
   font-size: 12px;
   line-height: 50px;
-  background-color: #0315ff;
+  background-color: #000000;
   letter-spacing: 1.5px;
   font-weight: 600; }
   .essence-btn:hover, .essence-btn:focus {
@@ -253,7 +253,7 @@ img {
   @media only screen and (max-width: 767px) {
     .header_area .classy-nav-container {
       -ms-flex-wrap: wrap;
-      background-color: #d7d7d6;
+      background-color: #eaeae6;
       flex-wrap: wrap; } }
   @media only screen and (max-width: 767px) {
     .header_area .classy-nav-container .classy-navbar-toggler {
@@ -300,19 +300,19 @@ img {
     .header_area .classynav ul li .megamenu li a:hover,
     .header_area .classynav ul li .dropdown li a:hover {
       color: #000000; }
-  .header_area .search-area form {
+  .header_area .search-area .searchbar {
     position: relative;
     z-index: 1;
     height: 85px;
     border-left: 1px solid #ebebeb; }
     @media only screen and (max-width: 767px) {
-      .header_area .search-area form {
+      .header_area .search-area .searchbar {
         height: 40px;
         border-left: none; } }
-    .header_area .search-area form input {
+    .header_area .search-area .searchbar input {
       border: none;
       background-color: #d7d7d6;
-      width: 200px;
+      width: 180px;
       height: 85px;
       padding: 0 15px 0 60px;
       color: #787878;
@@ -321,26 +321,26 @@ img {
       -webkit-transition-duration: 500ms;
       transition-duration: 500ms; }
       @media only screen and (max-width: 767px) {
-        .header_area .search-area form input {
+        .header_area .search-area .searchbar input {
           width: 170px;
           height: 40px;
           padding: 0 10px 0 30px; } }
-      .header_area .search-area form input:focus {
+      .header_area .search-area .searchbar input:focus {
         outline: none !important;
         width: 350px; }
         @media only screen and (min-width: 768px) and (max-width: 991px) {
-          .header_area .search-area form input:focus {
+          .header_area .search-area .searchbar input:focus {
             width: 300px; } }
         @media only screen and (max-width: 767px) {
-          .header_area .search-area form input:focus {
+          .header_area .search-area .searchbar input:focus {
             width: 170px; } }
         @media only screen and (min-width: 480px) and (max-width: 767px) {
-          .header_area .search-area form input:focus {
+          .header_area .search-area .searchbar input:focus {
             width: 270px; } }
         @media only screen and (min-width: 576px) and (max-width: 767px) {
-          .header_area .search-area form input:focus {
+          .header_area .search-area .searchbar input:focus {
             width: 300px; } }
-    .header_area .search-area form button {
+    .header_area .search-area .searchbar button {
       position: absolute;
       z-index: 10;
       top: 50%;
@@ -352,7 +352,7 @@ img {
       color: #787878;
       font-size: 14px; }
       @media only screen and (max-width: 767px) {
-        .header_area .search-area form button {
+        .header_area .search-area .searchbar button {
           left: 10px;
           height: 40px; } }
   .header_area .favourite-area a,
@@ -463,7 +463,7 @@ img {
     .right-side-cart-area .cart-button a span {
       font-family: "Ubuntu", sans-serif;
       font-size: 18px;
-      color: #0315ff;
+      color: #000000;
       font-weight: 700;
       position: absolute;
       top: -10px; }
@@ -700,7 +700,7 @@ img {
       .single_catagory_area .catagory-content a {
         font-size: 18px; } }
   .single_catagory_area:hover .catagory-content a {
-    color: #0315ff; }
+    color: #000000; }
 
 /* :: 7.0 CTA Area CSS */
 .cta-area {
@@ -845,7 +845,7 @@ img {
     cursor: pointer;
     color: #ccc; }
     .single-product-wrapper .favme.active {
-      color: #f1562d !important; }
+      color: #ff0000 !important; }
     .single-product-wrapper .favme.is_animating {
       animation: favme-anime .5s; }
   .single-product-wrapper:hover .product-img .hover-img {
@@ -868,13 +868,13 @@ img {
     color: #ffffff;
     font-size: 15px;
     -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color:#f1562d; }
+    -webkit-text-stroke-color:#ff0000; }
   75% {
     opacity: .6;
     color: #ffffff;
     font-size: 15px;
     -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: #f1562d; }
+    -webkit-text-stroke-color: #ff0000; }
   100% {
     opacity: 1;
     font-size: 14px;
@@ -893,7 +893,7 @@ img {
     text-align: center;
     color: #787878; }
     .pagination .page-item .page-link:hover, .pagination .page-item .page-link:focus {
-      color: #0315ff;
+      color: #000000;
       box-shadow: none; }
   .pagination .page-item:first-child {
     margin-right: 15px; }
@@ -913,6 +913,7 @@ img {
   position: relative;
   z-index: 1;
   background-color: #f5f7f9;
+  padding-top: 10px !important;
   padding: 100px 5%; }
   @media only screen and (max-width: 767px) {
     .brands-area {
@@ -1050,13 +1051,13 @@ img {
         border: none;
         width: 100%; }
         .single_product_details_area .single_product_desc .nice-select .list .option.selected {
-          color: #0315ff; }
+          color: #000000; }
     .single_product_details_area .single_product_desc .cart-fav-box .favme {
       cursor: pointer;
       color: #ccc;
       font-size: 24px; }
       .single_product_details_area .single_product_desc .cart-fav-box .favme.active {
-        color:#f1562d !important; }
+        color:#ff0707 !important; }
 
 /* :: 11.0 Footer Area CSS */
 .footer_area {
@@ -1176,7 +1177,7 @@ img {
       font-family: "Ubuntu", sans-serif;
       letter-spacing: 1px;
       margin-bottom: 0;
-      color: #0315ff; }
+      color: #000000; }
       @media only screen and (min-width: 768px) and (max-width: 991px) {
         .breadcumb_area.breadcumb-style-two .page-title h2 {
           font-size: 48px; } }
@@ -1216,7 +1217,7 @@ img {
       font-weight: 300;
       color: #787878; }
       .widget .catagories-menu .sub-menu li > a:hover {
-        color: #0315ff; }
+        color: #000000; }
   .widget.price .ui-slider-handle {
     background-color: #000000;
     border: none;
@@ -1226,7 +1227,7 @@ img {
     height: 15px;
     margin: 0; }
   .widget.price .ui-slider-range.ui-corner-all.ui-widget-header {
-    background-color: #0315ff; }
+    background-color: #000000; }
   .widget.price .ui-slider-horizontal {
     height: 5px; }
   .widget.price .range-price {
@@ -1250,23 +1251,23 @@ img {
         background-color: #ffffff;
         position: relative;
         z-index: 1;
-        box-shadow: 0 0 3px rgba(0, 0, 0, 0.15); }
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.5); }
         .widget.color .widget-desc ul li a.color1 {
           background-color: #ffffff; }
         .widget.color .widget-desc ul li a.color2 {
-          background-color: #969696; }
+          background-color: #acacac; }
         .widget.color .widget-desc ul li a.color3 {
           background-color: #030303; }
         .widget.color .widget-desc ul li a.color4 {
-          background-color: #0315ff; }
+          background-color: #006cc5; }
         .widget.color .widget-desc ul li a.color5 {
           background-color: #f1562d; }
         .widget.color .widget-desc ul li a.color6 {
-          background-color: #fff56a; }
+          background-color: #fef136; }
         .widget.color .widget-desc ul li a.color7 {
-          background-color: #f26e51; }
+          background-color: #ff0000; }
         .widget.color .widget-desc ul li a.color8 {
-          background-color: #9a8777; }
+          background-color: #754b36; }
         .widget.color .widget-desc ul li a.color9 {
           background-color: #5b862a; }
         .widget.color .widget-desc ul li a.color10 {
@@ -1281,7 +1282,7 @@ img {
       font-weight: 300;
       text-transform: capitalize; }
       .widget.brands ul li a:hover {
-        color: #0315ff; }
+        color: #000000; }
 
 .product-topbar {
   position: relative;
@@ -1295,7 +1296,7 @@ img {
     text-transform: uppercase;
     letter-spacing: 0.75px; }
     .product-topbar .total-products p span {
-      color: #0315ff; }
+      color: #000000; }
   .product-topbar .product-sorting p {
     margin-bottom: 0;
     font-size: 12px;
@@ -1327,7 +1328,7 @@ img {
       border-radius: 0;
       border: none; }
       .product-topbar .nice-select .list .option.selected {
-        color: #0315ff; }
+        color: #000000; }
 
 /* :: 14.0 Checkout Area CSS */
 .checkout_details_area form label {
@@ -1335,7 +1336,7 @@ img {
   text-transform: uppercase;
   font-weight: 600; }
   .checkout_details_area form label span {
-    color: #0315ff; }
+    color: #000000; }
 .checkout_details_area form .form-control {
   height: 42px;
   border: 1px solid #ebebeb;

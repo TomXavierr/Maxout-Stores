@@ -110,7 +110,7 @@ class Category(models.Model):
   
 class Brand(models.Model):
     brand_name                 = models.CharField(max_length=100)
-  
+    logo                       = models.ImageField(upload_to='Logos/',null=False,blank=False)
   
 class Sport(models.Model):
     sport_name                 = models.CharField(max_length=100)

@@ -28,8 +28,15 @@
                         <!-- Classy Menu -->
                         <nav class="classy-navbar" id="essenceNav">
                             <!-- Logo -->
+                            {% if user.is_authenticated %}
                             <a class="nav-brand"  href="{% url 'home' %}"
-                                ><img style="max-width:6em; height:auto" class="img-fluid" src="{% static 'user/img/core-img/ma.png' %}" alt=""/></a>
+                                ><img style="max-width:6em; height:auto" class="img-fluid" src="{% static 'user/img/core-img/ma.png' %}" alt=""/>
+                            </a>
+                            {% else %}
+                            <a class="nav-brand"  href="{% url 'index' %}"
+                                ><img style="max-width:6em; height:auto" class="img-fluid" src="{% static 'user/img/core-img/ma.png' %}" alt=""/>
+                            </a>
+                            {% endif %}
                             <!-- Navbar Toggler -->
                             <div class="classy-navbar-toggler">
                                 <span class="navbarToggler"><span></span><span></span><span></span></span>
@@ -143,10 +150,10 @@
                         <div class="header-meta d-flex clearfix justify-content-end">
                             <!-- Search Area -->
                             <div class="search-area">
-                                <form action="{% url 'search_products' %}" method="get">
-                                    <span><input type="search" name="searchterm" id="headerSearch" placeholder="Type for search" /></span>
-                                    <span><button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button></span>
-                                </form>
+                                <div class="searchbar">
+                                    <span><input type="text" name="searchterm" id="headerSearch" placeholder="Type for search" /></span>
+                                    <span>{% csrf_token %}<button onclick="search()" ><i class="fa fa-search" aria-hidden="true"></i></button></span>
+                                </div>
                             </div>
                             <!-- Favourite Area -->
                             <div class="favourite-area">
@@ -262,8 +269,36 @@
         <script src="{% static 'user/js/classy-nav.min.js' %}"></script>
         <!-- Active js -->
         <script src="{% static 'user/js/active.js' %} "></script>
-        
-    
         </script>
+
+        <script>
+            function search(){
+                var search_term = $('#headerSearch').val();
+                console.log(search_term);
+        
+                $.ajax({
+                    url: '{% url 'searchProducts' %}?gender={{gender}}&category_id= {{category_id}}',
+                    method: 'POST',
+                    data: {
+                        'search_term': search_term,
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+
+                    success: function(data) {
+                        // Check if the search was initiated from the home page
+                        if (window.location.pathname === '/home' || window.location.pathname === '/') {
+                            // Redirect to the store page with search term as query parameter
+                            window.location.href = '{% url 'shop' %}?search_term='+search_term;
+                        } else {
+                            // Update the product list with the search results
+                            $('#product-list').html(data);
+                        }
+                    }
+                    
+                })
+        
+            }
+          </script>
+
     </body>
 </html>

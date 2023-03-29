@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-store
+Store
 {% endblock title %}
 
 {% block links %}
@@ -121,16 +121,18 @@ store
                             <p class="widget-title2 mb-30">Color</p>
                             <div class="widget-desc">
                                 <ul class="d-flex">
-                                    <li><a href="{% url 'color_filter' name="white" %}" class="color1"></a></li>
-                                    <li><a href="{% url 'color_filter' name="grey" %}" class="color2"></a></li>
-                                    <li><a href="{% url 'color_filter' name="black" %}" class="color3"></a></li>
-                                    <li><a href="{% url 'color_filter' name="blue" %}" class="color4"></a></li>
-                                    <li><a href="{% url 'color_filter' name="orange" %}" class="color5"></a></li>
-                                    <li><a href="{% url 'color_filter' name="yellow" %}" class="color6"></a></li>
-                                    <li><a href="{% url 'color_filter' name="red" %}" class="color7"></a></li>
-                                    <li><a href="{% url 'color_filter' name="brown" %}" class="color8"></a></li>
-                                    <li><a href="{% url 'color_filter' name="green" %}" class="color9"></a></li>
-                                    <li><a href="{% url 'color_filter' name="purple" %}" class="color10"></a></li>
+                                    <ul class="d-flex">
+                                        <li><a href="#" onclick="colorFilter('white')" class="color1"></a></li>
+                                        <li><a href="#" onclick="colorFilter('grey')" class="color2"></a></li>
+                                        <li><a href="#" onclick="colorFilter('black')" class="color3"></a></li>
+                                        <li><a href="#" onclick="colorFilter('blue')" class="color4"></a></li>
+                                        <li><a href="#" onclick="colorFilter('orange')" class="color5"></a></li>
+                                        <li><a href="#" onclick="colorFilter('yellow')" class="color6"></a></li>
+                                        <li><a href="#" onclick="colorFilter('red')" class="color7"></a></li>
+                                        <li><a href="#" onclick="colorFilter('brown')" class="color8"></a></li>
+                                        <li><a href="#" onclick="colorFilter('green')" class="color9"></a></li>
+                                        <li><a href="#" onclick="colorFilter('purple')" class="color10"></a></li>
+                                    </ul>
                                 </ul>
                             </div>
                         </div>
@@ -145,7 +147,7 @@ store
                                 <div class="product-topbar d-flex align-items-center justify-content-between">
                                     <!-- Total Products -->
                                     <div class="total-products">
-                                        <p><span>{{count}}</span> products found</p>
+                                        <p id="count"><span>{{count}}</span> products found</p>
                                     </div>
                                     <!-- Sorting -->
                                     {% comment %} <div class="product-sorting d-flex">
@@ -172,7 +174,7 @@ store
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row" id="product-list">
                             {% for product in products %}
                             <!-- Single Product -->
                             
@@ -185,16 +187,6 @@ store
                                         <a href="{% url 'product_details' id=product.id %}">
                                             <img class="img-fluid mx-auto" src="{{product.product_image.url}}" alt="">
                                         </a>
-                                       
-
-                                        <!-- Product Badge -->
-                                        {% comment %} <div class="product-badge offer-badge">
-                                            <span>-30%</span>
-                                        </div> {% endcomment %}
-                                        <!-- Favourite -->
-                                        {% comment %} <div class="product-favourite">
-                                            <a href="#" class="favme fa fa-heart" data-product-id="{{ product.id }}"></a>
-                                        </div> {% endcomment %}
                                     </div>
                                 
                                     <!-- Product Description -->
@@ -207,10 +199,7 @@ store
                                         <p class="product-price">
                                             {% comment %} <span class="old-price">$75.00</span> {% endcomment %}
                                             ₹ {{product.product_price}}
-                                            
                                         </p>
-                                     
-                                       
                                     </div>
                                 
                                 </div>
@@ -239,26 +228,19 @@ store
         </div>
     </section>
     <!-- ##### Shop Grid Area End ##### -->
-    {% comment %} <script>
-        $(document).ready(function() {
-            $('#sort-select').on('change', function() {
-                var selectedValue = $(this).val();
-                $.ajax({
-                    type: 'GET',
-                    url: '{% url "shop" %}',
-                    data: {'sort': selectedValue},
-                    success: function(response) {
-                        $('#product-list').html(response);
-                    },
-                    error: function(response) {
-                        console.log(response);
-                    }
-                });
-            });
+  <script>
+    function colorFilter(color) {
+        console.log(color);
+        
+        $.ajax({
+            
+            url: "{% url 'colorFilter' %}?color=" + color + "&gender={{gender}}&sport_id={{sport_id}}&brand_id={{brand_id}}&category_id={{category_id}}&searchterm={{searchterm}}",
+            success: function(data) {
+                $('#product-list').html(data);
+            }
         });
-        </script> {% endcomment %}
-
-
+    }
+  </script>
 
 
 {% endblock content %}

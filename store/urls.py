@@ -17,11 +17,12 @@ urlpatterns = [
      path('womens_sport/<id>',views.womensSport,name='womens_sport'),
      path('womens_brands/<id>',views.womensBrands,name='womens_brands'),
     
-     path('footwear',views.footwear,name='footwear'),   
-     path('apparels',views.apparels,name='apparels'),
+     path('ListByCategory/<int:id>',views.ListByCategory,name='ListByCategory'),   
+     path('ListByBrand/<int:id>',views.ListByBrand,name="ListByBrand"),
+     
      
      path('product_details/<int:id>',views.product_details,name="product_details"),
-     path('search_products',views.search_products,name="search_products"),
+     path('searchProducts',views.searchProducts,name="searchProducts"),
 
 
      
@@ -39,5 +40,6 @@ urlpatterns = [
      path('delete_address2/<int:id>',views.delete_address2,name='delete_address2'),
      path('redeem_coupon',views.redeem_coupon,name='redeem_coupon'),
      
-     path('color_filter/<str:name>/', views.color_filter, name='color_filter'),
+     path('colorFilter/', views.colorFilter, name='colorFilter'),
+     # path('color_filter/<str:name>/', views.color_filter, name='color_filter'),
 ]

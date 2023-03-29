@@ -145,8 +145,6 @@ def payment_verification(request):
                   order_id = request.POST.get('razorpay_order_id','')
                   signature = request.POST.get('razorpay_signature','')
                   
-                  
-                  
                   params_dict = {
                         'razorpay_payment_id':payment_id ,
                         'razorpay_order_id': order_id ,
@@ -158,19 +156,18 @@ def payment_verification(request):
                   print(signature,'signat')
             except:
                   pass
+              
             try:
                 client = razorpay.Client(auth = (settings.KEY,settings.SECRET))
-
                 client.utility.verify_payment_signature(params_dict)
             except:
                   messages.info(request,'Payment Failed')
                   print('failed')
-              
-            
+                  
             
             request.session['payment_id'] = payment_id
-           
             return redirect('payment_success')
+        
 
 def payment_success(request):
     coupon_code = request.session.get('coupon_code')

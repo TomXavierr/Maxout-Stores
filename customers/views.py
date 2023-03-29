@@ -9,6 +9,7 @@ from django.contrib import messages,auth
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.cache import cache_control,never_cache
 from django.utils.decorators import method_decorator
+from django.db.models import Sum
 
 import smtplib 
 import secrets
@@ -32,14 +33,23 @@ def check_user(view_func):
 def index(request):
     if request.user.is_authenticated and not request.user.is_superuser:
        return redirect('home')
-  
-    main_banner = Banners.objects.get(id=1).banners
-    sports = Sport.objects.all()
-    brands = Brand.objects.all()
+    top_products = OrderItem.objects.values('product__product_name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity')[:5]
+    top_product_names = [item['product__product_name'] for item in top_products]
+    top_products_obj = Products.objects.filter(product_name__in=top_product_names)
+    print(top_products)
+    print(top_product_names)
     
+    print(top_products_obj)
     
-    main_banner = Banners.objects.get(id=1).banners
-    return render(request,'index.html',{'main_banner':main_banner,'sports':sports,'brands':brands ,'Products':Products})
+    context = {
+        'top_products': top_products_obj,
+        'main_banner':  Banners.objects.get(id=1).banners,
+        'sports':       Sport.objects.all(),
+        'categories':   Category.objects.all(),
+        'brands':       Brand.objects.all() ,
+        'Products':     Products}
+    return render(request,'index.html',context)
+
 
 @cache_control(no_cache = True,must_revalidate = False,no_store=True)
 def register_view(request):
@@ -107,6 +117,7 @@ def register_view(request):
     else:
         return render(request,'signup.html') 
     
+    
 def generate_otp(length=6):
     #generate OTP with specific length
     return ''.join(secrets.choice("0123456789") for i in range(length))     
@@ -136,6 +147,7 @@ def verify_signup(request):
             messages.info(request,"invalid otp")
             return redirect('register')
     return render(request,'signup_verify.html') 
+    
     
 @never_cache
 def user_login(request):
@@ -169,6 +181,7 @@ def user_login(request):
     else:
          return render(request,'signin.html')
     
+    
 def logout(request):
     
     auth.logout(request)
@@ -179,8 +192,16 @@ def logout(request):
 @login_required(login_url='user_login') 
 @check_user
 def home(request):
+    top_products = OrderItem.objects.values('product__product_name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity')[:5]
+    top_product_names = [item['product__product_name'] for item in top_products]
+    top_products_obj = Products.objects.filter(product_name__in=top_product_names)
+    print(top_products)
+    print(top_product_names)
+    
+    print(top_products_obj)
     
     context = {
+        'top_products': top_products_obj,
         'main_banner':  Banners.objects.get(id=1).banners,
         'cart_count':   CartItem.objects.filter(cart= Cart.objects.get(customer = request.user)).count(),
         'sports':       Sport.objects.all(),
@@ -188,8 +209,7 @@ def home(request):
         'brands':       Brand.objects.all() ,
         'Products':     Products}
     return render(request,'home.html',context)
-    # else:
-    #     return redirect('user_login')
+  
 
 @login_required(login_url='user_login') 
 @check_user
@@ -241,6 +261,7 @@ def update_username(request):
     # If the request is not a POST request, render the change username template
     return render(request, 'update_user.html',context)
 
+
 def upload_profile_img(request):
     context = {
     'main_banner':  Banners.objects.get(id=1).banners,
@@ -259,6 +280,7 @@ def upload_profile_img(request):
         user.save()
         return redirect('profile')
     return render(request, 'upload_profile.html',context)
+    
     
 @login_required(login_url='user_login') 
 def update_password(request):

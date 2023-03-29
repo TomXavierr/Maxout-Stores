@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-# from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth import login, authenticate,logout
 from customers.models import Account,Addresses
 from orders.models import Orders ,Coupons   
@@ -16,33 +16,64 @@ from customers.views import check_user
 import razorpay
 import re
 import json
+from django.urls import reverse
 
 # Create your views here.
 
 
 
-def shop(request):
+# def shop(request):
     
-    products     = Products.objects.all()
-    variants     = Variants.objects.filter(variant_product__in = products )
-    count = products.count()
-    sports       =  Sport.objects.all()
-    brands       = Brand.objects.all()
-    if request.user.is_authenticated:
-        cart      = Cart.objects.get(customer = request.user)
-        cartitems = CartItem.objects.filter(cart= cart)
-        cart_count     = cartitems.count
+#     products     = Products.objects.all()
+#     variants     = Variants.objects.filter(variant_product__in = products )
+#     count = products.count()
+#     sports       =  Sport.objects.all()
+#     brands       = Brand.objects.all()
+#     if request.user.is_authenticated:
+#         cart      = Cart.objects.get(customer = request.user)
+#         cartitems = CartItem.objects.filter(cart= cart)
+#         cart_count     = cartitems.count
     
-    return render(request,'store.html',locals())
+#     return render(request,'store.html',locals())
 
+def shop(request):
+    search_term = request.GET.get('search_term')
+    print("sdgshfhdfh")
+    print(search_term)
+    
+    if search_term:
+        products = Products.objects.filter(product_name__icontains=search_term)
+    else:
+        products = Products.objects.all()
+    print(products)
+    variants = Variants.objects.filter(variant_product__in=products)
+    count = products.count()
+    sports = Sport.objects.all()
+    brands = Brand.objects.all()
+    
+    if request.user.is_authenticated:
+        cart = Cart.objects.get(customer=request.user)
+        cartitems = CartItem.objects.filter(cart=cart)
+        cart_count = cartitems.count
+        
+    return render(request, 'store.html', {
+        'products': products,
+        'variants': variants,
+        'count': count,
+        'sports': sports,
+        'brands': brands,
+        'cart_count': cart_count if request.user.is_authenticated else None,
+    })
 
 def mens_store(request):
     
     products     = Products.objects.filter(product_gender = 'Men')
     variants     = Variants.objects.filter(variant_product__in = products )
-    count = products.count()
+    count        = products.count()
     sports       =  Sport.objects.all()
     brands       = Brand.objects.all()
+    gender       = "Men"
+    
     
     if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
@@ -53,11 +84,12 @@ def mens_store(request):
 
 
 def womens_store(request):
-    products = Products.objects.filter(product_gender = 'Women')
-    variants = Variants.objects.filter(variant_product__in = products )
-    sports = Sport.objects.all()
-    brands = Brand.objects.all()
-    count = products.count()
+    products  = Products.objects.filter(product_gender = 'Women')
+    variants  = Variants.objects.filter(variant_product__in = products )
+    sports    = Sport.objects.all()
+    brands    = Brand.objects.all()
+    count     = products.count()
+    gender    = "Women"
     
     if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
@@ -69,11 +101,12 @@ def womens_store(request):
 
 
 def all_sport(request,id):
-    products = Products.objects.filter(product_sport=id)
-    variants = Variants.objects.filter(variant_product__in = products )
-    sports = Sport.objects.all()
-    brands = Brand.objects.all()
-    count = products.count()
+    products    = Products.objects.filter(product_sport=id)
+    variants    = Variants.objects.filter(variant_product__in = products )
+    sports      = Sport.objects.all()
+    brands      = Brand.objects.all()
+    count       = products.count()
+    sport_id    = id
     
     if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
@@ -90,6 +123,9 @@ def mensSport(request,id):
     sports = Sport.objects.all()
     brands = Brand.objects.all()
     count = products.count()
+    gender       = "Men"
+    sport_id    = id
+    
     
     if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
@@ -105,6 +141,8 @@ def womensSport(request,id):
     sports = Sport.objects.all()
     brands = Brand.objects.all()
     count = products.count()
+    gender       = "Women"
+    sport_id    = id
     
     if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
@@ -115,11 +153,12 @@ def womensSport(request,id):
 
 
 def all_brands(request,id):
-    products = Products.objects.filter(product_brand=id)
-    variants = Variants.objects.filter(variant_product__in = products )
-    sports = Sport.objects.all()
-    brands = Brand.objects.all()
-    count = products.count()
+    products   = Products.objects.filter(product_brand=id)
+    variants   = Variants.objects.filter(variant_product__in = products )
+    sports     = Sport.objects.all()
+    brands     = Brand.objects.all()
+    count      = products.count()
+    brand_id   = id
     
     if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
@@ -130,11 +169,14 @@ def all_brands(request,id):
 
  
 def mensBrands(request,id):
-    products = Products.objects.filter(product_gender = 'Men', product_brand=id)
-    variants = Variants.objects.filter(variant_product__in = products )
-    sports = Sport.objects.all()
-    brands = Brand.objects.all()
-    count = products.count()
+    products        = Products.objects.filter(product_gender = 'Men', product_brand=id)
+    variants        = Variants.objects.filter(variant_product__in = products )
+    sports          = Sport.objects.all()
+    brands          = Brand.objects.all()
+    count           = products.count()
+    gender          = "Men"
+    brand_id        = id
+    
     
     if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
@@ -144,13 +186,16 @@ def mensBrands(request,id):
     return render(request,'store.html',locals())
 
 
-def footwear(request):
-    category = Category.objects.get(category_name='Footwear')
-    products = Products.objects.filter(product_category=category)
-    variants = Variants.objects.filter(variant_product__in = products )
-    sports = Sport.objects.all()
-    brands = Brand.objects.all()
-    count = products.count()
+def ListByCategory(request,id):
+    category    = Category.objects.get(id=id)
+    products    = Products.objects.filter(product_category=category)
+    variants    = Variants.objects.filter(variant_product__in = products )
+    sports      = Sport.objects.all()
+    brands      = Brand.objects.all()
+    count       = products.count()
+    
+    category_id = id
+    
     
     if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
@@ -159,14 +204,16 @@ def footwear(request):
     
     return render(request,'store.html',locals())
 
-
-def apparels(request):
-    category = Category.objects.get(category_name='Apparels')
-    products = Products.objects.filter(product_category=category)
-    variants = Variants.objects.filter(variant_product__in = products )
-    sports = Sport.objects.all()
-    brands = Brand.objects.all()
-    count = products.count()
+def ListByBrand(request,id):
+    brand      = Brand.objects.get(id=id)
+    products   = Products.objects.filter(product_brand=brand)
+    brand_id   = id
+    variants   = Variants.objects.filter(variant_product__in = products )
+    sports     = Sport.objects.all()
+    brands     = Brand.objects.all()
+    count      = products.count()
+    
+  
     
     if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
@@ -177,11 +224,14 @@ def apparels(request):
 
 
 def womensBrands(request,id):
-    products = Products.objects.filter(product_gender = 'Women', product_brand=id)
-    variants = Variants.objects.filter(variant_product__in = products )
-    sports = Sport.objects.all()
-    brands = Brand.objects.all()
-    count = products.count()
+    products     = Products.objects.filter(product_gender = 'Women', product_brand=id)
+    variants     = Variants.objects.filter(variant_product__in = products )
+    sports       = Sport.objects.all()
+    brands       = Brand.objects.all()
+    count        = products.count()
+    
+    gender       = "Women"
+    brand_id     = id
     
     if request.user.is_authenticated:
         cart      = Cart.objects.get(customer = request.user)
@@ -525,14 +575,53 @@ def delete_address2(request,id):
     return redirect('checkout')   
     
     
-def search_products(request):
-    if request.method=='GET':
-        searchterm =request.GET.get('searchterm')
+def searchProducts(request):
+    if request.method=='POST':
+        data           = request.POST
+        searchterm     = data.get('search_term')
         print(searchterm)
+        category_id    = request.GET.get('category_id')
+        gender         = request.GET.get('gender')
+        print(category_id)
+        print(gender)
         products=Products.objects.filter(product_name__icontains = searchterm)
-        return render(request,'store.html',{'products':products})
+        if gender:
+            products = products.filter(product_gender=gender)
+        if category_id:
+            products = products.filter(product_category=category_id)
+         
+            
+        if 'store' in request.META.get('HTTP_REFERER'):
+            # Render products in #product-list if search is being done from the store page
+            return render(request,'product_list.html',{'products':products,'searchterm':searchterm,})
+        else:
+            # Render products on store.html page if search is being done from the home or index page
+            return HttpResponseRedirect(reverse('shop') + '?search_term={}&gender={}&category_id={}'.format(searchterm, gender, category_id))   
+        
     
-def color_filter(request,name):
+def colorFilter(request):
+    name     = request.GET.get('color')
+    print(name)
+    gender        = request.GET.get('gender')
+    sport_id      = request.GET.get('sport_id')
+    brand_id      = request.GET.get('brand_id')
+    category_id   = request.GET.get('category_id')
+    searchterm    = request.GET.get('searchterm')
+    print(searchterm)
+    product_names = request.GET.get('product_names', '').split(', ')
+    
+    print(gender)
     products = Products.objects.filter(product_color__icontains=name)
+    if gender:
+        products = products.filter(product_gender=gender)
+    if sport_id:
+        products = products.filter(product_sport=sport_id)
+    if brand_id:
+        products = products.filter(product_brand=brand_id)
+    if category_id:
+        products = products.filter(product_category=category_id)
+    if searchterm:
+        products = products.filter(product_name__icontains = searchterm )
+    
     context = {'products': products}
-    return render(request, 'store.html', context)
+    return render(request, 'product_list.html', context)

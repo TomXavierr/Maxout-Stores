@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content="" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+        <!-- Title  -->
+        <title></title>
+
+        <!-- Favicon  -->
+       
+        <!-- Core Style CSS -->
+        <link rel="stylesheet" href="{% static 'user/css/core-style.css' %} " />
+        <link rel="stylesheet" href="{% static 'user/style.css' %} " />
+
+
+    </head>
+    <body>
+        {% for product in products %}
+        <!-- Single Product -->
+
+        <div class="col-12 col-sm-6 col-lg-4">
+            <a href="{% url 'product_details' id=product.id %}">
+            <div class="single-product-wrapper">
+                <!-- Product Image -->
+                
+                <div class="product-img">
+                    <a href="{% url 'product_details' id=product.id %}">
+                        <img class="img-fluid mx-auto" src="{{product.product_image.url}}" alt="">
+                    </a>
+                </div>
+            
+                <!-- Product Description -->
+                <div class="product-description">
+                    <span>{{product.product_brand.brand_name}}</span>
+                    <a href="{% url 'product_details' id=product.id %}">
+                        <h6>{{product.product_name}}</h6>
+                    </a>
+                    <span>{{product.product_type}}</span>
+                    <p class="product-price">
+                        {% comment %} <span class="old-price">$75.00</span> {% endcomment %}
+                        ₹ {{product.product_price}}
+                    </p>
+                </div>
+            
+            </div>
+        </div>
+        {% empty %}
+        <h3>No Products Found</h3>
+        {% endfor %}
+    </body>
+</html>

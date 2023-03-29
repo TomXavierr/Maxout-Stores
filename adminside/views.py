@@ -575,9 +575,14 @@ def get_order_data(request):
     # Retrieve the data from the database
     order_items = OrderItem.objects.values('product__product_name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity')[:5]
     order_data = Orders.objects.filter(status='Delivered').values('order_date__month').annotate(total_orders=Count('id')).order_by('order_date__month')
-    daily_order_data = Orders.objects.filter(status='Delivered').values('order_date').annotate(total_orders=Count('id')).order_by('order_date')
-
-
+    daily_order_data = Orders.objects.filter(status='Delivered').values('order_date__day').annotate(total_orders=Count('id')).order_by('order_date__day')
+ 
+    
+   
+    print(order_data)
+    print("###################################################################################")
+    print(daily_order_data)
+   
     # Prepare the data for the chart
     top_products_labels = [item['product__product_name'] for item in order_items]
     top_products_data = [item['total_quantity'] for item in order_items]
@@ -586,12 +591,13 @@ def get_order_data(request):
     order_month_data = [0] * 12
     for data in order_data:
         order_month_data[data['order_date__month']-1] = data['total_orders']
-       
+        print("###################################################################################")
+         
     daily_order_labels = [str(d) for d in range(1, 32)]
     order_day_data = [0] * 31
     for data in daily_order_data:
-        order_day_data[int(data['order_date'].day)-1] = data['total_orders']
-
+        order_day_data[data['order_date__day']-1] = data['total_orders']
+        print(order_day_data)
     
     data = {
         'top_products_labels': top_products_labels,
