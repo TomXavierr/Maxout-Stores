@@ -505,9 +505,9 @@ def redeem_coupon(request):
                 'discount': discount,
                 })
         
-        
-        
         except Coupons.DoesNotExist:
+            if request.session['coupon_code']:
+                del request.session['coupon_code']
             return JsonResponse({'success': False, 'message': 'Invalid coupon code'})
 
 

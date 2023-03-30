@@ -321,6 +321,7 @@ def address(request):
 
     return render(request, 'user_address.html', context)
 
+@cache_control(no_cache = True,must_revalidate = False,no_store=True)
 def add_address(request):
     context = {
     'main_banner':  Banners.objects.get(id=1).banners,
