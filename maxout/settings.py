@@ -80,9 +80,10 @@ WSGI_APPLICATION = 'maxout.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
+    
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Maxout',
+        'NAME': 'maxoutstore',
         'USER': 'postgres',
         'PASSWORD': 'Tom@2002',
         'HOST': 'localhost'
@@ -114,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Kolkata'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
