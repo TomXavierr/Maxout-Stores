@@ -587,8 +587,8 @@ def searchProducts(request):
         products=Products.objects.filter(product_name__icontains = searchterm)
         if gender:
             products = products.filter(product_gender=gender)
-        if category_id:
-            products = products.filter(product_category=category_id)
+        # if category_id:
+        #     products = products.filter(product_category=category_id)
          
             
         if 'store' in request.META.get('HTTP_REFERER'):
