@@ -94,7 +94,7 @@ Checkout
                                 <li>
                                     <span>Apply Coupon</span>
                                     <span><input type="text" name="coupon" id="coupon-code" class="form-control form-control-lg" /></span>
-                                    <span>{% csrf_token %} <button onclick="applyCoupon()" class="btn btn-sm btn-success">Apply</button></span>
+                                    <span>{% csrf_token %} <button onclick="applyCoupon()" id="applycoupon" class="btn btn-sm btn-success">Apply</button></span>
                                 </li>
                                 <li><span>Discount</span> <span id="discount"> {{discount}}</span></li>
                                 <li><span>Total</span> <span id="total-price" value="{{grand_total}}">₹{{grand_total}}</span></li>
@@ -153,7 +153,7 @@ function applyCoupon() {
 
                 var formattedTotal = '\u20B9' + response.grand_total.toFixed(2);
                 var formattedDiscount = '\u20B9' + response.discount.toFixed(2);
-
+                document.getElementById('applycoupon').style.display = 'none'
                 // Update the total price displayed on the page
                 $('#total-price').text(formattedTotal);
                 $('#discount').text(formattedDiscount);

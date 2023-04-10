@@ -49,6 +49,7 @@ urlpatterns = [
     #====================Banner management=====================# 
     path('banners',views.banners,name='banners'),
     path('add_banners',views.add_banners,name='add_banners'),
+    path('delete_banner/<int:id>',views.delete_banner,name="delete_banner"),
     
     #====================Coupon management=====================# 
     path('coupons',views.coupons,name='coupons'),

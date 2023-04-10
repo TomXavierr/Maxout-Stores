@@ -23,7 +23,8 @@ urlpatterns = [
      
      path('product_details/<int:id>',views.product_details,name="product_details"),
      path('searchProducts',views.searchProducts,name="searchProducts"),
-
+     path('sort_products',views.sort_products,name='sort_products'),
+     path('filter_products_by_price',views.filter_products_by_price,name='filter_products_by_price'),
 
      
      path('add_to_cart',views.add_to_cart,name='add_to_cart'),

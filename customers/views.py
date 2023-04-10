@@ -295,17 +295,22 @@ def update_password(request):
    
     if request.method == 'POST':
         current_password = request.POST.get('current_password')
-        new_password     = request.POST.get('new_password')
+        new_password1    = request.POST.get('new_password1')
+        new_password2    = request.POST.get('new_password2')
         user=request.user
          
-        if current_password == new_password: 
-            messages.info(request,'This is your previous password. Enter a new one.')
-            return redirect('update_password')
+        if new_password2 == new_password1:
+            if current_password == new_password1: 
+                messages.info(request,'This is your previous password. Enter a new one.')
+                return redirect('update_password')
+            else:
+                user.set_password(new_password1)
+                user.save()
+                update_session_auth_hash(request, user)
+                return redirect('profile')
         else:
-            user.set_password(new_password)
-            user.save()
-            update_session_auth_hash(request, user)
-            return redirect('profile')
+            messages.info(request,'Enter the new password correctly in both columns')
+            return redirect('update_password')
     return render(request, 'update_password.html',context)
 
 def address(request):
@@ -388,6 +393,62 @@ def add_address(request):
             return redirect('add_address')
     else:
         return render(request, 'add_address.html',context)
+  
+@cache_control(no_cache = True,must_revalidate = False,no_store=True)
+def edit_address(request,id):
+
+    user     = request.user
+    user_id  = user.id
+    address  =    Addresses.objects.get(user_id=user_id)
+    print(user_id)
+    
+    context = {
+    'main_banner':  Banners.objects.get(id=1).banners,
+    'cart_count':   CartItem.objects.filter(cart= Cart.objects.get(customer = request.user)).count(),
+    'sports':       Sport.objects.all(),
+    'brands':       Brand.objects.all() ,
+    'user':         request.user,
+    'Products':     Products,
+    'address':      address,
+    }
+        
+    if request.method == 'POST':
+        first_name     = request.POST['first_name']
+        last_name      = request.POST['last_name']
+        house_name     = request.POST['house_name']
+        print(house_name)
+        street_name    = request.POST['street_name']
+        city           = request.POST['city']
+        district       = request.POST['district']
+        state          = request.POST['state']
+        pincode        = request.POST['pincode']
+        mobile         = request.POST['mobile']
+        
+        if first_name and last_name and house_name and street_name and city and district and state and pincode and mobile :
+            if not re.match(r'^\d{10}$', mobile):
+                # mobile is invalid
+                error_message = "Please enter a valid Mobile number."
+                return render(request, 'edit_address.html', {'error_message': error_message})
+            
+            else:
+               
+                address.first_name   = first_name
+                address.last_name    = last_name
+                address. house_name   = house_name
+                address.street_name  = street_name
+                address.city         = city
+                address.district     = district
+                address.state        = state
+                address.pincode      = pincode
+                address.mobile       = mobile
+                address.user_id      = Account.objects.get(id=user_id)
+                address.save()
+                return redirect('address')
+        else:
+            messages.info(request,'Input all fields')
+            return redirect('edit_address')
+    else:
+        return render(request, 'edit_address.html',context)
     
 def delete_address(request,id):
     address = Addresses.objects.get(id=id)

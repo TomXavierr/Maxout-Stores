@@ -29,17 +29,17 @@ Coupon List
                                     <input type="text"  class="form-control" name="code" id="brand_name" placeholder="Name" fdprocessedid="dl50sd" required>
                                     <label for="floatingPassword">CouponCode</label>
                                   </div>
-{% comment %}             
+                                  {% comment %}             
                                   <div class="form-outline mb-4">
                                     <input type="text" class="form-control date-input" id="expiry" name="expiry" placeholder="Expiry Date" required>
                                     <label for="floatingPassword">Expiry Date</label>
                                   </div> {% endcomment %}
                                   <div class="form-outline mb-4">
-                                    <input type="number"  class="form-control" name="discount_price" id="brand_nam" placeholder="Discount" fdprocessedid="dl50sd" required>
+                                    <input type="number"  class="form-control" name="discount_price" id="brand_nam" placeholder="Discount" fdprocessedid="dl50sd" required min="0">
                                     <label for="floatingPassword">Discount</label>
                                   </div>
                                   <div class="form-outline mb-4">
-                                    <input type="number"  class="form-control" name="minimum_amount" id="brand_name" placeholder="Minimum Amount" fdprocessedid="dl50sd" required>
+                                    <input type="number"  class="form-control" name="minimum_amount" id="brand_name" placeholder="Minimum Amount" fdprocessedid="dl50sd" required min="0">
                                     <label for="floatingPassword">Minimum purchase</label>
                                   </div>
             
@@ -69,7 +69,7 @@ Coupon List
                     <thead>
                         <tr>
                             <th scope="col"> Coupon code</th>
-                            <th scope="col">Active status</th>
+                            <th scope="col">Discount</th>
                             {% comment %} <th scope="col">Expiry date</th> {% endcomment %}
                             <th scope="col">Action</th>  
                         </tr>
@@ -78,7 +78,7 @@ Coupon List
                         {% for coupon in coupons %}
                         <tr>
                             <td>{{coupon.coupon_code}}</td>
-                            <td>{{coupon.expired}} </td>
+                            <td>{{coupon.discount_price}} </td>
                             {% comment %} <td>{{coupon.expiry_date}}</td> {% endcomment %}
                       
                             <td>

@@ -20,6 +20,7 @@ from django.utils import timezone
 @cache_control(no_cache = True,must_revalidate = False,no_store=True) 
 @login_required(login_url='admin_login')
 def admin_dash(request):
+    
     if request.user.is_superuser:
         orders = Orders.objects.all()
         total_orders = orders.count()
@@ -49,7 +50,7 @@ def admin_login(request):
         if email and password:
             admin=authenticate(email=email,password=password)
             if admin and admin.is_superuser:
-                request.session['admin'] = password
+                # request.session['admin'] = password
                 auth.login(request,admin)
                 return redirect('admin_dash')
             else:
@@ -67,7 +68,7 @@ def admin_login(request):
 @login_required(login_url='admin_login')   
 def admin_logout(request):
     auth.logout(request)
-    del request.session['admin']
+    # del request.session['admin']
     return redirect('admin_login')
 
 
@@ -76,7 +77,7 @@ def admin_logout(request):
     
 def user_list(request):
     
-    if 'admin' in request.session:
+    if request.user.is_superuser:
         users   =  Account.objects.filter(is_superuser=False).order_by('id')
         context = {'users': users}
         return render(request,'users_list.html',context)
@@ -259,7 +260,7 @@ def variant_list(request):
         variants   =  Variants.objects.all().order_by('id')
         
         
-        items_per_page = 15
+        items_per_page = 5
         paginator = Paginator(variants, items_per_page)
         page_number = request.GET.get('page')
         page_variants = paginator.get_page(page_number)
@@ -377,7 +378,11 @@ def add_banners(request):
    
     return render(request,'add_banners.html')
 
-
+@login_required(login_url='admin_login')
+def delete_banner(request,id):
+    banner=Banners.objects.get(id=id)
+    banner.delete()
+    return redirect('banners')
 
 #================================Category management=======================================
 
@@ -460,7 +465,7 @@ def add_brand(request):
 
 @login_required(login_url='admin_login')
 def delete_brand(request,id):
-    brand=Brand.bjects.get(id=id)
+    brand=Brand.objects.get(id=id)
     brand.delete()
     return redirect('brand_list')
 
@@ -549,8 +554,8 @@ def add_coupon(request):
         )
 
         coupon.save()
-        messages.warning(request,'Coupon added successfully')
         return redirect('coupons')
+   
    
 def deactivateCoupon(request,id):
     coupon = Coupons.objects.get(id=id)

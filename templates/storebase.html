@@ -296,8 +296,15 @@
                     }
                     
                 })
+                
         
             }
+            $('#headerSearch').keydown(function(event) {
+                if (event.keyCode === 13) { // Enter key pressed
+                    event.preventDefault(); // Prevent page from reloading
+                    search(); // Call search function
+                }
+            }); 
           </script>
 
     </body>

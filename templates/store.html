@@ -101,7 +101,7 @@ Store
                             <!-- Widget Title -->
                             <h6 class="widget-title mb-30">Filter by</h6>
                             <!-- Widget Title 2 -->
-                            {% comment %} <p class="widget-title2 mb-30">Price</p>
+                            <p class="widget-title2 mb-30">Price</p>
 
                             <div class="widget-desc">
                                 <div class="slider-range">
@@ -112,7 +112,7 @@ Store
                                     </div>
                                     <div class="range-price">Range: ₹1000 - ₹25000</div>
                                 </div>
-                            </div> {% endcomment %}
+                            </div> 
                         </div> 
 
                         <!-- ##### Single Widget ##### -->
@@ -152,22 +152,18 @@ Store
                                     <!-- Sorting -->
                                     {% comment %} <div class="product-sorting d-flex">
                                         <p>Sort by:</p>
-                                        <form action="" method="get">
-                                            <select name="select" id="sortByselect">
-                                                <option value="value">Highest Rated</option>
-                                                <option value="value">Newest</option>
-                                                <option value="value"><a href="?sort=price_desc">Price: $$ - $</a></option>
-                                                <option value="value"><a href="?sort=price_asc">Price: $ - $$</a></option>
-                                            </select>
-                                            <input type="submit" class="d-none" value="">
-                                        </form>
+                                        <select name="sort" id="sort-select">
+                                            
+                                            <option value="price_asc">Price: $ - $$</option>
+                                            <option value="price_desc">Price: $$ - $</option>
+                                        </select>
                                     </div> {% endcomment %}
                                     <div class="product-sorting d-flex">
                                         <p>Sort by:</p>
                                         <select name="sort" id="sort-select">
-                                            <option value="date">Newest</option>
-                                            <option value="price_asc">Price: $ - $$</option>
-                                            <option value="price_desc">Price: $$ - $</option>
+                                            <option value="name">Name A-Z</option>
+                                            <option value="price_asc">Price: Low - High</option>
+                                            <option value="price_desc">Price: High - Low</option>
                                         </select>
                                     </div>
                                 </div>
@@ -214,14 +210,17 @@ Store
                     <!-- Pagination -->
                     <nav aria-label="navigation">
                         <ul class="pagination mt-50 mb-70">
-                            <li class="page-item"><a class="page-link" href="#"><i class="fa fa-angle-left"></i></a></li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">...</a></li>
-                            <li class="page-item"><a class="page-link" href="#">21</a></li>
-                            <li class="page-item"><a class="page-link" href="#"><i class="fa fa-angle-right"></i></a></li>
+                            {% if products.has_previous %}
+                            <li class="page-item"><a href="?page={{products.previous_page_number}}">Previous</a></li>
+                            {% endif %}
+
+                            <li class="page-item">Page {{ products.number}} of {{products.paginator.num_pages}}</li>
+                           
+                            {% if products.has_next %}
+                            <li class="page-item"><a href="?page={{products.next_page_number}}">Next</a></li>
+                            {% endif %}
                         </ul>
+                        
                     </nav>
                 </div>
             </div>
@@ -241,7 +240,57 @@ Store
         });
     }
   </script>
+  <script src="{% static 'user/js/jquery/jquery-2.2.4.min.js' %}"></script>
+  <script>
+    $(document).ready(function() {
+        // Bind the sort_products view function to the URL '/sort-products/'
+        $('#sort-select').on('change', function() {
+            var sort_criteria = $(this).val();
+            console.log(sort_criteria);
+            url = '{% url 'sort_products' %}?sort_criteria=' + sort_criteria + "&gender={{gender}}&sport_id={{sport_id}}&brand_id={{brand_id}}&category_id={{category_id}}&searchterm={{searchterm}}";
+            $.get(url, function(data) {
+                $('#product-list').html(data);
+            });
+        });
+    });
+</script>
 
+<script >
+    $(function() {
+        $('.slider-range-price').slider({
+          range: true,
+          min: 1000,
+          max: 25000,
+          values: [1000, 25000],
+          slide: function(event, ui) {
+            $('.range-price').text('Range: ₹' + ui.values[0] + ' - ₹' + ui.values[1]);
+          },
+          stop: function(event, ui) {
+            var min_price = ui.values[0];
+            var max_price = ui.values[1];
+            
+            console.log(min_price);
+            console.log(max_price);
+            $.ajax({
+              type: 'GET',
+              url: '{% url 'filter_products_by_price' %}',
+              data: {
+                'min_price': min_price,
+                'max_price': max_price,
+                'gender': '{{gender}}',
+                'sport_id': '{{sport_id}}',
+                'brand_id': '{{brand_id}}',
+                'category_id': '{{category_id}}',
+                'searchterm': '{{searchterm}}'
+              },
+              success: function(data) {
+                $('#product-list').html(data.html);
+              }
+            });
+          }
+        });
+      });
+</script>
 
 {% endblock content %}
   

@@ -27,7 +27,6 @@ Banners
 
 <div class="container-fluid pt-4 px-4">
     <div class="bg-light text-center rounded p-4">
-        
         <div class="table-responsive">
             <table class="table text-start align-middle table-bordered table-hover mb-0">
                 <thead>
@@ -40,17 +39,33 @@ Banners
                 <tbody>
                     {% for banner in banners %}
                     <tr>
-                        <td>{{banner.name}}</td>
-                        <td><img style="max-width:2em " src="{{banner.banners.url}}"></td>
+                        <td>{{ banner.name }}</td>
+                        <td><img style="max-width: 2em;" src="{{ banner.banners.url }}"></td>
                         <td>
-                            <a href="delete_banner/{{banner.id}}" class="btn btn-danger ">Delete Banner</a>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ banner.id }}">Delete Banner</button>
+                            <!-- Delete Modal -->
+                            <div class="modal fade" id="deleteModal{{ banner.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ banner.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModalLabel{{ banner.id }}">Confirm Delete Banner</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete "{{ banner.name }}" banner?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <a href="delete_banner/{{ banner.id }}" class="btn btn-danger">Delete Banner</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
-                    
                 </tbody>
             </table>
-            
         </div>
     </div>
 </div>

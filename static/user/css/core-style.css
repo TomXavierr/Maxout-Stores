@@ -46,7 +46,7 @@ a {
   transition: all 500ms ease 0s;
   text-decoration: none;
   outline: 0 solid transparent;
-  color: #fbf5f5;
+  color: #595959;
   font-weight: 600;
   font-size: 12px; }
   a:hover, a:focus {
@@ -885,13 +885,13 @@ img {
   .pagination .page-item .page-link {
     width: 40px;
     height: 40px;
-    border: 1px solid #ebebeb;
+    border: 1px solid #000000;
     font-size: 12px;
     font-weight: 600;
     line-height: 38px;
     padding: 0;
     text-align: center;
-    color: #787878; }
+    color: #403c3c; }
     .pagination .page-item .page-link:hover, .pagination .page-item .page-link:focus {
       color: #000000;
       box-shadow: none; }

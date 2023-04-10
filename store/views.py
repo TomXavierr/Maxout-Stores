@@ -17,6 +17,7 @@ import razorpay
 import re
 import json
 from django.urls import reverse
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -55,9 +56,15 @@ def shop(request):
         cart = Cart.objects.get(customer=request.user)
         cartitems = CartItem.objects.filter(cart=cart)
         cart_count = cartitems.count
+    
+    items_per_page = 12
+    paginator = Paginator(products, items_per_page)
+    page_number = request.GET.get('page')
+    page_products = paginator.get_page(page_number)    
         
+    
     return render(request, 'store.html', {
-        'products': products,
+        'products': page_products,
         'variants': variants,
         'count': count,
         'sports': sports,
@@ -80,6 +87,12 @@ def mens_store(request):
         cartitems = CartItem.objects.filter(cart= cart)
         cart_count     = cartitems.count
     
+    items_per_page = 12
+    paginator = Paginator(products, items_per_page)
+    page_number = request.GET.get('page')
+    page_products = paginator.get_page(page_number) 
+    
+    products = page_products
     return render(request,'store.html',locals())
 
 
@@ -96,6 +109,12 @@ def womens_store(request):
         cartitems = CartItem.objects.filter(cart= cart)
         cart_count     = cartitems.count
     
+    items_per_page = 12
+    paginator = Paginator(products, items_per_page)
+    page_number = request.GET.get('page')
+    page_products = paginator.get_page(page_number) 
+    
+    products = page_products
     
     return render(request,'store.html',locals())
 
@@ -113,6 +132,12 @@ def all_sport(request,id):
         cartitems = CartItem.objects.filter(cart= cart)
         cart_count     = cartitems.count
     
+    items_per_page = 12
+    paginator = Paginator(products, items_per_page)
+    page_number = request.GET.get('page')
+    page_products = paginator.get_page(page_number) 
+    
+    products = page_products
     
     return render(request,'store.html',locals())
 
@@ -132,6 +157,13 @@ def mensSport(request,id):
         cartitems = CartItem.objects.filter(cart= cart)
         cart_count     = cartitems.count
 
+    items_per_page = 12
+    paginator = Paginator(products, items_per_page)
+    page_number = request.GET.get('page')
+    page_products = paginator.get_page(page_number) 
+    
+    products = page_products
+    
     return render(request,'store.html',locals())
 
 
@@ -149,6 +181,13 @@ def womensSport(request,id):
         cartitems = CartItem.objects.filter(cart= cart)
         cart_count     = cartitems.count
     
+    items_per_page = 12
+    paginator = Paginator(products, items_per_page)
+    page_number = request.GET.get('page')
+    page_products = paginator.get_page(page_number) 
+    
+    products = page_products
+    
     return render(request,'store.html',locals())
 
 
@@ -164,7 +203,14 @@ def all_brands(request,id):
         cart      = Cart.objects.get(customer = request.user)
         cartitems = CartItem.objects.filter(cart= cart)
         cart_count     = cartitems.count
-        
+     
+    items_per_page = 12
+    paginator = Paginator(products, items_per_page)
+    page_number = request.GET.get('page')
+    page_products = paginator.get_page(page_number) 
+    
+    products = page_products
+       
     return render(request,'store.html',locals())
 
  
@@ -182,6 +228,38 @@ def mensBrands(request,id):
         cart      = Cart.objects.get(customer = request.user)
         cartitems = CartItem.objects.filter(cart= cart)
         cart_count     = cartitems.count    
+    
+    items_per_page = 12
+    paginator = Paginator(products, items_per_page)
+    page_number = request.GET.get('page')
+    page_products = paginator.get_page(page_number) 
+    
+    products = page_products
+    
+    return render(request,'store.html',locals())
+
+
+def womensBrands(request,id):
+    products     = Products.objects.filter(product_gender = 'Women', product_brand=id)
+    variants     = Variants.objects.filter(variant_product__in = products )
+    sports       = Sport.objects.all()
+    brands       = Brand.objects.all()
+    count        = products.count()
+    
+    gender       = "Women"
+    brand_id     = id
+    
+    if request.user.is_authenticated:
+        cart      = Cart.objects.get(customer = request.user)
+        cartitems = CartItem.objects.filter(cart= cart)
+        cart_count     = cartitems.count
+    
+    items_per_page = 12
+    paginator = Paginator(products, items_per_page)
+    page_number = request.GET.get('page')
+    page_products = paginator.get_page(page_number) 
+    
+    products = page_products
     
     return render(request,'store.html',locals())
 
@@ -202,7 +280,15 @@ def ListByCategory(request,id):
         cartitems = CartItem.objects.filter(cart= cart)
         cart_count     = cartitems.count
     
+    items_per_page = 12
+    paginator = Paginator(products, items_per_page)
+    page_number = request.GET.get('page')
+    page_products = paginator.get_page(page_number) 
+    
+    products = page_products
+    
     return render(request,'store.html',locals())
+
 
 def ListByBrand(request,id):
     brand      = Brand.objects.get(id=id)
@@ -220,25 +306,15 @@ def ListByBrand(request,id):
         cartitems = CartItem.objects.filter(cart= cart)
         cart_count     = cartitems.count
     
-    return render(request,'store.html',locals())
-
-
-def womensBrands(request,id):
-    products     = Products.objects.filter(product_gender = 'Women', product_brand=id)
-    variants     = Variants.objects.filter(variant_product__in = products )
-    sports       = Sport.objects.all()
-    brands       = Brand.objects.all()
-    count        = products.count()
+    items_per_page = 12
+    paginator = Paginator(products, items_per_page)
+    page_number = request.GET.get('page')
+    page_products = paginator.get_page(page_number) 
     
-    gender       = "Women"
-    brand_id     = id
-    
-    if request.user.is_authenticated:
-        cart      = Cart.objects.get(customer = request.user)
-        cartitems = CartItem.objects.filter(cart= cart)
-        cart_count     = cartitems.count
+    products = page_products
     
     return render(request,'store.html',locals())
+
 
 
 def product_details(request,id): 
@@ -356,37 +432,41 @@ def update_cart_quantity(request):
     variant = Variants.objects.get(variant_product=product_id,variant_size=size_obj.id)
     stock = variant.variant_stock
 
-    if stock < int(quantity):
+    if int(quantity) > 10:
         print('error message')
         response_data = {
-            'success': False,'status': 'error', 'message': 'sorry only  '+ str(stock) + '  pieces in stock'
+            'success': False,'status': 'error', 'message': 'maximum units reached'
             }
-        return JsonResponse({'status': 'error', 'message': 'sorry only  '+ str(stock) + '  pieces in stock'})
+        return JsonResponse({'status': 'error', 'message': 'maximum units reached'})
+    else:
+        if stock < int(quantity):
+            print('error message')
+            response_data = {
+                'success': False,'status': 'error', 'message': 'sorry only  '+ str(stock) + '  pieces in stock'
+                }
+            return JsonResponse({'status': 'error', 'message': 'sorry only  '+ str(stock) + '  pieces in stock'})
+        
+        
+        cart_item.product_qty = quantity
+        cart_item.save()
+        
+        Sub_total = int(cart_item.product.product_price)*int(cart_item.product_qty)
+        print(Sub_total)
+            
+        cart_items = CartItem.objects.filter(cart__customer__email = email )
+        
+        for items in cart_items:
+            total += items.product_qty * items.product.product_price
+            cartitems += items.product_qty
     
-    cart_item.product_qty = quantity
-    cart_item.save()
-    print( 'qty after'+str(cart_item.product_qty))
-    print('jbbmnb')
-    Sub_total = int(cart_item.product.product_price)*int(cart_item.product_qty)
-    print(Sub_total)
+        
     
-    
-    cart_items = CartItem.objects.filter(cart__customer__email = email )
-    print(cart_items)
-    
-    for items in cart_items:
-        total += items.product_qty * items.product.product_price
-        cartitems += items.product_qty
-    print(total)
-    print(cartitems)
-    
-   
-    return JsonResponse({
-      'quantity': quantity,
-      'total': total,
-      'cartitems':cartitems,
-      'Sub_total':Sub_total,
-    })
+        return JsonResponse({
+        'quantity': quantity,
+        'total': total,
+        'cartitems':cartitems,
+        'Sub_total':Sub_total,
+        })
   else:
     return JsonResponse({})
     
@@ -506,8 +586,6 @@ def redeem_coupon(request):
                 })
         
         except Coupons.DoesNotExist:
-            if request.session['coupon_code']:
-                del request.session['coupon_code']
             return JsonResponse({'success': False, 'message': 'Invalid coupon code'})
 
 
@@ -585,11 +663,13 @@ def searchProducts(request):
         print(category_id)
         print(gender)
         products=Products.objects.filter(product_name__icontains = searchterm)
-        if gender:
-            products = products.filter(product_gender=gender)
-        # if category_id:
-        #     products = products.filter(product_category=category_id)
-         
+        if products:
+            if gender:
+                products = products.filter(product_gender=gender)   
+            # if category_id:
+            #     products = products.filter(product_category=category_id)
+        else:
+            products = Products.objects.filter(product_type__icontains = searchterm)   
             
         if 'store' in request.META.get('HTTP_REFERER'):
             # Render products in #product-list if search is being done from the store page
@@ -625,3 +705,85 @@ def colorFilter(request):
     
     context = {'products': products}
     return render(request, 'product_list.html', context)
+
+
+
+def sort_products(request):
+    # Get the sorting criteria from the AJAX request
+    sort_criteria = request.GET.get('sort_criteria')
+    
+    name     = request.GET.get('color')
+    gender        = request.GET.get('gender')
+    sport_id      = request.GET.get('sport_id')
+    brand_id      = request.GET.get('brand_id')
+    category_id   = request.GET.get('category_id')
+    searchterm    = request.GET.get('searchterm')
+    print(searchterm)
+    product_names = request.GET.get('product_names', '').split(', ')
+    
+    print(gender)
+    products = Products.objects.all()
+    if name:
+        products = products.filter(product_color__icontains=name)
+    if gender:
+        products = products.filter(product_gender=gender)
+    if sport_id:
+        products = products.filter(product_sport=sport_id)
+    if brand_id:
+        products = products.filter(product_brand=brand_id)
+    if category_id:
+        products = products.filter(product_category=category_id)
+    if searchterm:
+        products = products.filter(product_name__icontains = searchterm )
+
+    # Query the database to get a list of products sorted by the specified criteria
+    if sort_criteria == 'price_asc':
+        products = products.order_by('product_price')
+    elif sort_criteria == 'price_desc':
+        products = products.order_by('-product_price')
+    else:
+        # Default to sorting by name if no criteria is specified
+        products = products.order_by('product_name')
+
+    # Serialize the list of products as JSON and return it as an AJAX response
+    # data = {'products': list(products.values())}
+    # return JsonResponse(data)
+
+    context = {'products': products}
+    return render(request, 'product_list.html', context)
+
+def filter_products_by_price(request):
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    
+    name     = request.GET.get('color')
+    gender        = request.GET.get('gender')
+    print(gender)
+    sport_id      = request.GET.get('sport_id')
+    brand_id      = request.GET.get('brand_id')
+    category_id   = request.GET.get('category_id')
+    searchterm    = request.GET.get('searchterm')
+    
+    products = Products.objects.filter(product_price__gte=min_price, product_price__lte=max_price)
+    print(products)
+    if name:
+        products = products.filter(product_color__icontains=name)
+    if gender:
+        products = products.filter(product_gender=gender)
+    if sport_id:
+        products = products.filter(product_sport=sport_id)
+    if brand_id:
+        products = products.filter(product_brand=brand_id)
+    if category_id:
+        products = products.filter(product_category=category_id)
+    if searchterm:
+        products = products.filter(product_name__icontains = searchterm )
+    
+    # products = products.filter(product_price__gte=min_price, product_price__lte=max_price)
+    print("==========")
+    print(products)
+    # context = {'products': products}
+    # return render(request, 'product_list.html', context)
+    
+    product_html = render(request, 'product_list.html', {'products': products}).content
+    return JsonResponse({'html': product_html})

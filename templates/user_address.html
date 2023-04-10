@@ -76,7 +76,12 @@ Profile
 						<h2 class="">My addresses</h2>
 						{% for address in addresses %}
 						<ul class="list-group ">
-							<li><h3>Address <a href="{% url 'delete_address' id=address.id %}"><button type="button" class="btn-danger btn-sm">Delete</button></a> </h3></li>
+							<li>
+								<h3>Address 
+									<a href="{% url 'delete_address' id=address.id %}"><button type="button" class="btn-danger btn-sm">Delete</button></a>
+									<a href="{% url 'edit_address' id=address.id %}"><button type="button" class="btn-primary btn-sm">Edit</button></a>
+								</h3>
+							</li>
 							
 							<li class="list-group-item d-flex justify-content-between align-items-start">
 								<div class="ms-2 me-auto">
