@@ -83,9 +83,9 @@ def register_view(request):
                     return redirect('register')
                 else:
                     message = generate_otp()
-                    sender_email  = "maxoutstores@gmail.com"
+                    sender_email  = "maxoutstores1@gmail.com"
                     receiver_mail = email
-                    password      = "aojgilhtcyfcyptj"
+                    password      = "urxtynwjuveqitvf"
                    
                     server        = smtplib.SMTP("smtp.gmail.com",587)
                     server.ehlo()
