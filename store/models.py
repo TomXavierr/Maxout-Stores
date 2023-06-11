@@ -20,11 +20,11 @@ class Products(models.Model):
     product_price             = models.DecimalField(max_digits=8, decimal_places=2, null=False)
 
     def __str__(self):
-        return str(self.pk)
+        return str(self.product_name)
     
 class Variants(models.Model):
     variant_product           = models.ForeignKey(Products,related_name='variants', on_delete=models.CASCADE)
-    variant_size              = models.ForeignKey("Size", on_delete=models.CASCADE, default=False , null=False)
+    variant_size              = models.ForeignKey("Size", on_delete=models.RESTRICT, default=False , null=False)
     variant_stock             = models.IntegerField()
     
     

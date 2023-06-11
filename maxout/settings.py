@@ -87,7 +87,7 @@ DATABASES = {
     
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'maxoutstore',
+        'NAME': 'Maxout',
         'USER': 'postgres',
         'PASSWORD': 'Tom@2002',
         'HOST': 'localhost'

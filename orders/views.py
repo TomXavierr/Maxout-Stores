@@ -11,7 +11,7 @@ from django.conf import settings
 # Create your views here.
 
 
-def place_cod_order(request):
+def place_cod_order(request):  # sourcery skip: last-if-guard
     
     if request.method == 'POST':
         data           = request.POST
@@ -99,7 +99,7 @@ def review_order(request):
 def payment(request):
     coupon_code = request.session.get('coupon_code')
     address_id     = request.session.get('address')
-    print('***')
+
     print(coupon_code)
     print(address_id)
     
