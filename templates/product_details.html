@@ -17,8 +17,8 @@
         <!-- Single Product Thumb -->
         <div class="single_product_thumb clearfix "  >
             <div class="product_thumbnail_slides owl-carousel ">
-                {% for image in details.images.all %}
-                <img  src="{{image.image.url}}" alt="">
+                {% for img in details.images.all %}
+                <img  src="{{img.image.url}}" alt="">
                 {% endfor %}
             </div>
         </div>

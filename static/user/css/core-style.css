@@ -253,7 +253,7 @@ img {
   @media only screen and (max-width: 767px) {
     .header_area .classy-nav-container {
       -ms-flex-wrap: wrap;
-      background-color: #eaeae6;
+      background-color: #ffffff;
       flex-wrap: wrap; } }
   @media only screen and (max-width: 767px) {
     .header_area .classy-nav-container .classy-navbar-toggler {
@@ -311,7 +311,7 @@ img {
         border-left: none; } }
     .header_area .search-area .searchbar input {
       border: none;
-      background-color: #d7d7d6;
+      background-color: transparent;
       width: 180px;
       height: 85px;
       padding: 0 15px 0 60px;

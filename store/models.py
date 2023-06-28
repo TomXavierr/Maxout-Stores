@@ -106,14 +106,22 @@ class Category(models.Model):
     category_name              = models.CharField(max_length=100)
     thumbnail                  = models.ImageField(upload_to='photos/',null=False,blank=False)
   
+
+    def __str__(self):
+        return self.category_name
   
   
 class Brand(models.Model):
     brand_name                 = models.CharField(max_length=100)
     logo                       = models.ImageField(upload_to='Logos/',null=False,blank=False)
   
+    def ___str__(self):
+        return self.brand_name
+    
 class Sport(models.Model):
     sport_name                 = models.CharField(max_length=100)
+    def ___str__(self):
+        return self.sport_name
 
 class Wallet(models.Model):
     user                = models.ForeignKey(Account,on_delete=models.CASCADE)
