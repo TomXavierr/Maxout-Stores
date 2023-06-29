@@ -158,7 +158,9 @@
                     <!-- Brand Logo -->
                     {% for brand in brands %}
                     <div class="single-brands-logo">
-                        <img src="{{brand.logo.url}}" alt="" />
+                        <a href="{% url 'ListByBrand' id=brand.id %}">
+                                <img src="{{brand.logo.url}}" alt="{{brand.brand_name}}" />
+                            </a>
                     </div>
                      {% endfor %}
                 </div>

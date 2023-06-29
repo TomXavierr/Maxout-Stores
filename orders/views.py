@@ -8,9 +8,10 @@ from django.http import JsonResponse
 import razorpay
 from django.contrib import messages
 from django.conf import settings
+from django.views.decorators.cache import never_cache
 # Create your views here.
 
-
+@never_cache
 def place_cod_order(request):  # sourcery skip: last-if-guard
     
     if request.method == 'POST':
@@ -81,12 +82,9 @@ def place_cod_order(request):  # sourcery skip: last-if-guard
         
         request.session['order_id'] = order_id
         
-        
         return JsonResponse  ({'success': True})
-        # else:
-        #     return redirect('order_success_page')
-     
-     
+
+@never_cache 
 def review_order(request):
      if request.method == 'POST':
         data           = request.POST
@@ -95,23 +93,18 @@ def review_order(request):
         request.session['address'] = address
   
         return JsonResponse  ({'success': True})
-    
+     
+
+@never_cache   
 def payment(request):
     coupon_code = request.session.get('coupon_code')
     address_id     = request.session.get('address')
 
-    print(coupon_code)
-    print(address_id)
-    
     address    = Addresses.objects.get(id=address_id)
     user       = request.user
     cart       = Cart.objects.get(customer = user)
     sub_total   = cart.cart_total
     cart_items  = CartItem.objects.filter(cart__customer=user)
-    print(cart)
-    print(cart_items)
-    print(sub_total)
-        
         
     if coupon_code:
         coupon = Coupons.objects.get(coupon_code=coupon_code)
@@ -129,12 +122,8 @@ def payment(request):
     'currency': 'INR',
       }
 
-
     payment = client.order.create(data=order_data)
 
-
-    
-    
     return render(request, 'review_order.html',locals())
    
 @csrf_exempt
@@ -151,9 +140,6 @@ def payment_verification(request):
                         'razorpay_signature':signature
                   }
 
-                  print(payment_id,'id')
-                  print(order_id,'order')
-                  print(signature,'signat')
             except:
                   pass
               
@@ -168,7 +154,7 @@ def payment_verification(request):
             request.session['payment_id'] = payment_id
             return redirect('payment_success')
         
-
+@never_cache
 def payment_success(request):
     coupon_code = request.session.get('coupon_code')
     address_id     = request.session.get('address')
@@ -180,11 +166,6 @@ def payment_success(request):
     cart        = Cart.objects.get(customer=user)
     sub_total   = cart.cart_total
     cart_items  = CartItem.objects.filter(cart__customer=user)
-    print(cart)
-    print(cart_items)
-    print(sub_total)
-    
-    
     
     if coupon_code:
         coupon = Coupons.objects.get(coupon_code=coupon_code)
@@ -250,9 +231,6 @@ def order_success_page(request):
 
 def cancel_order(request,id):
     order       = Orders.objects.get(id=id)   
-    print(order)
-    print(order.status)
     order.status = 'Cancelled'
     order.save()
-    print(order.status)
     return redirect('my_orders')

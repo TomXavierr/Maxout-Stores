@@ -167,7 +167,7 @@
                             <div class="cart-area">
                                 <a href="{% url 'cart' %}" id="essenceCartBtn"
                                     ><img src="{% static 'user/img/core-img/bag.svg' %}" alt="" /> 
-                                    <span id = "cart-item-count">{% if cart_count %} {{cart_count}} {% else %} {% endif %}</span>
+                                    <span id = "cart-item-count"> {{cart.get_cart_items}}</span>
                                     </a
                                 >
                             </div>
