@@ -260,7 +260,7 @@ def variant_list(request):
         variants   =  Variants.objects.all().order_by('id')
         
         
-        items_per_page = 5
+        items_per_page = 15
         paginator = Paginator(variants, items_per_page)
         page_number = request.GET.get('page')
         page_variants = paginator.get_page(page_number)
@@ -596,7 +596,7 @@ def get_order_data(request):
     order_month_data = [0] * 12
     for data in order_data:
         order_month_data[data['order_date__month']-1] = data['total_orders']
-        print("###################################################################################")
+       
          
     daily_order_labels = [str(d) for d in range(1, 32)]
     order_day_data = [0] * 31

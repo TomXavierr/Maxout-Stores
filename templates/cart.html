@@ -15,7 +15,7 @@ Cart
 		  <div class="row d-flex justify-content-center my-4">
 			<div class="col-md-8">
 			  <div class="card mb-4">
-				<div class="card-header py-3">
+				<div class="card-header p-3">
 					{% if cart.get_cart_items > 0 %}
 				  		<h5 class="mb-0"><span  id="cartitems">{{cart.get_cart_items}}</span><span> items in your cart</span> </h5>
 				 	{% else %}
@@ -162,13 +162,11 @@ Cart
 			  $('#message').text(data.message);
 			 
 			} else {
-			  console.log(data);
+	
 			  $qtyInput.val(data.quantity);
 			  $('#cart_total').text(data.total);
 			  $('#cartitems').text(data.cartitems);
 			  $('#sub-total-' + itemId).text(  data.Sub_total);
-			  console.log(data.Sub_total)
-			 
 			  $('#grand_total').text(data.grand_total);
 			}
 		  },
