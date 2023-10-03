@@ -19,17 +19,12 @@ def place_cod_order(request):  # sourcery skip: last-if-guard
         address        = data.get('address_id')
         coupon_code = request.session.get('coupon_code')
         payment_method = 'COD'
-        print(address)
-        print(coupon_code)
         
         order_id    = uuid.uuid4().hex[:8].upper()
         user        = request.user
         cart        = Cart.objects.get(customer=user)
         sub_total   = cart.cart_total
         cart_items  = CartItem.objects.filter(cart__customer=user)
-        print(cart)
-        print(cart_items)
-        print(sub_total)
         if coupon_code:
             coupon = Coupons.objects.get(coupon_code=coupon_code)
             discount = coupon.discount_price
@@ -62,10 +57,8 @@ def place_cod_order(request):  # sourcery skip: last-if-guard
             quantity  = item.product_qty
             product   = item.product
             variant   = Variants.objects.get(variant_product=product,variant_size=size_id)
-            print(variant.variant_stock)
             variant.variant_stock -= int(quantity)
             variant.save()
-            print(variant.variant_stock)
         
         
         for item in cart_items:
