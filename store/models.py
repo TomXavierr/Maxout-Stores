@@ -21,12 +21,12 @@ class Products(models.Model):
 
     def __str__(self):
         return str(self.product_name)
+
     
 class Variants(models.Model):
     variant_product           = models.ForeignKey(Products,related_name='variants', on_delete=models.CASCADE)
     variant_size              = models.ForeignKey("Size", on_delete=models.RESTRICT, default=False , null=False)
     variant_stock             = models.IntegerField()
-    
     
     
     def __str__(self):
@@ -49,6 +49,8 @@ class Image(models.Model):
 class Size(models.Model):
     size                       = models.CharField(max_length=20)
          
+    def __str__(self) -> str:
+        return self.size
 
 class Cart(models.Model):
     customer                   = models.ForeignKey(Account,on_delete=models.CASCADE)

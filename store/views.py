@@ -53,7 +53,7 @@ def shop(request, cart=None):
     sports = Sport.objects.all()
     brands = Brand.objects.all()
     
-    paginator = Paginator(products, 12)
+    paginator = Paginator(products, 6)
     page_number = request.GET.get('page')
     page_products = paginator.get_page(page_number)    
     
@@ -75,7 +75,7 @@ def mens_store(request, cart=None):
     sports       =  Sport.objects.all()
     brands       = Brand.objects.all()
     
-    paginator = Paginator(products, 12)
+    paginator = Paginator(products, 6)
     page_number = request.GET.get('page')
     page_products = paginator.get_page(page_number) 
     
@@ -89,7 +89,7 @@ def womens_store(request,  cart=None):
     brands    = Brand.objects.all()
     count     = products.count()
      
-    paginator = Paginator(products, 12)
+    paginator = Paginator(products, 6)
     page_number = request.GET.get('page')
     page_products = paginator.get_page(page_number) 
     
@@ -104,7 +104,7 @@ def all_sport(request, id, cart=None):
     brands      = Brand.objects.all()
     count       = products.count()
     
-    paginator = Paginator(products, 12)
+    paginator = Paginator(products, 6)
     page_number = request.GET.get('page')
     page_products = paginator.get_page(page_number) 
     
@@ -121,7 +121,7 @@ def mensSport(request,id, cart=None):
     gender       = "Men"
     sport_id    = id
     
-    paginator = Paginator(products, 12)
+    paginator = Paginator(products, 6)
     page_number = request.GET.get('page')
     page_products = paginator.get_page(page_number) 
     
@@ -138,7 +138,7 @@ def womensSport(request, id, cart=None):
     gender       = "Women"
     sport_id    = id
     
-    paginator = Paginator(products, 12)
+    paginator = Paginator(products, 6)
     page_number = request.GET.get('page')
     page_products = paginator.get_page(page_number) 
     
@@ -155,7 +155,7 @@ def all_brands(request, id, cart=None):
     brand_id   = id
     
    
-    paginator = Paginator(products, 12)
+    paginator = Paginator(products, 6)
     page_number = request.GET.get('page')
     page_products = paginator.get_page(page_number) 
     
@@ -172,7 +172,7 @@ def mensBrands(request,id, cart=None):
     gender          = "Men"
     brand_id        = id
     
-    paginator = Paginator(products, 12)
+    paginator = Paginator(products, 6)
     page_number = request.GET.get('page')
     page_products = paginator.get_page(page_number) 
     
@@ -190,7 +190,7 @@ def womensBrands(request, id, cart=None):
     gender       = "Women"
     brand_id     = id
    
-    paginator = Paginator(products, 12)
+    paginator = Paginator(products, 6)
     page_number = request.GET.get('page')
     page_products = paginator.get_page(page_number) 
     
@@ -208,7 +208,7 @@ def ListByCategory(request,id, cart=None):
     
     category_id = id
 
-    paginator = Paginator(products, 12)
+    paginator = Paginator(products, 6)
     page_number = request.GET.get('page')
     page_products = paginator.get_page(page_number) 
     
@@ -226,7 +226,7 @@ def ListByBrand(request,id, cart= None):
     count      = products.count()
     
   
-    paginator = Paginator(products, 12)
+    paginator = Paginator(products, 6)
     page_number = request.GET.get('page')
     page_products = paginator.get_page(page_number) 
     

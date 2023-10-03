@@ -96,7 +96,7 @@ def register_view(request):
                     message = generate_otp()
                     sender_email  = "maxoutstores1@gmail.com"
                     receiver_mail = email
-                    password      = "urxtynwjuveqitvf"
+                    password      = "zuiojwlzhkfwomiw"
                    
                     server        = smtplib.SMTP("smtp.gmail.com",587)
                     server.ehlo()
@@ -169,7 +169,7 @@ def user_login(request):
             user=authenticate(email=email,password=password)
             if user is not None and not user.is_blocked :
                 if  user.is_verified:
-                    print(user)
+                   
                     request.session['user_type'] = 'user'
                     login(request,user)
                     return redirect('home')
