@@ -117,7 +117,7 @@ class Brand(models.Model):
     brand_name                 = models.CharField(max_length=100)
     logo                       = models.ImageField(upload_to='Logos/',null=False,blank=False)
   
-    def ___str__(self):
+    def __str__(self):
         return self.brand_name
     
 class Sport(models.Model):
