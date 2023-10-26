@@ -98,7 +98,7 @@ My orders
                       {{order.order_date|date:"d/m/Y" }}
                     </td>
                     <td class="align-middle border-top-0">
-                      <span class="badge" style="{%if order.status == 'Cancelled'%} background-color:red !important{%elif order.status == 'Orderpending'%} background-color:yellow !important{%elif order.status == 'Delivered'%} background-color:green !important{%else%} background-color:blue !important{%endif%};" >{{order.status}}</span>
+                      <span class="badge" style="{%if order.status == 'Cancelled'%} background-color:red !important{%elif order.status == 'Orderpending'%} background-color:orange !important{%elif order.status == 'Delivered'%} background-color:green !important{%else%} background-color:blue !important{%endif%};" >{{order.status}}</span>
                     </td>
                     <td class="align-middle border-top-0">
                       {% if order.status == 'Delivered' %}
